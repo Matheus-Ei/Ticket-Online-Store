@@ -1,0 +1,16 @@
+{
+    "name": "t4iiga/php-online-store",
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/",
+            "Config\\": "config/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Matheus-Ei",
+            "email": "t4igacomercial@gmail.com"
+        }
+    ],
+    "require": {}
+}
