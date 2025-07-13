@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controllers;
+namespace App\Models;
 
 use App\DTOs\TicketData;
 use Config\Database;

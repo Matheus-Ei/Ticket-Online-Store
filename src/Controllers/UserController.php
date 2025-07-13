@@ -2,11 +2,22 @@
 
 namespace App\Controllers;
 
+use App\Utils\SessionUtils;
+use App\Models\UserModel;
+
 class UserController extends AbstractController {
+  public function __construct() {
+    $this->model = new UserModel();
+  }
+
   public function registerForm() {
     // GET Render the registration form view
     // Permissions: Public
     
+    if (SessionUtils::isLoggedIn()) {
+      $this->navigate('/users/profile');
+    }
+
     $data = [
       'title' => 'Register',
     ];
@@ -17,6 +28,10 @@ class UserController extends AbstractController {
   public function loginForm() {
     // GET Render the login form view
     // Permissions: Public
+
+    if (SessionUtils::isLoggedIn()) {
+      $this->navigate('/users/profile');
+    }
 
     $data = [
       'title' => 'Login',
@@ -29,6 +44,10 @@ class UserController extends AbstractController {
     // GET Render the user's profile view
     // Permissions: Owner client or user
 
+    if (!SessionUtils::isLoggedIn()) {
+      $this->navigate('/users/login');
+    }
+
     $data = [
       'title' => 'User Profile',
     ];
@@ -40,6 +59,10 @@ class UserController extends AbstractController {
     // GET Render the form to edit user profile
     // Permissions: Owner client or user
     
+    if (!SessionUtils::isLoggedIn()) {
+      $this->navigate('/users/login');
+    }
+
     $data = [
       'title' => 'Edit Profile',
     ];

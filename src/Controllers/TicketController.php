@@ -2,11 +2,18 @@
 
 namespace App\Controllers;
 
+use App\Models\TicketModel;
+use App\Utils\SessionUtils;
+
 class TicketController extends AbstractController {
+  public function __construct() {
+    $this->model = new TicketModel();
+  }
+
   public function index() {
     // GET Render the list of tickets view
     // Permissions: Public
-    
+
     $data = [
       'title' => 'Tickets',
     ];
@@ -17,6 +24,14 @@ class TicketController extends AbstractController {
   public function viewPurchased() {
     // GET Render the view for purchased tickets of the client
     // Permissions: Owner client
+
+    if (!SessionUtils::isLoggedIn()) {
+      $this->navigate('/users/login');
+    }
+
+    if (!SessionUtils::isRole('client')) {
+      $this->navigate('/');
+    }
 
     $data = [
       'title' => 'Purchased Tickets',
@@ -29,6 +44,14 @@ class TicketController extends AbstractController {
     // GET Render the view for a specific ticket that the client has purchased
     // Permissions: Owner client
 
+    if (!SessionUtils::isLoggedIn()) {
+      $this->navigate('/users/login');
+    }
+
+    if (!SessionUtils::isRole('client')) {
+      $this->navigate('/');
+    }
+
     $data = [
       'title' => 'Ticket Details',
     ];
@@ -39,6 +62,10 @@ class TicketController extends AbstractController {
   public function buyForm() {
     // GET Render the form to buy a ticket
     // Permissions: Logged in client
+
+    if (!SessionUtils::isLoggedIn()) {
+      $this->navigate('/users/login');
+    }
 
     $data = [
       'title' => 'Buy Ticket',

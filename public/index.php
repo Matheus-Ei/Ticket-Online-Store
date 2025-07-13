@@ -21,6 +21,8 @@ if(GeralUtils::getEnv("ENVIROMENT") === "production") {
 
 Database::connect();
 
+session_start(); 
+
 $router = new Router();
 $router->run();
 

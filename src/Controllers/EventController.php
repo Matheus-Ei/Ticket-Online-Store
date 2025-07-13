@@ -2,7 +2,14 @@
 
 namespace App\Controllers;
 
+use App\Models\EventModel;
+use App\Utils\SessionUtils;
+
 class EventController extends AbstractController {
+  public function __construct() {
+    $this->model = new EventModel();
+  }
+
   public function index() {
     // GET Render the list of events
     // Permissions: Public
@@ -29,6 +36,14 @@ class EventController extends AbstractController {
     // GET Render the list of purchased events of the client
     // Permissions: Owner client
 
+    if (!SessionUtils::isLoggedIn()) {
+      $this->navigate('/users/login');
+    }
+
+    if (!SessionUtils::isRole('client')) {
+      $this->navigate('/');
+    }
+
     $data = [
       'title' => 'Purchased Events',
     ];
@@ -41,7 +56,15 @@ class EventController extends AbstractController {
     // Permissions: 
       // If create: Logged in user
       // If edit: Owner user
+
+    if (!SessionUtils::isLoggedIn()) {
+      $this->navigate('/users/login');
+    }
     
+    if (!SessionUtils::isRole('user')) {
+      $this->navigate('/');
+    }
+
     $data = [
       'title' => 'Create/Edit Event',
     ];

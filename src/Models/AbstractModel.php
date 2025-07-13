@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controllers;
+namespace App\Models;
 
 abstract class AbstractModel {
   abstract public function get($id);
