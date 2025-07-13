@@ -1,5 +1,5 @@
 # Php-Online-Store
-Esse repositório contém o código fonte de uma loja online desenvolvida em PHP, utilizando o padrão MVC, tailwindCss para os estilos, e PostgreSQL como banco de dados.
+Esse repositório contém o código fonte de uma loja online de **ingressos** desenvolvida em PHP, utilizando o padrão MVC, tailwindCss para os estilos, e PostgreSQL como banco de dados.
 
 ## Instalação
 Para instalar o projeto, é importante ter o Docker e o Docker Compose instalados em sua máquina. Siga os passos abaixo para configurar o ambiente:
@@ -39,3 +39,66 @@ Aqui descrevi as principais tecnologias utilizadas no projeto:
 - **TailwindCSS**: Framework CSS utilizado para estilização.
 - **Docker**: Utilizado para containerização do ambiente de desenvolvimento.
 - **Docker Compose**: Utilizado para orquestrar os containers do Docker.
+
+## Funcionalidades
+Listei as principais funcionalidades implementadas na loja online dos requisitos do projeto:
+- [ ] Landing page
+    - [ ] Tela explicativa do projeto.
+    - [ ] Rota para listagem de ingressos.
+    - [ ] Botões para login e registro de usuários.
+    - [ ] Botões para login e registro de clientes.
+ 
+- [ ] Usuários
+  - [ ] Registro de usuários.
+  - [ ] Visualização do perfil de usuário (apenas o proprietário).
+  - [ ] Edição de perfil de usuário (apenas o proprietário).
+  - [ ] Deletar o perfil de usuário (apenas o proprietário).
+
+- [ ] Clientes
+    - [ ] Registro de clientes.
+    - [ ] Perfil de cliente (apenas o proprietário).
+    - [ ] Edição de perfil de cliente (apenas o proprietário).
+    - [ ] Deletar o perfil de cliente (apenas o proprietário).
+
+- [ ] Ingressos
+  - [ ] Listagem de ingressos disponíveis com quantidade superior a 0.
+  - [ ] QR Code para cada ingresso.
+  - [ ] Listagem de ingressos comprados pelo cliente (apenas o cliente proprietário).
+  - [ ] Criação de ingressos (apenas por usuários).
+  - [ ] Edição de ingressos (apenas o usuário proprietário).
+  - [ ] Deletar ingressos (apenas o usuário proprietário).
+
+- [ ] Eventos
+    - [ ] Listagem de eventos disponíveis.
+    - [ ] Listagem de eventos criados pelo usuário (apenas o usuário proprietário).
+    - [ ] Criação de eventos (apenas por usuários).
+    - [ ] Edição de eventos (apenas o proprietário).
+    - [ ] Deletar eventos (apenas o proprietário).
+
+- [ ] Compras
+    - [ ] Registro de compras quando um cliente compra ingressos (apenas clientes).
+      - [ ] Reserva de ingressos quando um cliente seleciona um evento por 2 minutos.
+    - [ ] Historico de compras do cliente (apenas o cliente proprietário).
+    - [ ] Gerar comprovante de compra PDF (apenas o cliente proprietário).
+
+- [ ] Autenticação
+  - [ ] Login de clientes.
+  - [ ] Login de usuários.
+  - [ ] Verificação de autenticação para acessar áreas restritas.
+  - [ ] Verificação de permissões para acessar áreas restritas.
+
+- [ ] Segurança
+  - [ ] Proteção contra CSRF (Cross-Site Request Forgery).
+  - [ ] Proteção contra XSS (Cross-Site Scripting).
+  - [ ] Proteção contra SQL Injection.
+  - [ ] Proteção contra ataques de força bruta.
+
+- [ ] Testes
+    - [ ] Testes unitários para verificar a funcionalidade do código.
+
+- [ ] Validações
+    - [ ] Validação de dados de entrada.
+    - [ ] Validações nos dados do banco de dados.
+
+## Estrutura de Endpoints
+Como os endpoints são organizados no projeto, cada recurso tem suas próprias rotas para operações.
