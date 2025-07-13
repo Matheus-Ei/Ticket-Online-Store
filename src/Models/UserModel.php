@@ -14,6 +14,11 @@ class UserModel {
     return Database::selectAll("SELECT * FROM users");
   }
 
+  public function getByEmailAndRole(string $email, string $role) {
+    $query = "SELECT * FROM users WHERE email = :email AND role = :role";
+    return Database::selectOne($query, ['email' => $email, 'role' => $role]);
+  }
+
   public function create(UserData $data) {
     $query = "INSERT INTO users (name, password_hash, email, role) 
     VALUES (:name, :password_hash, :email, :role)";

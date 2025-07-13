@@ -12,7 +12,7 @@ abstract class AbstractController {
 
     ob_start(); // Start output buffering
 
-    require GeralUtils::basePath($viewPath); // Include the view file
+    include GeralUtils::basePath($viewPath); // Include the view file
 
     $content = ob_get_clean(); // Get the buffered content
 

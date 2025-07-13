@@ -14,6 +14,11 @@ class TicketModel {
     return Database::selectAll("SELECT * FROM tickets");
   }
 
+  public function getPurchasedByClient(int $clientId) {
+    $query = "SELECT * FROM tickets WHERE client_id = :client_id AND status = 'purchased'";
+    return Database::selectAll($query, ['client_id' => $clientId]);
+  }
+
   public function create(TicketData $data) {
     $query = "INSERT INTO tickets (status, client_id, event_id) 
     VALUES (:status, :client_id, :event_id)";

@@ -14,6 +14,14 @@ class EventModel {
     return Database::selectAll("SELECT * FROM events");
   }
 
+  public function getPurchasedByClient(int $clientId) {
+    $query = "SELECT e.* FROM events e 
+              JOIN tickets t ON e.id = t.event_id 
+              WHERE t.client_id = :client_id AND t.status = 'purchased'";
+
+    return Database::selectAll($query, ['client_id' => $clientId]);
+  }
+
   public function create(EventData $data) {
     $query = "INSERT INTO events (name, description, image_url, start_time, end_time, location, ticket_price, ticket_quantity, created_by) 
     VALUES (:name, :description, :image_url, :start_time, :end_time, :location, :ticket_price, :ticket_quantity, :created_by)";

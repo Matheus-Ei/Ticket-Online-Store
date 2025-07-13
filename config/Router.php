@@ -9,7 +9,7 @@ class Router {
     [
       "method" => "get",
       "endpoint" => "/",
-      "controller" => "App\Controllers\UserController",
+      "controller" => "App\Controllers\EventController",
       "action" => "index"
     ],
   ];
