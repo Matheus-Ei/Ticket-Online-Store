@@ -52,7 +52,7 @@ class Database {
     return self::$pdo->lastInsertId();
   }
 
-  public static function query($query, $params = []) {
+  public static function execute($query, $params = []) {
     $stmt = self::$pdo->prepare($query);
     $stmt->execute($params);
     return $stmt;

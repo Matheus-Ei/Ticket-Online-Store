@@ -93,12 +93,30 @@ Listei as principais funcionalidades implementadas na loja online dos requisitos
   - [ ] Proteção contra SQL Injection.
   - [ ] Proteção contra ataques de força bruta.
 
-- [ ] Testes
-    - [ ] Testes unitários para verificar a funcionalidade do código.
-
 - [ ] Validações
     - [ ] Validação de dados de entrada.
     - [ ] Validações nos dados do banco de dados.
 
 ## Estrutura de Endpoints
 Como os endpoints são organizados no projeto, cada recurso tem suas próprias rotas para operações.
+- `/`: Rota para a página inicial.
+
+- `/users/register`: Rota para o registro de usuários.
+- `/users/login`: Rota para o login de usuários.
+- `/users/profile`: Rota para o perfil de usuário.
+- `/users/edit`: Rota para editar o perfil de usuário.
+- `/users/delete`: Rota para deletar o perfil de usuário.
+
+- `/tickets`: Rota para listar ingressos disponíveis.
+- `/tickets/{id}`: Rota para visualizar detalhes de um ingresso (apenas o proprietário).
+
+- `/tickets/reserve`: Rota para criar e reservar ingressos (apenas clientes).
+- `/tickets/buy/{id}`: Rota para comprar ingressos (apenas clientes).
+- `/tickets/purchased`: Rota para listar ingressos comprados pelo cliente (apenas o cliente proprietário).
+
+- `/events`: Rota para listar eventos disponíveis.
+- `/events/{id}`: Rota para visualizar detalhes de um evento.
+- `/events/save`: Rota para criar eventos (apenas usuários).
+- `/events/save?id={id}`: Rota para editar eventos (apenas o proprietário).
+- `/events/delete/{id}`: Rota para deletar eventos (apenas o proprietário).
+- `/events/purchased`: Rota para listar eventos comprados pelo cliente (apenas o cliente proprietário).
