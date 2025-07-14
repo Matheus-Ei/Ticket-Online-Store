@@ -22,6 +22,18 @@ class EventModel {
     return Database::selectAll($query, ['client_id' => $clientId]);
   }
 
+  public function getTicketsAvailable(int $eventId) {
+    $query = "SELECT 
+                e.id, 
+                e.ticket_quantity - COUNT(t.id) AS tickets_available 
+              FROM events e 
+              LEFT JOIN tickets t ON e.id = t.event_id AND (t.status = 'purchased' OR t.status = 'reserved')
+              WHERE e.id = :event_id 
+              GROUP BY e.id";
+
+    return Database::selectOne($query, ['event_id' => $eventId])['tickets_available'] ?? 0;
+  }
+
   public function create(EventData $data) {
     $query = "INSERT INTO events (name, description, image_url, start_time, end_time, location, ticket_price, ticket_quantity, created_by) 
     VALUES (:name, :description, :image_url, :start_time, :end_time, :location, :ticket_price, :ticket_quantity, :created_by)";

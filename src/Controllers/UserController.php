@@ -32,6 +32,7 @@ class UserController extends AbstractController {
 
     $userId = SessionUtils::getUserId();
     $user = $this->model->get($userId);
+    $user['role'] = $user['role'] === 'seller' ? 'Vendedor' : 'Cliente';
 
     $data = [
       'title' => 'User Profile',
@@ -75,10 +76,10 @@ class UserController extends AbstractController {
     $hashed_password = password_hash($_POST['password'], PASSWORD_DEFAULT);
 
     $registrationData = new UserData(
-      strip_tags($_POST['name']),
-      $_POST['email'],
-      $hashed_password,
-      strip_tags($_POST['role'])
+      name: strip_tags($_POST['name']),
+      email: $_POST['email'],
+      passwordHash: $hashed_password,
+      role: strip_tags($_POST['role'])
     );
 
     try {
@@ -86,7 +87,7 @@ class UserController extends AbstractController {
 
       $this->navigate('/users/login');
     } catch (\Exception $e) {
-      $this->throwFormError(
+      return $this->throwFormError(
         'Internal server error during registration.',
         'resources/views/users/register-form.php',
         $e
@@ -139,10 +140,10 @@ class UserController extends AbstractController {
     $user = $this->model->get($userId);
 
     $profileData = new UserData(
-      strip_tags($_POST['name']),
-      $_POST['email'],
-      $user['password_hash'],
-      $userRole,
+      name: strip_tags($_POST['name']),
+      email: $_POST['email'],
+      passwordHash: $user['password_hash'],
+      role: $userRole,
     );
 
     try {
@@ -150,7 +151,7 @@ class UserController extends AbstractController {
 
       $this->navigate('/users/profile');
     } catch (\Exception $e) {
-      $this->throwFormError(
+      return $this->throwFormError(
         'Internal server error during profile update.',
         'resources/views/users/edit-form.php',
         $e

@@ -46,11 +46,13 @@ abstract class AbstractController {
   }
 
   protected function ensureLoggedIn(?string $role = null) {
+    // Check if the user is logged in
     if (!SessionUtils::isLoggedIn()) {
       $this->navigate('/users/login');
       return false;
     }
 
+    // If a role is specified, check if the user has that role
     if ($role && !SessionUtils::isRole($role)) {
       $this->navigate('/');
       return false;

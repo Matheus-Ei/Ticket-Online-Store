@@ -2,7 +2,9 @@
 
 namespace App\Controllers;
 
+use App\DTOs\EventData;
 use App\Models\EventModel;
+use App\Utils\SessionUtils;
 
 class EventController extends AbstractController {
   public function __construct() {
@@ -10,70 +12,127 @@ class EventController extends AbstractController {
   }
 
   public function index() {
-    // GET Render the list of events
-    // Permissions: Public
+    $events = $this->model->getAll();
 
     $data = [
       'title' => 'Events',
+      'events' => $events,
+      'userRole' => SessionUtils::getUserRole(),
     ];
 
     $this->renderView('resources/views/events/index.php', $data);
   }
 
-  public function viewSpecific() {
-    // GET Render the details of a specific event
-    // Permissions: Public
+  public function viewSpecific($id) {
+    $event = $this->model->get($id);
+
+    $event['tickets_available'] = $this->model->getTicketsAvailable($id);
 
     $data = [
       'title' => 'Event Details',
+      'event' => $event,
     ];
 
     $this->renderView('resources/views/events/view-specific.php', $data);
   }
 
   public function viewPurchased() {
-    // GET Render the list of purchased events of the client
-    // Permissions: Owner client
-
     $this->ensureLoggedIn('client');
+
+    // Fetch the purchased events for the logged-in client
+    $userId = SessionUtils::getUserId();
+    $purchasedEvents = $this->model->getPurchasedByClient($userId);
 
     $data = [
       'title' => 'Purchased Events',
+      'purchasedEvents' => $purchasedEvents,
     ];
 
     $this->renderView('resources/views/events/view-purchased.php', $data);
   }
 
   public function saveForm() {
-    // GET Render the form to edit or create an event
-    // Permissions: 
-    // If create: Logged in user
-    // If edit: Owner user
+    $this->ensureLoggedIn('seller');
 
-    $this->ensureLoggedIn('user');
+    $eventId = $_GET['id'] ?? null;
 
-    // Verify if the user is the owner of the event if editing
+    // If an event ID is provided, fetch the event details for editing
+    if ($eventId) {
+      $event = $this->model->getById($eventId);
 
-    $data = [
-      'title' => 'Create/Edit Event',
-    ];
+      // Check if the event exists and if the user is the owner
+      if (!$event || $event['created_by'] !== SessionUtils::getUserId()) {
+        $this->navigate('/events/');
+      }
+
+      $data = [
+        'title' => 'Edit Event',
+        'event' => $event,
+      ];
+    } else {
+      $data = [
+        'title' => 'Create Event',
+      ];
+    }
 
     $this->renderView('resources/views/events/save-form.php', $data);
   }
 
   public function save() {
-    // POST Handle the logic to edit or create an event
-    // Permissions: 
-    // If create: Logged in user
-    // If edit: Owner user 
+    $this->ensureLoggedIn('seller');
 
-    $this->ensureLoggedIn('user');
+    $eventId = $_POST['id'] ?? null;
+    $event = null;
+
+    // If an event ID is provided, fetch the event details for editing
+    if($eventId) {
+      $event = $this->model->getById($eventId);
+
+      // Check if the event exists and if the user is the owner
+      if (!$event || $event['created_by'] !== SessionUtils::getUserId()) {
+        $this->navigate('/events/');
+      }
+    }
+
+    // Create or update the event data
+    $data = new EventData(
+      name: $_POST['name'] ?? $event['name'] ?? '',
+      description: $_POST['description'] ?? $event['description'] ?? '',
+      imageUrl: $_POST['image_url'] ?? $event['image_url'] ?? '',
+      startTime: new \DateTime($_POST['start_time'] ?? $event['start_time'] ?? 'now'),
+      endTime: isset($_POST['end_time']) ? new \DateTime($_POST['end_time']) : null,
+      location: $_POST['location'] ?? $event['location'] ?? '',
+      ticketPrice: $_POST['ticket_price'] ?? $event['ticket_price'] ?? 0.0,
+      ticketQuantity: $_POST['ticket_quantity'] ?? $event['ticket_quantity'] ?? 0,
+      createdBy: SessionUtils::getUserId()
+    );
+
+    // If an event ID is provided, update the existing event
+    if ($event) {
+      $this->model->update($eventId, $data);
+    } else {
+      $this->model->create($data);
+    }
+
+    $this->navigate('/events/');
   }
 
   public function delete() {
-    // POST Handle the logic to delete an event
-    // Permissions: Owner user
+    $this->ensureLoggedIn('seller');
 
-    $this->ensureLoggedIn('user');
+    // Ensure the event ID is provided
+    $eventId = $_POST['id'] ?? null;
+    if (!$eventId) {
+      $this->navigate('/events/');
+    }
+
+    $event = $this->model->getById($eventId);
+
+    // Check if the event exists and if the user is the owner
+    if (!$event || $event['created_by'] !== SessionUtils::getUserId()) {
+      $this->navigate('/events/');
+    }
+
+    $this->model->delete($eventId);
   }
 }

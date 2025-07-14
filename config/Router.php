@@ -6,6 +6,7 @@ class Router {
   public $router = null;
 
   public $routes = [
+    // Users routes
     [
       "method" => "get",
       "endpoint" => "/users/register",
@@ -67,6 +68,79 @@ class Router {
       "endpoint" => "/users/delete",
       "controller" => "App\Controllers\UserController",
       "action" => "delete"
+    ],
+
+
+    // Tickets routes
+    [
+      "method" => "get",
+      "endpoint" => "/tickets/purchased",
+      "controller" => "App\Controllers\TicketController",
+      "action" => "viewPurchased"
+    ],
+
+    [
+      "method" => "get",
+      "endpoint" => "/tickets/buy",
+      "controller" => "App\Controllers\TicketController",
+      "action" => "buyForm"
+    ],
+
+    [
+      "method" => "post",
+      "endpoint" => "/tickets/buy",
+      "controller" => "App\Controllers\TicketController",
+      "action" => "buy"
+    ],
+
+    [
+      "method" => "get",
+      "endpoint" => "/tickets/{id}",
+      "controller" => "App\Controllers\TicketController",
+      "action" => "viewSpecific"
+    ],
+
+    // Events routes
+    [
+      "method" => "get",
+      "endpoint" => "/events/purchased",
+      "controller" => "App\Controllers\EventController",
+      "action" => "viewPurchased"
+    ],
+
+    [
+      "method" => "get",
+      "endpoint" => "/events/save",
+      "controller" => "App\Controllers\EventController",
+      "action" => "saveForm"
+    ],
+
+    [
+      "method" => "post",
+      "endpoint" => "/events/save",
+      "controller" => "App\Controllers\EventController",
+      "action" => "save"
+    ],
+
+    [
+      "method" => "post",
+      "endpoint" => "/events/delete/{id}",
+      "controller" => "App\Controllers\EventController",
+      "action" => "delete"
+    ],
+
+    [
+      "method" => "get",
+      "endpoint" => "/events",
+      "controller" => "App\Controllers\EventController",
+      "action" => "index"
+    ],
+
+    [
+      "method" => "get",
+      "endpoint" => "/events/{id}",
+      "controller" => "App\Controllers\EventController",
+      "action" => "viewSpecific"
     ],
 
     [

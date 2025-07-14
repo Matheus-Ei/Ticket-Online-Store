@@ -29,4 +29,3 @@ RUN sed -i -e 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-availa
 RUN a2enmod rewrite
 
 RUN chown -R www-data:www-data /var/www/html
-

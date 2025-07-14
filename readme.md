@@ -48,7 +48,7 @@ Listei as principais funcionalidades implementadas na loja online dos requisitos
     - [ ] Botões para login e registro de usuários.
     - [ ] Botões para login e registro de clientes.
  
-- [ x ] Usuários
+- [ x ] Usuários (vendedor)
   - [ x ] Registro de usuários.
   - [ x ] Visualização do perfil de usuário (apenas o proprietário).
   - [ x ] Edição de perfil de usuário (apenas o proprietário).
@@ -112,12 +112,12 @@ Como os endpoints são organizados no projeto, cada recurso tem suas próprias r
 - `/tickets/{id}`: Rota para visualizar detalhes de um ingresso (apenas o proprietário).
 
 - `/tickets/reserve`: Rota para criar e reservar ingressos (apenas clientes).
-- `/tickets/buy/{id}`: Rota para comprar ingressos (apenas clientes).
+- `/tickets/buy`: Rota para comprar ingressos (apenas clientes).
 - `/tickets/purchased`: Rota para listar ingressos comprados pelo cliente (apenas o cliente proprietário).
 
 - `/events`: Rota para listar eventos disponíveis.
 - `/events/{id}`: Rota para visualizar detalhes de um evento.
 - `/events/save`: Rota para criar eventos (apenas usuários).
 - `/events/save?id={id}`: Rota para editar eventos (apenas o proprietário).
-- `/events/delete/{id}`: Rota para deletar eventos (apenas o proprietário).
+- `/events/delete`: Rota para deletar eventos (apenas o proprietário).
 - `/events/purchased`: Rota para listar eventos comprados pelo cliente (apenas o cliente proprietário).

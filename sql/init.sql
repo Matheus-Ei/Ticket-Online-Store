@@ -1,6 +1,9 @@
+-- Add extensions
+CREATE EXTENSION IF NOT EXISTS pg_cron;
+
 -- Create types
 CREATE TYPE ticket_status AS ENUM ('reserved', 'purchased', 'cancelled', 'expired');
-CREATE TYPE role_type AS ENUM ('user', 'client');
+CREATE TYPE role_type AS ENUM ('seller', 'client');
 
 -- Create tables
 CREATE TABLE IF NOT EXISTS users (
@@ -69,3 +72,17 @@ CREATE TRIGGER before_insert_ticket
 BEFORE INSERT ON tickets
 FOR EACH ROW
 EXECUTE FUNCTION check_ticket_availability();
+
+-- Trigger to update ticket status to 'purchased' after 2 minutes if not cancelled
+CREATE OR REPLACE FUNCTION expire_tickets()
+RETURNS VOID AS $$
+DECLARE
+    current_time TIMESTAMP := NOW();
+BEGIN
+    UPDATE tickets
+    SET status = 'expired'
+    WHERE status = 'reserved' AND created_at < current_time - INTERVAL '2 minutes';
+END;
+$$ LANGUAGE plpgsql;
+
+SELECT cron.schedule('expire_tickets_job', '*/1 * * * *', 'SELECT expire_tickets()');
