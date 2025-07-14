@@ -55,6 +55,6 @@ class Database {
   public static function execute($query, $params = []) {
     $stmt = self::$pdo->prepare($query);
     $stmt->execute($params);
-    return $stmt;
+    return $stmt->rowCount();
   }
 }

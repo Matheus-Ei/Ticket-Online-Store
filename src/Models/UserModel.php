@@ -14,9 +14,8 @@ class UserModel {
     return Database::selectAll("SELECT * FROM users");
   }
 
-  public function getByEmailAndRole(string $email, string $role) {
-    $query = "SELECT * FROM users WHERE email = :email AND role = :role";
-    return Database::selectOne($query, ['email' => $email, 'role' => $role]);
+  public function getByEmail(string $email) {
+    return Database::selectOne("SELECT * FROM users WHERE email = :email", ['email' => $email]);
   }
 
   public function create(UserData $data) {

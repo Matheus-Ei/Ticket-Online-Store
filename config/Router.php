@@ -8,6 +8,34 @@ class Router {
   public $routes = [
     [
       "method" => "get",
+      "endpoint" => "/users/register",
+      "controller" => "App\Controllers\UserController",
+      "action" => "registerForm"
+    ],
+
+    [
+      "method" => "get",
+      "endpoint" => "/users/login",
+      "controller" => "App\Controllers\UserController",
+      "action" => "loginForm"
+    ],
+
+    [
+      "method" => "post",
+      "endpoint" => "/users/register",
+      "controller" => "App\Controllers\UserController",
+      "action" => "register"
+    ],
+
+    [
+      "method" => "post",
+      "endpoint" => "/users/login",
+      "controller" => "App\Controllers\UserController",
+      "action" => "login"
+    ],
+
+    [
+      "method" => "get",
       "endpoint" => "/",
       "controller" => "App\Controllers\EventController",
       "action" => "index"
@@ -32,6 +60,12 @@ class Router {
         $route['action']
       );
     }
+
+    // Setup a 404 handler
+    $this->router->set404(function() {
+      header("HTTP/1.0 404 Not Found");
+      echo "404 Not Found";
+    });
   }
 
   public function run() {
