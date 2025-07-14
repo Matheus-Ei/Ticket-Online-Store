@@ -11,7 +11,7 @@ class UserModel {
   }
 
   public function getAll() {
-    return Database::selectAll("SELECT * FROM users");
+    return Database::selectAll("SELECT name, email, role FROM users");
   }
 
   public function getByEmail(string $email) {

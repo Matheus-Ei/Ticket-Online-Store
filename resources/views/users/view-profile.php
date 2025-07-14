@@ -1,5 +1,5 @@
 <div class="flex items-center justify-center min-h-screen bg-gray-50">
-  <div class="bg-white shadow-md rounded-lg p-6 w-3/4">
+  <div class="bg-white border border-gray-200 rounded-lg p-6 w-3/4">
     <h1 class="text-2xl font-bold mb-4">User Profile</h1>
 
     <div class="mb-4">

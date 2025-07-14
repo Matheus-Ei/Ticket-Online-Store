@@ -48,17 +48,17 @@ Listei as principais funcionalidades implementadas na loja online dos requisitos
     - [ ] Botões para login e registro de usuários.
     - [ ] Botões para login e registro de clientes.
  
-- [ ] Usuários
-  - [ ] Registro de usuários.
-  - [ ] Visualização do perfil de usuário (apenas o proprietário).
-  - [ ] Edição de perfil de usuário (apenas o proprietário).
-  - [ ] Deletar o perfil de usuário (apenas o proprietário).
+- [ x ] Usuários
+  - [ x ] Registro de usuários.
+  - [ x ] Visualização do perfil de usuário (apenas o proprietário).
+  - [ x ] Edição de perfil de usuário (apenas o proprietário).
+  - [ x ] Deletar o perfil de usuário (apenas o proprietário).
 
-- [ ] Clientes
-    - [ ] Registro de clientes.
-    - [ ] Perfil de cliente (apenas o proprietário).
-    - [ ] Edição de perfil de cliente (apenas o proprietário).
-    - [ ] Deletar o perfil de cliente (apenas o proprietário).
+- [ x ] Clientes
+    - [ x ] Registro de clientes.
+    - [ x ] Perfil de cliente (apenas o proprietário).
+    - [ x ] Edição de perfil de cliente (apenas o proprietário).
+    - [ x ] Deletar o perfil de cliente (apenas o proprietário).
 
 - [ ] Ingressos
   - [ ] Listagem de ingressos disponíveis com quantidade superior a 0.
@@ -81,20 +81,21 @@ Listei as principais funcionalidades implementadas na loja online dos requisitos
     - [ ] Historico de compras do cliente (apenas o cliente proprietário).
     - [ ] Gerar comprovante de compra PDF (apenas o cliente proprietário).
 
-- [ ] Autenticação
-  - [ ] Login de clientes.
-  - [ ] Login de usuários.
-  - [ ] Verificação de autenticação para acessar áreas restritas.
-  - [ ] Verificação de permissões para acessar áreas restritas.
+- [ x ] Autenticação
+  - [ x ] Login de clientes.
+  - [ x ] Login de usuários.
+  - [ x ] Verificação de autenticação para acessar áreas restritas.
+  - [ x ] Verificação de permissões para acessar áreas restritas.
 
 - [ ] Segurança
   - [ ] Proteção contra CSRF (Cross-Site Request Forgery).
   - [ ] Proteção contra XSS (Cross-Site Scripting).
-  - [ ] Proteção contra SQL Injection.
+  - [ x ] Proteção contra SQL Injection.
   - [ ] Proteção contra ataques de força bruta.
 
 - [ ] Validações
     - [ ] Validação de dados de entrada.
+    - [ ] Validação de dados ao mostrar na view.
     - [ ] Validações nos dados do banco de dados.
 
 ## Estrutura de Endpoints

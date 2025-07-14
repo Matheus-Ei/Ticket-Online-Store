@@ -1,5 +1,5 @@
 <div class="flex items-center justify-center min-h-screen bg-gray-50">
-  <div class="bg-white shadow-md rounded-lg p-6 w-3/4">
+  <div class="bg-white border border-gray-200 rounded-lg p-6 w-3/4">
     <h1 class="text-2xl font-bold mb-4">Edit Profile</h1>
 
     <form action="/users/edit" method="post">
@@ -11,7 +11,7 @@
           id="name" 
           name="name" 
           value="<?=htmlspecialchars($user['name'])?>" 
-          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-900 leading-tight focus:outline-none focus:shadow-outline" 
+          class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
           required
         >
       </div>
@@ -24,7 +24,7 @@
           id="email" 
           name="email" 
           value="<?=htmlspecialchars($user['email'])?>" 
-          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-900 leading-tight focus:outline-none focus:shadow-outline" 
+          class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
           required
         >
       </div>

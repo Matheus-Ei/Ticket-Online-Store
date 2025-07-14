@@ -3,7 +3,6 @@
 namespace App\Controllers;
 
 use App\Models\TicketModel;
-use App\Utils\SessionUtils;
 
 class TicketController extends AbstractController {
   public function __construct() {
@@ -25,13 +24,7 @@ class TicketController extends AbstractController {
     // GET Render the view for purchased tickets of the client
     // Permissions: Owner client
 
-    if (!SessionUtils::isLoggedIn()) {
-      $this->navigate('/users/login');
-    }
-
-    if (!SessionUtils::isRole('client')) {
-      $this->navigate('/');
-    }
+    $this->ensureLoggedIn('client');
 
     $data = [
       'title' => 'Purchased Tickets',
@@ -44,13 +37,7 @@ class TicketController extends AbstractController {
     // GET Render the view for a specific ticket that the client has purchased
     // Permissions: Owner client
 
-    if (!SessionUtils::isLoggedIn()) {
-      $this->navigate('/users/login');
-    }
-
-    if (!SessionUtils::isRole('client')) {
-      $this->navigate('/');
-    }
+    $this->ensureLoggedIn('client');
 
     $data = [
       'title' => 'Ticket Details',
@@ -63,9 +50,7 @@ class TicketController extends AbstractController {
     // GET Render the form to buy a ticket
     // Permissions: Logged in client
 
-    if (!SessionUtils::isLoggedIn()) {
-      $this->navigate('/users/login');
-    }
+    $this->ensureLoggedIn('client');
 
     $data = [
       'title' => 'Buy Ticket',
@@ -77,10 +62,14 @@ class TicketController extends AbstractController {
   public function buy() {
     // POST Handle the logic to buy a ticket
     // Permissions: Logged in client
+
+    $this->ensureLoggedIn('client');
   }
 
   public function cancel() {
     // POST Handle the logic to cancel a purchased ticket
     // Permissions: Owner client
+
+    $this->ensureLoggedIn('client');
   }
 }

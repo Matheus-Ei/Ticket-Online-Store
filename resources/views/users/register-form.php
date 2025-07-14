@@ -1,5 +1,5 @@
 <div class="flex items-center justify-center min-h-screen bg-gray-50"> 
-  <form action="/users/register" method="POST" class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+  <form action="/users/register" method="POST" class="bg-white p-8 rounded-lg w-full max-w-md border border-gray-200">
     <h2 class="text-2xl font-bold mb-6 text-center">Registrar</h2>
 
     <div class="mb-4">
@@ -11,7 +11,7 @@
         name="name" 
         placeholder="Digite seu nome"
         required 
-        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
       >
     </div>
 
@@ -24,7 +24,7 @@
         placeholder="Digite seu email"
         name="email" 
         required 
-        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
       >
     </div>
 
@@ -37,7 +37,7 @@
         name="password" 
         placeholder="Digite sua senha"
         required 
-        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
       >
     </div>
 
@@ -49,7 +49,7 @@
         name="role" 
         placeholder="Selecione seu cargo"
         required 
-        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
       >
         <option value="user">Usuário</option>
 

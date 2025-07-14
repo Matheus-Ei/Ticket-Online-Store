@@ -3,7 +3,6 @@
 namespace App\Controllers;
 
 use App\Models\EventModel;
-use App\Utils\SessionUtils;
 
 class EventController extends AbstractController {
   public function __construct() {
@@ -24,7 +23,7 @@ class EventController extends AbstractController {
   public function viewSpecific() {
     // GET Render the details of a specific event
     // Permissions: Public
-    
+
     $data = [
       'title' => 'Event Details',
     ];
@@ -36,13 +35,7 @@ class EventController extends AbstractController {
     // GET Render the list of purchased events of the client
     // Permissions: Owner client
 
-    if (!SessionUtils::isLoggedIn()) {
-      $this->navigate('/users/login');
-    }
-
-    if (!SessionUtils::isRole('client')) {
-      $this->navigate('/');
-    }
+    $this->ensureLoggedIn('client');
 
     $data = [
       'title' => 'Purchased Events',
@@ -54,16 +47,12 @@ class EventController extends AbstractController {
   public function saveForm() {
     // GET Render the form to edit or create an event
     // Permissions: 
-      // If create: Logged in user
-      // If edit: Owner user
+    // If create: Logged in user
+    // If edit: Owner user
 
-    if (!SessionUtils::isLoggedIn()) {
-      $this->navigate('/users/login');
-    }
-    
-    if (!SessionUtils::isRole('user')) {
-      $this->navigate('/');
-    }
+    $this->ensureLoggedIn('user');
+
+    // Verify if the user is the owner of the event if editing
 
     $data = [
       'title' => 'Create/Edit Event',
@@ -75,12 +64,16 @@ class EventController extends AbstractController {
   public function save() {
     // POST Handle the logic to edit or create an event
     // Permissions: 
-      // If create: Logged in user
-      // If edit: Owner user 
+    // If create: Logged in user
+    // If edit: Owner user 
+
+    $this->ensureLoggedIn('user');
   }
 
   public function delete() {
     // POST Handle the logic to delete an event
     // Permissions: Owner user
+
+    $this->ensureLoggedIn('user');
   }
 }
