@@ -60,7 +60,7 @@ class UserController extends AbstractController {
     $this->renderView('resources/views/users/view-profile.php', $data);
   }
 
-  public function editProfileForm() {
+  public function editForm() {
     // GET Render the form to edit user profile
     // Permissions: Owner client or user
 
@@ -68,11 +68,15 @@ class UserController extends AbstractController {
       $this->navigate('/users/login');
     }
 
+    $userId = SessionUtils::getUserId();
+    $user = $this->model->get($userId);
+
     $data = [
       'title' => 'Edit Profile',
+      'user' => $user,
     ];
 
-    $this->renderView('resources/views/users/edit-profile-form.php', $data);
+    $this->renderView('resources/views/users/edit-form.php', $data);
   }
 
   public function register() {
@@ -98,10 +102,10 @@ class UserController extends AbstractController {
 
     // Validate and process registration data
     $registrationData = new UserData(
-      $_POST['name'],
+      strip_tags($_POST['name']),
       $_POST['email'],
       $hashed_password,
-      $_POST['role'],
+      strip_tags($_POST['role'])
     );
 
     try {
@@ -150,7 +154,19 @@ class UserController extends AbstractController {
     }
   }
 
-  public function editProfile() {
+  public function logout() {
+    // POST Handle user logout logic
+    // Permissions: Owner client or user
+
+    if (!SessionUtils::isLoggedIn()) {
+      $this->navigate('/users/login');
+    }
+
+    session_destroy();
+    $this->navigate('/');
+  }
+
+  public function edit() {
     // POST Handle the logic to update user profile
     // Permissions: Owner client or user
 
@@ -168,7 +184,7 @@ class UserController extends AbstractController {
         'error' => 'Invalid email format.',
       ];
 
-      $this->renderView('resources/views/users/edit-profile-form.php', $data);
+      $this->renderView('resources/views/users/edit-form.php', $data);
       return;
     }
 
@@ -181,7 +197,7 @@ class UserController extends AbstractController {
     }
 
     $profileData = new UserData(
-      $_POST['name'],
+      strip_tags($_POST['name']),
       $_POST['email'],
       $hashed_password,
       $userRole,
@@ -198,11 +214,11 @@ class UserController extends AbstractController {
 
       error_log($e->getMessage());
 
-      $this->renderView('resources/views/users/edit-profile-form.php', $data);
+      $this->renderView('resources/views/users/edit-form.php', $data);
     }
   }
 
-  public function deleteProfile() {
+  public function delete() {
     // POST Handle the logic to delete user profile
     // Permissions: Owner client or user
 

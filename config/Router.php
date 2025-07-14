@@ -14,6 +14,13 @@ class Router {
     ],
 
     [
+      "method" => "post",
+      "endpoint" => "/users/register",
+      "controller" => "App\Controllers\UserController",
+      "action" => "register"
+    ],
+
+    [
       "method" => "get",
       "endpoint" => "/users/login",
       "controller" => "App\Controllers\UserController",
@@ -22,16 +29,44 @@ class Router {
 
     [
       "method" => "post",
-      "endpoint" => "/users/register",
+      "endpoint" => "/users/login",
       "controller" => "App\Controllers\UserController",
-      "action" => "register"
+      "action" => "login"
     ],
 
     [
       "method" => "post",
-      "endpoint" => "/users/login",
+      "endpoint" => "/users/logout",
       "controller" => "App\Controllers\UserController",
-      "action" => "login"
+      "action" => "logout"
+    ],
+
+    [
+      "method" => "get",
+      "endpoint" => "/users/profile",
+      "controller" => "App\Controllers\UserController",
+      "action" => "viewProfile"
+    ],
+
+    [
+      "method" => "get",
+      "endpoint" => "/users/edit",
+      "controller" => "App\Controllers\UserController",
+      "action" => "editForm"
+    ],
+
+    [
+      "method" => "post",
+      "endpoint" => "/users/edit",
+      "controller" => "App\Controllers\UserController",
+      "action" => "edit"
+    ],
+
+    [
+      "method" => "post",
+      "endpoint" => "/users/delete",
+      "controller" => "App\Controllers\UserController",
+      "action" => "delete"
     ],
 
     [
