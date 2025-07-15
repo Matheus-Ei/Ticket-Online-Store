@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\DTOs\EventData;
 use App\Models\EventModel;
 use App\Utils\SessionUtils;
+use App\Validators\EventValidator;
 
 class EventController extends AbstractController {
   private $userRole;
@@ -12,6 +13,7 @@ class EventController extends AbstractController {
 
   public function __construct() {
     $this->model = new EventModel();
+    $this->validator = new EventValidator();
 
     $this->userRole = SessionUtils::getUserRole();
     $this->userId = SessionUtils::getUserId();
@@ -85,26 +87,33 @@ class EventController extends AbstractController {
     }
 
     // Create or update the event data
-    $data = new EventData(
-      name: $_POST['name'] ?? $event['name'] ?? '',
-      description: $_POST['description'] ?? $event['description'] ?? '',
-      imageUrl: $_POST['image_url'] ?? $event['image_url'] ?? '',
-      startTime: new \DateTime($_POST['start_time'] ?? $event['start_time'] ?? 'now'),
-      endTime: isset($_POST['end_time']) ? new \DateTime($_POST['end_time']) : null,
-      location: $_POST['location'] ?? $event['location'] ?? '',
-      ticketPrice: $_POST['ticket_price'] ?? $event['ticket_price'] ?? 0.0,
-      ticketQuantity: $_POST['ticket_quantity'] ?? $event['ticket_quantity'] ?? 0,
-      createdBy: $this->userId
-    );
+    try {
+      $data = new EventData(
+        name: $_POST['name'] ?? $event['name'] ?? '',
+        description: $_POST['description'] ?? $event['description'] ?? '',
+        imageUrl: $_POST['image_url'] ?? $event['image_url'] ?? '',
+        startTime: new \DateTime($_POST['start_time'] ?? $event['start_time'] ?? 'now'),
+        endTime: isset($_POST['end_time']) ? new \DateTime($_POST['end_time']) : null,
+        location: $_POST['location'] ?? $event['location'] ?? '',
+        ticketPrice: $_POST['ticket_price'] ?? $event['ticket_price'] ?? 0.0,
+        ticketQuantity: $_POST['ticket_quantity'] ?? $event['ticket_quantity'] ?? 0,
+        createdBy: $this->userId
+      );
 
-    // If an event ID is provided, update the existing event
-    if ($event) {
-      $this->model->update($eventId, $data);
-    } else {
-      $this->model->create($data);
+      // Validate required fields
+      $this->validator->validateSave($data);
+
+      // If an event ID is provided, update the existing event
+      if ($event) {
+        $this->model->update($eventId, $data);
+      } else {
+        $this->model->create($data);
+      }
+
+      $this->navigate('/events/');
+    } catch (\Exception $e) {
+      $this->throwViewError('resources/views/events/save-form.php', $e);
     }
-
-    $this->navigate('/events/');
   }
 
   public function delete() {

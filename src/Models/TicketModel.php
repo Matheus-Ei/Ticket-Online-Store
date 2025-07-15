@@ -27,7 +27,7 @@ class TicketModel {
 
   private function create(TicketData $data) {
     $query = "INSERT INTO tickets (status, client_id, event_id) 
-    VALUES (:status, :client_id, :event_id)";
+              VALUES (:status, :client_id, :event_id)";
 
     $params = [
       'status' => $data->status,

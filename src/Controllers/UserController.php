@@ -5,10 +5,12 @@ namespace App\Controllers;
 use App\DTOs\UserData;
 use App\Utils\SessionUtils;
 use App\Models\UserModel;
+use App\Validators\UserValidator;
 
 class UserController extends AbstractController {
   public function __construct() {
     $this->model = new UserModel();
+    $this->validator = new UserValidator();
   }
 
   public function registerForm() {
@@ -56,20 +58,23 @@ class UserController extends AbstractController {
   }
 
   public function register() {
-    $hashed_password = $this->model->hashPassword($_POST['password']);
-
-    $registrationData = new UserData(
-      name: $_POST['name'],
-      email: $_POST['email'],
-      passwordHash: $hashed_password,
-      role: $_POST['role']
-    );
-
     try {
+      $hashed_password = $this->model->hashPassword($_POST['password']);
+
+      $registrationData = new UserData(
+        name: $_POST['name'],
+        email: $_POST['email'],
+        passwordHash: $hashed_password,
+        role: $_POST['role']
+      );
+
+      // Validate the registration data
+      $this->validator->validateData($registrationData);
+
       $this->model->create($registrationData);
       $this->navigate('/users/login');
     } catch (\Exception $e) {
-      return $this->throwViewError('resources/views/users/register-form.php', $e);
+      return $this->throwViewError('resources/views/users/register-form.php', $e, 'clean');
     }
   }
 
@@ -78,7 +83,7 @@ class UserController extends AbstractController {
       $this->model->login($_POST['email'], $_POST['password']);
       $this->navigate('/users/profile');
     } catch (\Exception $e) {
-      return $this->throwViewError('resources/views/users/login-form.php', $e);
+      return $this->throwViewError('resources/views/users/login-form.php', $e, 'clean');
     }
   }
 
@@ -93,16 +98,20 @@ class UserController extends AbstractController {
     $this->ensureLoggedIn();
 
     $userId = SessionUtils::getUserId();
-    $user = $this->model->get($userId);
-
-    $profileData = new UserData(
-      name: $_POST['name'],
-      email: $_POST['email'],
-      passwordHash: $user['password_hash'],
-      role: $user['role'],
-    );
 
     try {
+      $user = $this->model->get($userId);
+
+      $profileData = new UserData(
+        name: $_POST['name'],
+        email: $_POST['email'],
+        passwordHash: $user['password_hash'],
+        role: $user['role'],
+      );
+
+      // Validate the profile data
+      $this->validator->validateData($profileData);
+
       $this->model->update($userId, $profileData);
       $this->navigate('/users/profile');
     } catch (\Exception $e) {

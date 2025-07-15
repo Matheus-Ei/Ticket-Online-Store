@@ -7,6 +7,7 @@ use App\Utils\SessionUtils;
 
 abstract class AbstractController {
   protected $model;
+  protected $validator;
 
   protected function render(string $viewPath, array $data = [], string $layout = 'sidebar') {
     $userRole = SessionUtils::getUserRole();
@@ -23,7 +24,7 @@ abstract class AbstractController {
     require GeralUtils::basePath("resources/layouts/{$layout}.php");
   }
 
-  protected function throwViewError(string $view, $error) {
+  protected function throwViewError(string $view, $error, string $layout = 'sidebar') {
     // If error is an Exception, get the message
     if ($error instanceof \Exception) {
       $error = $error->getMessage();
@@ -41,7 +42,7 @@ abstract class AbstractController {
     error_log($error);
 
     // Render the view with the error
-    $this->render($view, $data);
+    $this->render($view, $data, $layout);
 
     return false;
   }

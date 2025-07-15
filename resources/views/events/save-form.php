@@ -44,7 +44,6 @@
         name="image_url" 
         placeholder="Insira a URL da imagem do evento"
         value="<?= isset($event) ? htmlspecialchars($event['image_url']) : '' ?>" 
-        required 
         class="px-2 py-1 mt-1 block w-full border-gray-200 rounded-md border focus:border-blue-500 focus:ring-blue-500 outline-none"
       >
     </div>
@@ -120,6 +119,12 @@
         class="px-2 py-1 mt-1 block w-full border-gray-200 rounded-md border focus:border-blue-500 focus:ring-blue-500 outline-none"
       >
     </div>
+
+    <?php if (isset($error) && $error): ?>
+      <div class="text-red-600 mt-4">
+        <p><?= htmlspecialchars($error) ?></p>
+      </div>
+    <?php endif; ?>
 
     <button 
       type="submit" 

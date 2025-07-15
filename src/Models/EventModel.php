@@ -37,7 +37,7 @@ class EventModel {
 
   public function getPurchasedByClient(int $clientId) {
     $query = "SELECT e.* FROM events e 
-              JOIN tickets t ON e.id = t.event_id 
+                JOIN tickets t ON e.id = t.event_id 
               WHERE t.client_id = :client_id AND t.status = 'purchased'";
 
     return Database::selectAll($query, ['client_id' => $clientId]);
@@ -45,7 +45,7 @@ class EventModel {
 
   public function create(EventData $data) {
     $query = "INSERT INTO events (name, description, image_url, start_time, end_time, location, ticket_price, ticket_quantity, created_by) 
-    VALUES (:name, :description, :image_url, :start_time, :end_time, :location, :ticket_price, :ticket_quantity, :created_by)";
+              VALUES (:name, :description, :image_url, :start_time, :end_time, :location, :ticket_price, :ticket_quantity, :created_by)";
 
     $params = [
       'name' => $data->name,
@@ -64,15 +64,15 @@ class EventModel {
 
   public function update(int $id, EventData $data) {
     $query = "UPDATE events SET 
-    name = :name, 
-    description = :description, 
-    image_url = :image_url, 
-    start_time = :start_time, 
-    end_time = :end_time, 
-    location = :location, 
-    ticket_price = :ticket_price, 
-    ticket_quantity = :ticket_quantity 
-    WHERE id = :id";
+                name = :name, 
+                description = :description, 
+                image_url = :image_url, 
+                start_time = :start_time, 
+                end_time = :end_time, 
+                location = :location, 
+                ticket_price = :ticket_price, 
+                ticket_quantity = :ticket_quantity 
+              WHERE id = :id";
 
 
     $params = [

@@ -8,8 +8,6 @@ use Config\Database;
 class UserModel {
   public function get(int $id) {
     $user = Database::selectOne("SELECT * FROM users WHERE id = :id", ['id' => $id]);
-    $user['role'] = $user['role'] === 'seller' ? 'Vendedor' : 'Cliente';
-
     return $user;
   }
 
@@ -41,7 +39,7 @@ class UserModel {
 
   public function create(UserData $data) {
     $query = "INSERT INTO users (name, password_hash, email, role) 
-    VALUES (:name, :password_hash, :email, :role)";
+              VALUES (:name, :password_hash, :email, :role)";
 
     $params = [
       "name" => $data->name,
@@ -55,11 +53,11 @@ class UserModel {
 
   public function update(int $id, UserData $data) {
     $query = "UPDATE users SET 
-    name = :name, 
-    password_hash = :password_hash, 
-    email = :email, 
-    role = :role 
-    WHERE id = :id";
+                name = :name, 
+                password_hash = :password_hash, 
+                email = :email, 
+                role = :role 
+              WHERE id = :id";
 
     $params = [
       "id" => $id,
