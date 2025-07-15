@@ -8,58 +8,19 @@ use App\Utils\SessionUtils;
 abstract class AbstractController {
   protected $model;
 
-  protected function renderView(string $viewPath, array $data = []) {
-    extract($data); // Converts array keys to variables
-
-    ob_start(); // Start output buffering
-
-    include GeralUtils::basePath($viewPath); // Include the view file
-
-    $content = ob_get_clean(); // Get the buffered content
-
-    require GeralUtils::basePath('resources/layouts/main.php'); // Include the main layout file
-  }
-
-  protected function renderWithSidebar(string $viewPath, array $data = []) {
-    extract($data); // Converts array keys to variables
-
-    ob_start(); // Start output buffering
-
-    include GeralUtils::basePath($viewPath); // Include the view file
-
-    $content = ob_get_clean(); // Get the buffered content
-
-    $sidebar = [
-      'title' => 'Menu',
-      'links' => [],
-    ];
-
+  protected function render(string $viewPath, array $data = [], string $layout = 'sidebar') {
     $userRole = SessionUtils::getUserRole();
-    switch ($userRole) {
-      case 'seller':
-        $sidebar['links'] = [
-          ['label' => 'Profile', 'url' => '/users/profile'],
-          ['label' => 'Create Event', 'url' => '/events/save'],
-          ['label' => 'Events', 'url' => '/events'],
-        ];
-        break;
-      case 'client':
-        $sidebar['links'] = [
-          ['label' => 'Events', 'url' => '/events'],
-          ['label' => 'Profile', 'url' => '/users/profile'],
-          ['label' => 'Purchased Tickets', 'url' => '/tickets/purchased'],
-          ['label' => 'Purchased Events', 'url' => '/events/purchased'],
-        ];
-        break;
-      default:
-        $sidebar = null;
-    }
+    $isLoggedIn = SessionUtils::isLoggedIn();
 
-    if (!SessionUtils::isLoggedIn()) {
-      $sidebar = null;
-    }
+    extract($data);
 
-    require GeralUtils::basePath('resources/layouts/sidebar-main.php'); // Include the main layout file
+    ob_start();
+
+    include GeralUtils::basePath($viewPath);
+
+    $content = ob_get_clean();
+
+    require GeralUtils::basePath("resources/layouts/{$layout}.php");
   }
 
   protected function throwViewError(string $view, $error) {
@@ -80,7 +41,7 @@ abstract class AbstractController {
     error_log($error);
 
     // Render the view with the error
-    $this->renderView($view, $data);
+    $this->render($view, $data);
 
     return false;
   }

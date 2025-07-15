@@ -23,7 +23,7 @@ class TicketController extends AbstractController {
       'purchasedTickets' => $purchasedTickets,
     ];
 
-    $this->renderWithSidebar('resources/views/tickets/view-purchased.php', $data);
+    $this->render('resources/views/tickets/view-purchased.php', $data);
   }
 
   public function viewSpecific($id) {
@@ -33,14 +33,14 @@ class TicketController extends AbstractController {
 
     $isOwner = $this->model->existsAndIsOwner($id, $this->userId);
     if (!$isOwner) {
-      return $this->renderView(
+      return $this->render(
         'resources/views/errors/404.php',
         ['message' => 'Ticket not found or does not belong to you.']
       );
     }
 
     $data = ['title' => 'Ticket Details', 'ticket' => $ticket];
-    $this->renderWithSidebar('resources/views/tickets/view-specific.php', $data);
+    $this->render('resources/views/tickets/view-specific.php', $data);
   }
 
   public function buyForm() {
@@ -61,7 +61,7 @@ class TicketController extends AbstractController {
       'createdAt' => $ticketId ? date('Y-m-d H:i:s') : null,
     ];
 
-    $this->renderWithSidebar('resources/views/tickets/buy-form.php', $data);
+    $this->render('resources/views/tickets/buy-form.php', $data);
   }
 
   public function buy() {

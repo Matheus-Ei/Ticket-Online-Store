@@ -48,7 +48,7 @@ class TicketModel {
     return Database::execute($query, ['status' => $status, 'id' => $id]);
   }
 
-  public function purchase(int $clientId, ?int $eventId, ?int $ticketId) {
+  public function purchase($clientId, $eventId, $ticketId) {
     if ($ticketId) {
       $ticket = $this->get($ticketId);
       $isOwner = $this->existsAndIsOwner($ticketId, $clientId);

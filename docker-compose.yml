@@ -18,6 +18,5 @@ services:
       - pg_online_store_data:/var/lib/postgresql/data
       - ./sql:/docker-entrypoint-initdb.d
 
-
 volumes:
   pg_online_store_data:

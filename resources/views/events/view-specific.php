@@ -1,4 +1,4 @@
-<div class="flex flex-col container mx-auto px-4 py-8">
+<div class="flex flex-col container mx-auto p-6 bg-white border border-gray-200 rounded-lg">
   <h1 class="text-2xl font-bold mb-1"><?= htmlspecialchars($event['name']) ?></h1>
 
   <p class="text-gray-700 mb-4"><?= nl2br(htmlspecialchars($event['description'])) ?></p> 
@@ -10,29 +10,28 @@
   >
 
   <div class="mb-4">
-    <p class="text-gray-600">Location: <?= htmlspecialchars($event['location']) ?></p>
+    <p class="text-gray-600">Localização: <?= htmlspecialchars($event['location']) ?></p>
 
-    <p class="text-gray-600">Start Time: <?= htmlspecialchars($event['start_time']) ?></p>
+    <p class="text-gray-600">Data e Hora de Inicio: <?= htmlspecialchars($event['start_time']) ?></p>
 
     <?php if ($event['end_time']): ?>
-    <p class="text-gray-600">End Time: <?= htmlspecialchars($event['end_time']) ?></p>
+    <p class="text-gray-600">Data e Hora de Término: <?= htmlspecialchars($event['end_time']) ?></p>
     <?php endif; ?>
   </div>
 
   <div class="mb-4">
-    <p class="text-lg font-semibold">Ticket Price: $<?= number_format($event['ticket_price'], 2) ?></p>
-    <p class="text-gray-600">Tickets Available: <?= htmlspecialchars($event['tickets_available']) ?></p>
+    <p class="text-lg font-semibold">Preço do Ingresso: $<?= number_format($event['ticket_price'], 2) ?></p>
+    <p class="text-gray-600">Quantidade de Ingressos Disponível: <?= htmlspecialchars($event['tickets_available']) ?></p>
   </div>
 
-  <?php if ($event['ticket_quantity'] > 0): ?>
+  <?php if ($event['ticket_quantity'] > 0 && $userRole !== 'seller'): ?>
   <a 
     href='/tickets/buy?event_id=<?= htmlspecialchars($event['id']) ?>'
     class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 w-fit cursor-pointer"
   >
-    Purchase Ticket
+    Comprar Ingresso
   </a>
-  <?php else: ?>
-
+  <?php elseif($userRole !== 'seller'): ?>
   <p class="text-red-500 mt-4">Tickets are sold out.</p>
   <?php endif; ?>
 </div>

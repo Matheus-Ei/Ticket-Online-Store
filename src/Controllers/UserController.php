@@ -16,7 +16,7 @@ class UserController extends AbstractController {
       'title' => 'Register',
     ];
 
-    $this->renderView('resources/views/users/register-form.php', $data);
+    $this->render('resources/views/users/register-form.php', $data, 'clean');
   }
 
   public function loginForm() {
@@ -24,7 +24,7 @@ class UserController extends AbstractController {
       'title' => 'Login',
     ];
 
-    $this->renderView('resources/views/users/login-form.php', $data);
+    $this->render('resources/views/users/login-form.php', $data, 'clean');
   }
 
   public function viewProfile() {
@@ -38,7 +38,7 @@ class UserController extends AbstractController {
       'user' => $user,
     ];
 
-    $this->renderWithSidebar('resources/views/users/view-profile.php', $data);
+    $this->render('resources/views/users/view-profile.php', $data);
   }
 
   public function editForm() {
@@ -52,7 +52,7 @@ class UserController extends AbstractController {
       'user' => $user,
     ];
 
-    $this->renderWithSidebar('resources/views/users/edit-form.php', $data);
+    $this->render('resources/views/users/edit-form.php', $data);
   }
 
   public function register() {
