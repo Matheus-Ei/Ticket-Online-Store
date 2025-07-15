@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\DTOs\UserData;
 use App\Utils\SessionUtils;
 use App\Models\UserModel;
+use App\Utils\MessageUtils;
 use App\Validators\UserValidator;
 
 class UserController extends AbstractController {
@@ -72,18 +73,24 @@ class UserController extends AbstractController {
       $this->validator->validateData($registrationData);
 
       $this->model->create($registrationData);
+
+      MessageUtils::setMessage('success', 'Conta criada com sucesso! Faça login para continuar.');
       $this->navigate('/users/login');
     } catch (\Exception $e) {
-      return $this->throwViewError('resources/views/users/register-form.php', $e, 'clean');
+      MessageUtils::setMessage('error', $e->getMessage());
+      $this->navigate('/users/register');
     }
   }
 
   public function login() {
     try {
       $this->model->login($_POST['email'], $_POST['password']);
+
+      MessageUtils::setMessage('success', 'Login realizado com sucesso!');
       $this->navigate('/users/profile');
     } catch (\Exception $e) {
-      return $this->throwViewError('resources/views/users/login-form.php', $e, 'clean');
+      MessageUtils::setMessage('error', $e->getMessage());
+      $this->navigate('/users/login');
     }
   }
 
@@ -113,9 +120,12 @@ class UserController extends AbstractController {
       $this->validator->validateData($profileData);
 
       $this->model->update($userId, $profileData);
+
+      MessageUtils::setMessage('success', 'Perfil atualizado com sucesso!');
       $this->navigate('/users/profile');
     } catch (\Exception $e) {
-      return $this->throwViewError('resources/views/users/edit-form.php', $e);
+      MessageUtils::setMessage('error', $e->getMessage());
+      $this->navigate('/users/edit');
     }
   }
 
@@ -127,9 +137,11 @@ class UserController extends AbstractController {
     try {
       $this->model->delete($userId);
       session_destroy();
+
       $this->navigate('/');
     } catch (\Exception $e) {
-      return $this->throwViewError('resources/views/users/view-profile.php', $e);
+      MessageUtils::setMessage('error', $e->getMessage());
+      $this->navigate('/users/profile');
     }
   }
 }

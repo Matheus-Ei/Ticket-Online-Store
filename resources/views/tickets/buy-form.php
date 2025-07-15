@@ -10,7 +10,9 @@
     <h2 class="text-xl font-semibold"><?= htmlspecialchars($event['name']) ?></h2>
     <p class="text-gray-600 mb-2"><?= htmlspecialchars($event['description']) ?></p>
 
+    <?php if (isset($event['image_url']) && !empty($event['image_url'])): ?>
     <img src="<?= htmlspecialchars($event['image_url']) ?>" alt="Imagem do Evento" class="w-full h-64 object-cover rounded mb-4">
+    <?php endif; ?>
 
     <p class="text-gray-600 mb-1"><strong>Data:</strong> <?= htmlspecialchars($event['start_time']) ?></p>
     <p class="text-gray-600 mb-1"><strong>Local:</strong> <?= htmlspecialchars($event['location']) ?></p>

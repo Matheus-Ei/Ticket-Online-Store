@@ -33,15 +33,15 @@ class EventValidator extends AbstractValidator {
         $errors['endTime'] = 'The end time must be after the start time.';
       }
     }
-    if (isset($data->location)) {
+    if (isset($data->location) && !empty($data->location)) {
       $this->ensureNotEmpty($data->location, 'Location');
     }
 
-    if (isset($data->description)) {
+    if (isset($data->description) && !empty($data->description)) {
       $this->ensureNotEmpty($data->description, 'Description');
     }
 
-    if (isset($data->imageUrl)) {
+    if (isset($data->imageUrl) && !empty($data->imageUrl)) {
       $this->validateUrl($data->imageUrl, 'Image URL');
     }
 

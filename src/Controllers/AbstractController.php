@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Utils\GeralUtils;
+use App\Utils\MessageUtils;
 use App\Utils\SessionUtils;
 
 abstract class AbstractController {
@@ -13,41 +14,25 @@ abstract class AbstractController {
     $userRole = SessionUtils::getUserRole();
     $userId = SessionUtils::getUserId();
     $isLoggedIn = SessionUtils::isLoggedIn();
+    $message = MessageUtils::getMessage();
+
+    $data = array_merge($data, [
+      'userRole' => $userRole,
+      'userId' => $userId,
+      'isLoggedIn' => $isLoggedIn,
+      'message' => $message,
+    ]);
 
     extract($data);
 
     ob_start();
 
-    include GeralUtils::basePath('resources/partials/error-toaster.php');
+    include GeralUtils::basePath('resources/partials/message-toaster.php');
     include GeralUtils::basePath($viewPath);
 
     $content = ob_get_clean();
 
     require GeralUtils::basePath("resources/layouts/{$layout}.php");
-  }
-
-  protected function throwViewError(string $view, $error, string $layout = 'sidebar', array $data = []) {
-    // If error is an Exception, get the message
-    if ($error instanceof \Exception) {
-      $error = $error->getMessage();
-    } elseif (!is_string($error)) {
-      $error = 'An unexpected error occurred.';
-    }
-
-    // Set view with error message
-    $data = [
-      'title' => substr($error, 0, 22) . '...',
-      'error' => $error,
-      ...$data
-    ];
-
-    // Log the error message
-    error_log($error);
-
-    // Render the view with the error
-    $this->render($view, $data, $layout);
-
-    return false;
   }
 
   protected function navigate(string $url) {

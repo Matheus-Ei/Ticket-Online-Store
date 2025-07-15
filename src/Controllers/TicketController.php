@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Models\EventModel;
 use App\Models\TicketModel;
+use App\Utils\MessageUtils;
 use App\Utils\SessionUtils;
 
 class TicketController extends AbstractController {
@@ -36,6 +37,7 @@ class TicketController extends AbstractController {
 
     $isOwner = $this->model->existsAndIsOwner($id, $this->userId);
     if (!$isOwner) {
+      MessageUtils::setMessage('warning', 'Você não tem permissão ou este ingresso não existe.');
       return $this->navigate('/tickets/purchased');
     }
 
@@ -54,7 +56,7 @@ class TicketController extends AbstractController {
     try {
       $ticketId = $this->model->reserve($this->userId, $eventId);
     } catch (\Exception $e) {
-      error_log($e->getMessage());
+      MessageUtils::setMessage('warning', $e->getMessage());
     }
 
     $data = [
@@ -75,16 +77,12 @@ class TicketController extends AbstractController {
 
     try {
       $purchasedTicket = $this->model->purchase($this->userId, $eventId, $ticketId);
+
+      MessageUtils::setMessage('success', 'Ingresso comprado com sucesso!');
       return $this->navigate("/tickets/{$purchasedTicket['id']}");
     } catch (\Exception $e) {
-      $event = $this->eventModel->get($eventId);
-
-      return $this->throwViewError(
-        'resources/views/tickets/buy-form.php', 
-        $e, 
-        'sidebar', 
-        ['event' => $event, 'ticketId' => $ticketId, 'createdAt' => date('Y-m-d H:i:s')]
-      );
+      MessageUtils::setMessage('error', $e->getMessage());
+      $this->navigate('/tickets/buy');
     }
   }
 }

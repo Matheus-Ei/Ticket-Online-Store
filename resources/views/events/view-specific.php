@@ -3,25 +3,27 @@
 
   <p class="text-gray-700 mb-4"><?= nl2br(htmlspecialchars($event['description'])) ?></p> 
 
+  <?php if (isset($event['image_url']) && !empty($event['image_url'])): ?>
   <img 
     src="<?= htmlspecialchars($event['image_url']) ?>" 
     alt="<?= htmlspecialchars($event['name']) ?>" 
     class="w-full h-64 object-cover mb-4 rounded-lg"
   >
+  <?php endif; ?>
 
   <div class="mb-4">
-    <p class="text-gray-600">Localização: <?= htmlspecialchars($event['location']) ?></p>
+    <p class="text-gray-600"><strong>Localização:</strong> <?= htmlspecialchars($event['location']) ?></p>
 
-    <p class="text-gray-600">Data e Hora de Inicio: <?= htmlspecialchars($event['start_time']) ?></p>
+    <p class="text-gray-600"><strong>Data e Hora de Inicio:</strong> <?= htmlspecialchars($event['start_time']) ?></p>
 
     <?php if ($event['end_time']): ?>
-    <p class="text-gray-600">Data e Hora de Término: <?= htmlspecialchars($event['end_time']) ?></p>
+    <p class="text-gray-600"><strong>Data e Hora de Término:</strong> <?= htmlspecialchars($event['end_time']) ?></p>
     <?php endif; ?>
   </div>
 
   <div class="mb-4">
-    <p class="text-lg font-semibold">Preço do Ingresso: $<?= number_format($event['ticket_price'], 2) ?></p>
-    <p class="text-gray-600">Quantidade de Ingressos Disponível: <?= htmlspecialchars($event['tickets_available']) ?></p>
+    <p class="text-lg font-semibold text-green-600">Preço do Ingresso: $<?= number_format($event['ticket_price'], 2) ?></p>
+    <p class="text-gray-600"><strong>Quantidade de Ingressos Disponível:</strong> <?= htmlspecialchars($event['tickets_available']) ?></p>
   </div>
 
   <?php if ($event['ticket_quantity'] > 0 && $userRole !== 'seller'): ?>

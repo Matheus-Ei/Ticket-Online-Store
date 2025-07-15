@@ -12,7 +12,7 @@ class TicketValidator extends AbstractValidator {
     $this->validateInt($data->eventId, 'Event ID');
 
     // Status validation
-    if (isset($data->status)) {
+    if (isset($data->status) && !empty($data->status)) {
       $allowedStatus = ['reserved', 'purchased'];
       $this->validateStatus($data->status, 'status', $allowedStatus);
     }

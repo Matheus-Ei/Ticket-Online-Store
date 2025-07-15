@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\DTOs\EventData;
 use App\Models\EventModel;
+use App\Utils\MessageUtils;
 use App\Utils\SessionUtils;
 use App\Validators\EventValidator;
 
@@ -109,10 +110,11 @@ class EventController extends AbstractController {
         $this->model->create($data);
       }
 
+      MessageUtils::setMessage('success', 'Evento salvo com sucesso!');
       $this->navigate('/events/');
     } catch (\Exception $e) {
-      $events = $this->model->getAll();
-      $this->throwViewError('resources/views/events/index.php', $e, 'sidebar', ['events' => $events]);
+      MessageUtils::setMessage('error', $e->getMessage());
+      $this->navigate('/events/');
     }
   }
 
@@ -124,9 +126,12 @@ class EventController extends AbstractController {
 
     try {
       $this->model->delete($id);
+
+      MessageUtils::setMessage('success', 'Evento excluído com sucesso!');
       $this->navigate('/events/');
     } catch (\Exception $e) {
-      $this->throwViewError('resources/views/events/index.php', $e);
+      MessageUtils::setMessage('error', $e->getMessage());
+      $this->navigate('/events/');
     }
   }
 }
