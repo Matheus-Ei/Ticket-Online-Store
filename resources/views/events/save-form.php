@@ -120,12 +120,6 @@
       >
     </div>
 
-    <?php if (isset($error) && $error): ?>
-      <div class="text-red-600 mt-4">
-        <p><?= htmlspecialchars($error) ?></p>
-      </div>
-    <?php endif; ?>
-
     <button 
       type="submit" 
       class="w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition cursor-pointer"

@@ -36,9 +36,13 @@ class EventModel {
   }
 
   public function getPurchasedByClient(int $clientId) {
-    $query = "SELECT e.* FROM events e 
-                JOIN tickets t ON e.id = t.event_id 
-              WHERE t.client_id = :client_id AND t.status = 'purchased'";
+    $query = "SELECT 
+                e.*, 
+                e.ticket_quantity - COUNT(t.id) AS tickets_available 
+              FROM events e 
+                LEFT JOIN tickets t ON e.id = t.event_id AND (t.status = 'purchased' OR t.status = 'reserved')
+              WHERE t.client_id = :client_id
+              GROUP BY e.id";
 
     return Database::selectAll($query, ['client_id' => $clientId]);
   }

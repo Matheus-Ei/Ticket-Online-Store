@@ -21,9 +21,8 @@ class EventController extends AbstractController {
 
   public function index() {
     $data = [
-      'title' => 'Events',
+      'title' => 'Eventos',
       'events' => $this->model->getAll(),
-      'userRole' => $this->userRole,
     ];
 
     $this->render('resources/views/events/index.php', $data);
@@ -31,7 +30,7 @@ class EventController extends AbstractController {
 
   public function viewSpecific($id) {
     $data = [
-      'title' => 'Event Details',
+      'title' => 'Detalhes do Evento',
       'event' => $this->model->get($id),
     ];
 
@@ -44,7 +43,7 @@ class EventController extends AbstractController {
     $purchasedEvents = $this->model->getPurchasedByClient($this->userId);
 
     $data = [
-      'title' => 'Purchased Events',
+      'title' => 'Eventos Comprados',
       'purchasedEvents' => $purchasedEvents,
     ];
 
@@ -67,9 +66,9 @@ class EventController extends AbstractController {
     // If an event ID is provided, fetch the event details for editing
     if ($eventId) {
       $event = $this->findAndVerifyOwner($eventId);
-      $data = ['title' => 'Edit Event', 'event' => $event];
+      $data = ['title' => 'Editar Evento', 'event' => $event];
     } else {
-      $data = ['title' => 'Create Event'];
+      $data = ['title' => 'Criar Evento'];
     }
 
     $this->render('resources/views/events/save-form.php', $data);
@@ -112,23 +111,22 @@ class EventController extends AbstractController {
 
       $this->navigate('/events/');
     } catch (\Exception $e) {
-      $this->throwViewError('resources/views/events/save-form.php', $e);
+      $events = $this->model->getAll();
+      $this->throwViewError('resources/views/events/index.php', $e, 'sidebar', ['events' => $events]);
     }
   }
 
-  public function delete() {
+  public function delete($id) {
     $this->ensureLoggedIn('seller');
 
-    // Ensure the event ID is provided
-    $eventId = $_POST['id'] ?? null;
-
     // Verify that the event ID is valid and the user is the owner
-    $isOwner = $this->model->existsAndIsOwner($eventId, $this->userId);
-    if(!$isOwner) {
-      $this->navigate('/events/');
-    };
+    $this->findAndVerifyOwner($id);
 
-    $this->model->delete($eventId);
-    $this->navigate('/events/');
+    try {
+      $this->model->delete($id);
+      $this->navigate('/events/');
+    } catch (\Exception $e) {
+      $this->throwViewError('resources/views/events/index.php', $e);
+    }
   }
 }

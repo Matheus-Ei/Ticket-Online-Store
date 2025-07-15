@@ -32,6 +32,6 @@
     Comprar Ingresso
   </a>
   <?php elseif($userRole !== 'seller'): ?>
-  <p class="text-red-500 mt-4">Tickets are sold out.</p>
+  <p class="text-red-500 mt-4">Os ingressos para este evento estão esgotados.</p>
   <?php endif; ?>
 </div>

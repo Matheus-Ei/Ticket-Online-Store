@@ -25,7 +25,7 @@
     <?php endif; ?>
   </p>
 
-  <p class="text-gray-500 mb-4">Tickets disponíveis: <?=htmlspecialchars($event['ticket_quantity'])?></p>
+  <p class="text-gray-500 mb-4">Ingressos disponíveis: <?=htmlspecialchars($event['tickets_available'])?></p>
 
   <a 
     href="/events/<?=$event['id']?>" 
@@ -33,5 +33,28 @@
   >
     Ver Detalhes
   </a>
+
+  <?php if ($userRole === 'seller' && $event['created_by'] === $userId): ?>
+  <a 
+    href="/events/save?id=<?=$event['id']?>" 
+    class="inline-block bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600 transition"
+  >
+    Editar Evento
+  </a>
+
+  <form 
+    method="POST" 
+    action="/events/delete/<?=$event['id']?>" 
+    class="inline-block" 
+    onSubmit="return confirm('Tem certeza que deseja excluir este evento? Esta ação não pode ser desfeita.');"
+  >
+    <button 
+      type="submit" 
+      class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition cursor-pointer"
+    >
+      Excluir Evento
+    </button>
+  </form>
+  <?php endif; ?>
 </div>
 

@@ -30,12 +30,6 @@
       >
     </div>
 
-    <?php if (isset($error)) : ?>
-    <div class="mb-4 text-red-600">
-      <?= htmlspecialchars($error) ?>
-    </div>
-    <?php endif; ?>
-
     <div class="flex space-x-4">
       <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 cursor-pointer">Salvar</button>
     </div>

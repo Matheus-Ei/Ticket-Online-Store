@@ -13,7 +13,13 @@ class TicketModel {
   }
 
   public function get(int $id) {
-    return Database::selectOne("SELECT * FROM tickets WHERE id = :id", ['id' => $id]);
+    // Get the ticket, without any id, substituing the client_id with user info, and the event_id with event info
+    $query = "SELECT t.id, t.status, e.name, e.start_time, e.end_time, e.location, e.description, e.image_url, t.created_at
+              FROM tickets t 
+                JOIN events e ON t.event_id = e.id 
+              WHERE t.id = :id";
+
+    return Database::selectOne($query, ['id' => $id]);
   }
 
   public function getAll() {
@@ -21,7 +27,10 @@ class TicketModel {
   }
 
   public function getPurchasedByClient(int $clientId) {
-    $query = "SELECT * FROM tickets WHERE client_id = :client_id AND status = 'purchased'";
+    $query = "SELECT t.id, t.status, e.name, e.start_time, e.end_time, e.location
+              FROM tickets t 
+                JOIN events e ON t.event_id = e.id 
+              WHERE t.client_id = :client_id AND t.status = 'purchased'";
     return Database::selectAll($query, ['client_id' => $clientId]);
   }
 
@@ -88,6 +97,14 @@ class TicketModel {
   }
 
   public function reserve(int $clientId, int $eventId) {
+    $query = "SELECT * FROM tickets WHERE event_id = :event_id AND client_id = :client_id AND status = 'reserved'";
+    $event = Database::selectOne($query, ['event_id' => $eventId, 'client_id' => $clientId]);
+
+    // If a reserved ticket already exists for this event and client, return its ID
+    if ($event) {
+      return $event['id'];
+    }
+
     $ticketData = new TicketData(
       status: 'reserved',
       clientId: $clientId,

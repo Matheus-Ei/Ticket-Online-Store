@@ -15,7 +15,7 @@ class UserController extends AbstractController {
 
   public function registerForm() {
     $data = [
-      'title' => 'Register',
+      'title' => 'Criar Conta',
     ];
 
     $this->render('resources/views/users/register-form.php', $data, 'clean');
@@ -23,7 +23,7 @@ class UserController extends AbstractController {
 
   public function loginForm() {
     $data = [
-      'title' => 'Login',
+      'title' => 'Entrar',
     ];
 
     $this->render('resources/views/users/login-form.php', $data, 'clean');
@@ -36,7 +36,7 @@ class UserController extends AbstractController {
     $user = $this->model->get($userId);
 
     $data = [
-      'title' => 'User Profile',
+      'title' => 'Perfil do Usuário',
       'user' => $user,
     ];
 
@@ -50,7 +50,7 @@ class UserController extends AbstractController {
     $user = $this->model->get($userId);
 
     $data = [
-      'title' => 'Edit Profile',
+      'title' => 'Editar Perfil',
       'user' => $user,
     ];
 
@@ -124,9 +124,12 @@ class UserController extends AbstractController {
 
     $userId = SessionUtils::getUserId();
 
-    $this->model->delete($userId);
-    session_destroy();
-
-    $this->navigate('/');
+    try {
+      $this->model->delete($userId);
+      session_destroy();
+      $this->navigate('/');
+    } catch (\Exception $e) {
+      return $this->throwViewError('resources/views/users/view-profile.php', $e);
+    }
   }
 }

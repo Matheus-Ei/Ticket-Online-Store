@@ -2,15 +2,18 @@
 
 namespace App\Controllers;
 
+use App\Models\EventModel;
 use App\Models\TicketModel;
 use App\Utils\SessionUtils;
 
 class TicketController extends AbstractController {
   private $userId = null;
+  private $eventModel = null;
 
   public function __construct() {
     $this->model = new TicketModel();
     $this->userId = SessionUtils::getUserId();
+    $this->eventModel = new EventModel();
   }
 
   public function viewPurchased() {
@@ -19,7 +22,7 @@ class TicketController extends AbstractController {
     $purchasedTickets = $this->model->getPurchasedByClient($this->userId);
 
     $data = [
-      'title' => 'Purchased Tickets',
+      'title' => 'Ingressos Comprados',
       'purchasedTickets' => $purchasedTickets,
     ];
 
@@ -33,13 +36,10 @@ class TicketController extends AbstractController {
 
     $isOwner = $this->model->existsAndIsOwner($id, $this->userId);
     if (!$isOwner) {
-      return $this->render(
-        'resources/views/errors/404.php',
-        ['message' => 'Ticket not found or does not belong to you.']
-      );
+      return $this->navigate('/tickets/purchased');
     }
 
-    $data = ['title' => 'Ticket Details', 'ticket' => $ticket];
+    $data = ['title' => 'Detalhes do Ingresso', 'ticket' => $ticket];
     $this->render('resources/views/tickets/view-specific.php', $data);
   }
 
@@ -47,6 +47,8 @@ class TicketController extends AbstractController {
     $this->ensureLoggedIn('client');
 
     $eventId = $_GET['event_id'] ?? null;
+
+    $event = $this->eventModel->get($eventId);
 
     $ticketId = null;
     try {
@@ -56,7 +58,8 @@ class TicketController extends AbstractController {
     }
 
     $data = [
-      'title' => 'Buy Ticket',
+      'title' => 'Comprar Ingresso',
+      'event' => $event,
       'ticketId' => $ticketId,
       'createdAt' => $ticketId ? date('Y-m-d H:i:s') : null,
     ];
@@ -74,7 +77,14 @@ class TicketController extends AbstractController {
       $purchasedTicket = $this->model->purchase($this->userId, $eventId, $ticketId);
       return $this->navigate("/tickets/{$purchasedTicket['id']}");
     } catch (\Exception $e) {
-      return $this->throwViewError('resources/views/tickets/buy-form.php', $e);
+      $event = $this->eventModel->get($eventId);
+
+      return $this->throwViewError(
+        'resources/views/tickets/buy-form.php', 
+        $e, 
+        'sidebar', 
+        ['event' => $event, 'ticketId' => $ticketId, 'createdAt' => date('Y-m-d H:i:s')]
+      );
     }
   }
 }

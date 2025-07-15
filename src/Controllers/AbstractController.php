@@ -11,12 +11,14 @@ abstract class AbstractController {
 
   protected function render(string $viewPath, array $data = [], string $layout = 'sidebar') {
     $userRole = SessionUtils::getUserRole();
+    $userId = SessionUtils::getUserId();
     $isLoggedIn = SessionUtils::isLoggedIn();
 
     extract($data);
 
     ob_start();
 
+    include GeralUtils::basePath('resources/partials/error-toaster.php');
     include GeralUtils::basePath($viewPath);
 
     $content = ob_get_clean();
@@ -24,7 +26,7 @@ abstract class AbstractController {
     require GeralUtils::basePath("resources/layouts/{$layout}.php");
   }
 
-  protected function throwViewError(string $view, $error, string $layout = 'sidebar') {
+  protected function throwViewError(string $view, $error, string $layout = 'sidebar', array $data = []) {
     // If error is an Exception, get the message
     if ($error instanceof \Exception) {
       $error = $error->getMessage();
@@ -36,6 +38,7 @@ abstract class AbstractController {
     $data = [
       'title' => substr($error, 0, 22) . '...',
       'error' => $error,
+      ...$data
     ];
 
     // Log the error message
