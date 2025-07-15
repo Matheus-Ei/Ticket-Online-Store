@@ -7,11 +7,32 @@ use App\DTOs\EventData;
 
 class EventModel {
   public function get(int $id) {
-    return Database::selectOne("SELECT * FROM events WHERE id = :id", ['id' => $id]);
+    $query = "SELECT 
+                e.*, 
+                e.ticket_quantity - COUNT(t.id) AS tickets_available 
+              FROM events e 
+                LEFT JOIN tickets t ON e.id = t.event_id AND (t.status = 'purchased' OR t.status = 'reserved')
+              WHERE e.id = :id 
+              GROUP BY e.id";
+
+    return Database::selectOne($query, ['id' => $id]);
   }
 
   public function getAll() {
-    return Database::selectAll("SELECT * FROM events");
+    $query = "SELECT 
+                e.*, 
+                e.ticket_quantity - COUNT(t.id) AS tickets_available 
+              FROM events e 
+                LEFT JOIN tickets t ON e.id = t.event_id AND (t.status = 'purchased' OR t.status = 'reserved')
+              GROUP BY e.id";
+
+    return Database::selectAll($query);
+  }
+
+  public function hasTickets(int $eventId) {
+    $query = "SELECT COUNT(*) as count FROM tickets WHERE event_id = :event_id AND status IN ('purchased', 'reserved')";
+    $result = Database::selectOne($query, ['event_id' => $eventId]);
+    return $result['count'] > 0;
   }
 
   public function getPurchasedByClient(int $clientId) {
@@ -20,18 +41,6 @@ class EventModel {
               WHERE t.client_id = :client_id AND t.status = 'purchased'";
 
     return Database::selectAll($query, ['client_id' => $clientId]);
-  }
-
-  public function getTicketsAvailable(int $eventId) {
-    $query = "SELECT 
-                e.id, 
-                e.ticket_quantity - COUNT(t.id) AS tickets_available 
-              FROM events e 
-              LEFT JOIN tickets t ON e.id = t.event_id AND (t.status = 'purchased' OR t.status = 'reserved')
-              WHERE e.id = :event_id 
-              GROUP BY e.id";
-
-    return Database::selectOne($query, ['event_id' => $eventId])['tickets_available'] ?? 0;
   }
 
   public function create(EventData $data) {
@@ -79,6 +88,17 @@ class EventModel {
     ];
 
     return Database::execute($query, $params);
+  }
+
+  public function existsAndIsOwner($eventId, $userId) {
+    if (!$eventId || !$userId) {
+        return false;
+    }
+
+    $query = "SELECT COUNT(*) as count FROM events WHERE id = :id AND created_by = :user_id";
+    $event = Database::selectOne($query, ['id' => $eventId, 'user_id' => $userId]);
+
+    return $event && $event['count'] > 0;
   }
 
   public function delete(int $id) {

@@ -7,6 +7,7 @@ use App\Utils\SessionUtils;
 
 abstract class AbstractController {
   protected $model;
+
   protected function renderView(string $viewPath, array $data = []) {
     extract($data); // Converts array keys to variables
 
@@ -19,20 +20,22 @@ abstract class AbstractController {
     require GeralUtils::basePath('resources/layouts/main.php'); // Include the main layout file
   }
 
-  protected function throwFormError(string $errorMessage, string $view, ?\Exception $errorObject = null) {
+  protected function throwViewError(string $view, $error) {
+    // If error is an Exception, get the message
+    if ($error instanceof \Exception) {
+      $error = $error->getMessage();
+    } elseif (!is_string($error)) {
+      $error = 'An unexpected error occurred.';
+    }
+
     // Set view with error message
     $data = [
-      'title' => substr($errorMessage, 0, 22) . '...',
-      'error' => $errorMessage,
+      'title' => substr($error, 0, 22) . '...',
+      'error' => $error,
     ];
 
     // Log the error message
-    if ($errorObject) {
-      $data['errorDetails'] = $errorObject->getMessage();
-      error_log($errorObject->getMessage());
-    } else {
-      $data['errorDetails'] = 'No additional error details provided.';
-    }
+    error_log($error);
 
     // Render the view with the error
     $this->renderView($view, $data);

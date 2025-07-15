@@ -7,30 +7,30 @@ use App\Models\EventModel;
 use App\Utils\SessionUtils;
 
 class EventController extends AbstractController {
+  private $userRole;
+  private $userId;
+
   public function __construct() {
     $this->model = new EventModel();
+
+    $this->userRole = SessionUtils::getUserRole();
+    $this->userId = SessionUtils::getUserId();
   }
 
   public function index() {
-    $events = $this->model->getAll();
-
     $data = [
       'title' => 'Events',
-      'events' => $events,
-      'userRole' => SessionUtils::getUserRole(),
+      'events' => $this->model->getAll(),
+      'userRole' => $this->userRole,
     ];
 
     $this->renderView('resources/views/events/index.php', $data);
   }
 
   public function viewSpecific($id) {
-    $event = $this->model->get($id);
-
-    $event['tickets_available'] = $this->model->getTicketsAvailable($id);
-
     $data = [
       'title' => 'Event Details',
-      'event' => $event,
+      'event' => $this->model->get($id),
     ];
 
     $this->renderView('resources/views/events/view-specific.php', $data);
@@ -39,9 +39,7 @@ class EventController extends AbstractController {
   public function viewPurchased() {
     $this->ensureLoggedIn('client');
 
-    // Fetch the purchased events for the logged-in client
-    $userId = SessionUtils::getUserId();
-    $purchasedEvents = $this->model->getPurchasedByClient($userId);
+    $purchasedEvents = $this->model->getPurchasedByClient($this->userId);
 
     $data = [
       'title' => 'Purchased Events',
@@ -51,6 +49,14 @@ class EventController extends AbstractController {
     $this->renderView('resources/views/events/view-purchased.php', $data);
   }
 
+  private function findAndVerifyOwner(int $eventId) {
+    if (!$this->model->existsAndIsOwner($eventId, $this->userId)) {
+      $this->navigate('/events/');
+    }
+
+    return $this->model->get($eventId);
+  }
+
   public function saveForm() {
     $this->ensureLoggedIn('seller');
 
@@ -58,21 +64,10 @@ class EventController extends AbstractController {
 
     // If an event ID is provided, fetch the event details for editing
     if ($eventId) {
-      $event = $this->model->getById($eventId);
-
-      // Check if the event exists and if the user is the owner
-      if (!$event || $event['created_by'] !== SessionUtils::getUserId()) {
-        $this->navigate('/events/');
-      }
-
-      $data = [
-        'title' => 'Edit Event',
-        'event' => $event,
-      ];
+      $event = $this->findAndVerifyOwner($eventId);
+      $data = ['title' => 'Edit Event', 'event' => $event];
     } else {
-      $data = [
-        'title' => 'Create Event',
-      ];
+      $data = ['title' => 'Create Event'];
     }
 
     $this->renderView('resources/views/events/save-form.php', $data);
@@ -86,12 +81,7 @@ class EventController extends AbstractController {
 
     // If an event ID is provided, fetch the event details for editing
     if($eventId) {
-      $event = $this->model->getById($eventId);
-
-      // Check if the event exists and if the user is the owner
-      if (!$event || $event['created_by'] !== SessionUtils::getUserId()) {
-        $this->navigate('/events/');
-      }
+      $event = $this->findAndVerifyOwner($eventId);
     }
 
     // Create or update the event data
@@ -104,7 +94,7 @@ class EventController extends AbstractController {
       location: $_POST['location'] ?? $event['location'] ?? '',
       ticketPrice: $_POST['ticket_price'] ?? $event['ticket_price'] ?? 0.0,
       ticketQuantity: $_POST['ticket_quantity'] ?? $event['ticket_quantity'] ?? 0,
-      createdBy: SessionUtils::getUserId()
+      createdBy: $this->userId
     );
 
     // If an event ID is provided, update the existing event
@@ -122,17 +112,14 @@ class EventController extends AbstractController {
 
     // Ensure the event ID is provided
     $eventId = $_POST['id'] ?? null;
-    if (!$eventId) {
-      $this->navigate('/events/');
-    }
 
-    $event = $this->model->getById($eventId);
-
-    // Check if the event exists and if the user is the owner
-    if (!$event || $event['created_by'] !== SessionUtils::getUserId()) {
+    // Verify that the event ID is valid and the user is the owner
+    $isOwner = $this->model->existsAndIsOwner($eventId, $this->userId);
+    if(!$isOwner) {
       $this->navigate('/events/');
-    }
+    };
 
     $this->model->delete($eventId);
+    $this->navigate('/events/');
   }
 }

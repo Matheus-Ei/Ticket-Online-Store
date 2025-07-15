@@ -7,7 +7,10 @@ use Config\Database;
 
 class UserModel {
   public function get(int $id) {
-    return Database::selectOne("SELECT * FROM users WHERE id = :id", ['id' => $id]);
+    $user = Database::selectOne("SELECT * FROM users WHERE id = :id", ['id' => $id]);
+    $user['role'] = $user['role'] === 'seller' ? 'Vendedor' : 'Cliente';
+
+    return $user;
   }
 
   public function getAll() {
@@ -16,6 +19,24 @@ class UserModel {
 
   public function getByEmail(string $email) {
     return Database::selectOne("SELECT * FROM users WHERE email = :email", ['email' => $email]);
+  }
+
+  public function hashPassword(string $password) {
+    return password_hash($password, PASSWORD_DEFAULT);
+  }
+
+  public function login(string $email, string $password) {
+    $user = $this->getByEmail($email);
+
+    if (!$user || !password_verify($password, $user['password_hash'])) {
+      throw new \Exception("Invalid email or password");
+    }
+
+    // Set session variables
+    $_SESSION['user_id'] = $user['id'];
+    $_SESSION['user_role'] = $user['role'];
+
+    return $user;
   }
 
   public function create(UserData $data) {
