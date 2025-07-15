@@ -7,6 +7,9 @@
     <h1 class="text-2xl font-semibold">Detalhes do Evento</h1>  
     <p class="text-gray-600 mb-4">Você está comprando um ingresso para o evento:</p>
 
+    <p class="text-sm text-gray-500">Você tem 2 minutos para completar a compra antes que a reserva expire.</p>
+    <p class="text-lg text-gray-500 mb-4 text-yellow-600">Tempo restante: <span id="countdown"></span></p>
+
     <h2 class="text-xl font-semibold"><?= htmlspecialchars($event['name']) ?></h2>
     <p class="text-gray-600 mb-2"><?= htmlspecialchars($event['description']) ?></p>
 
@@ -42,3 +45,47 @@
     </button>
   </form>
 </div>
+
+<?php $reservationTimeISO = date('c', strtotime($reservationTime))?>
+
+<?php if (isset($reservationTime)): ?>
+<script>
+const reservationTime = new Date("<?= htmlspecialchars($reservationTimeISO) ?>").getTime();
+const countdownElement = document.getElementById('countdown');
+const ticketId = <?= isset($ticketId) ? json_encode($ticketId) : 'null' ?>;
+
+function expireReservation() {
+  if (ticketId) {
+    fetch(`/tickets/expire/${ticketId}`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'}
+    })
+  }
+}
+
+function updateCountdown() {
+  const now = new Date().getTime();
+  const distance = reservationTime + 120000 - now;
+
+  if (distance < 0) {
+    countdownElement.innerHTML = "Reserva expirada, por favor, tente novamente.";
+
+    expireReservation();
+
+    // Reload the page after 2 seconds to create a new reservation
+    setTimeout(() => {
+      window.location.reload();
+    }, 2000);
+
+    clearInterval(countdownInterval);
+  } else {
+    const minutes = Math.floor(distance / (1000 * 60));
+    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+    countdownElement.innerHTML = `${minutes}m ${seconds}s`;
+  }
+}
+
+const countdownInterval = setInterval(updateCountdown, 1000);
+updateCountdown();
+</script>
+<?php endif; ?>

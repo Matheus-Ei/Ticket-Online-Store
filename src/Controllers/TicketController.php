@@ -55,6 +55,10 @@ class TicketController extends AbstractController {
     $ticketId = null;
     try {
       $ticketId = $this->model->reserve($this->userId, $eventId);
+      $ticket = $this->model->get($ticketId);
+
+      $_SESSION['reservation_time'] = $ticket['created_at'] ?? time();
+      $reservationTime = $_SESSION['reservation_time'];
     } catch (\Exception $e) {
       MessageUtils::setMessage('warning', $e->getMessage());
     }
@@ -63,10 +67,26 @@ class TicketController extends AbstractController {
       'title' => 'Comprar Ingresso',
       'event' => $event,
       'ticketId' => $ticketId,
-      'createdAt' => $ticketId ? date('Y-m-d H:i:s') : null,
+      'reservationTime' => $reservationTime ?? null,
     ];
 
     $this->render('resources/views/tickets/buy-form.php', $data);
+  }
+
+  public function expireReservation($id) {
+    $this->ensureLoggedIn('client');
+
+    if (!$id || !is_numeric($id)) {
+      MessageUtils::setMessage('error', 'ID do ingresso inválido.');
+      return $this->navigate('/tickets/buy');
+    }
+
+    try {
+      $this->model->expireReservation($id);
+      MessageUtils::setMessage('warning', 'Reserva expirada. Por favor, tente novamente.');
+    } catch (\Exception $e) {
+      MessageUtils::setMessage('error', $e->getMessage());
+    }
   }
 
   public function buy() {
@@ -76,10 +96,10 @@ class TicketController extends AbstractController {
     $ticketId = $_POST['ticket_id'] ?? null;
 
     try {
-      $purchasedTicket = $this->model->purchase($this->userId, $eventId, $ticketId);
+      $ticketId = $this->model->purchase($this->userId, $eventId, $ticketId);
 
       MessageUtils::setMessage('success', 'Ingresso comprado com sucesso!');
-      return $this->navigate("/tickets/{$purchasedTicket['id']}");
+      return $this->navigate("/tickets/{$ticketId}");
     } catch (\Exception $e) {
       MessageUtils::setMessage('error', $e->getMessage());
       $this->navigate('/tickets/buy');

@@ -57,7 +57,7 @@ class TicketModel {
     return Database::execute($query, ['status' => $status, 'id' => $id]);
   }
 
-  public function purchase($clientId, $eventId, $ticketId) {
+  public function purchase(int $clientId, int $eventId, int $ticketId) {
     if ($ticketId) {
       $ticket = $this->get($ticketId);
       $isOwner = $this->existsAndIsOwner($ticketId, $clientId);
@@ -73,9 +73,10 @@ class TicketModel {
       }
 
       $this->updateStatus($ticketId, 'purchased');
-      return $this->get($ticketId);
+      return $ticketId;
     }
 
+    // If no ticketId is provided, we assume the user is trying to purchase a new ticket for the event
     if ($eventId) {
       $hasTickets = $this->eventModel->hasTickets($eventId);
 
@@ -90,7 +91,7 @@ class TicketModel {
       );
 
       $newTicketId = $this->create($ticketData);
-      return $this->get($newTicketId);
+      return $newTicketId;
     }
 
     throw new \Exception('Invalid purchase request.');
@@ -112,5 +113,18 @@ class TicketModel {
     );
 
     return $this->create($ticketData);
+  }
+
+  public function expireReservation(int $ticketId) {
+    if (!$ticketId || !is_numeric($ticketId)) {
+      throw new \Exception('Invalid ticket ID.');
+    }
+
+    $ticket = $this->get($ticketId);
+    if (!$ticket || $ticket['status'] !== 'reserved') {
+      throw new \Exception('Ticket not found or not reserved.');
+    }
+
+    $this->updateStatus($ticketId, 'expired');
   }
 }

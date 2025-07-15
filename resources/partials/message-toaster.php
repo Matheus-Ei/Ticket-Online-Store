@@ -41,13 +41,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const messageType = '<?= htmlspecialchars($message['type'] ?? 'error') ?>';
 
     if (messageType === 'success') {
-      toaster.classList.replace('bg-gray-800', 'bg-green-700');
+      toaster.classList.replace('bg-gray-800', 'bg-green-800');
     } else if (messageType === 'warning') {
-      toaster.classList.replace('bg-gray-800', 'bg-yellow-700');
+      toaster.classList.replace('bg-gray-800', 'bg-yellow-800');
     } else if (messageType === 'info') {
-      toaster.classList.replace('bg-gray-800', 'bg-blue-700');
+      toaster.classList.replace('bg-gray-800', 'bg-blue-800');
     } else {
-      toaster.classList.replace('bg-gray-800', 'bg-red-700');
+      toaster.classList.replace('bg-gray-800', 'bg-red-800');
     }
   }
 

@@ -94,6 +94,13 @@ class Router {
     ],
 
     [
+      "method" => "post",
+      "endpoint" => "/tickets/expire/{id}",
+      "controller" => "App\Controllers\TicketController",
+      "action" => "expireReservation"
+    ],
+
+    [
       "method" => "get",
       "endpoint" => "/tickets/{id}",
       "controller" => "App\Controllers\TicketController",
