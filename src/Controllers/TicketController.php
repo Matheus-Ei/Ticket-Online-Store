@@ -23,7 +23,7 @@ class TicketController extends AbstractController {
       'purchasedTickets' => $purchasedTickets,
     ];
 
-    $this->renderView('resources/views/tickets/view-purchased.php', $data);
+    $this->renderWithSidebar('resources/views/tickets/view-purchased.php', $data);
   }
 
   public function viewSpecific($id) {
@@ -40,7 +40,7 @@ class TicketController extends AbstractController {
     }
 
     $data = ['title' => 'Ticket Details', 'ticket' => $ticket];
-    $this->renderView('resources/views/tickets/view-specific.php', $data);
+    $this->renderWithSidebar('resources/views/tickets/view-specific.php', $data);
   }
 
   public function buyForm() {
@@ -61,7 +61,7 @@ class TicketController extends AbstractController {
       'createdAt' => $ticketId ? date('Y-m-d H:i:s') : null,
     ];
 
-    $this->renderView('resources/views/tickets/buy-form.php', $data);
+    $this->renderWithSidebar('resources/views/tickets/buy-form.php', $data);
   }
 
   public function buy() {

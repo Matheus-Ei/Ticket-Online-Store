@@ -38,7 +38,7 @@ class UserController extends AbstractController {
       'user' => $user,
     ];
 
-    $this->renderView('resources/views/users/view-profile.php', $data);
+    $this->renderWithSidebar('resources/views/users/view-profile.php', $data);
   }
 
   public function editForm() {
@@ -52,7 +52,7 @@ class UserController extends AbstractController {
       'user' => $user,
     ];
 
-    $this->renderView('resources/views/users/edit-form.php', $data);
+    $this->renderWithSidebar('resources/views/users/edit-form.php', $data);
   }
 
   public function register() {

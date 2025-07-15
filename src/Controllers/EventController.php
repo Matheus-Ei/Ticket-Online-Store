@@ -24,7 +24,7 @@ class EventController extends AbstractController {
       'userRole' => $this->userRole,
     ];
 
-    $this->renderView('resources/views/events/index.php', $data);
+    $this->renderWithSidebar('resources/views/events/index.php', $data);
   }
 
   public function viewSpecific($id) {
@@ -33,7 +33,7 @@ class EventController extends AbstractController {
       'event' => $this->model->get($id),
     ];
 
-    $this->renderView('resources/views/events/view-specific.php', $data);
+    $this->renderWithSidebar('resources/views/events/view-specific.php', $data);
   }
 
   public function viewPurchased() {
@@ -46,7 +46,7 @@ class EventController extends AbstractController {
       'purchasedEvents' => $purchasedEvents,
     ];
 
-    $this->renderView('resources/views/events/view-purchased.php', $data);
+    $this->renderWithSidebar('resources/views/events/view-purchased.php', $data);
   }
 
   private function findAndVerifyOwner(int $eventId) {
@@ -70,7 +70,7 @@ class EventController extends AbstractController {
       $data = ['title' => 'Create Event'];
     }
 
-    $this->renderView('resources/views/events/save-form.php', $data);
+    $this->renderWithSidebar('resources/views/events/save-form.php', $data);
   }
 
   public function save() {
