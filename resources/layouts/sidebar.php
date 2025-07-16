@@ -16,9 +16,9 @@
       <div class="py-8 px-4">
         <?php
         if ($userRole === 'seller') {
-        include GeralUtils::basePath('resources/partials/sidebar_seller.php');
+        include GeralUtils::basePath('resources/partials/sidebar-seller.php');
         } elseif ($userRole === 'client') {
-        include GeralUtils::basePath('resources/partials/sidebar_client.php');
+        include GeralUtils::basePath('resources/partials/sidebar-client.php');
         }
         ?>
       </div>

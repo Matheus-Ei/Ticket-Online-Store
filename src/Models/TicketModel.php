@@ -12,7 +12,7 @@ class TicketModel {
     $this->eventModel = new EventModel();
   }
 
-  public function get(int $id) {
+  public function get($id) {
     // Get the ticket, without any id, substituing the client_id with user info, and the event_id with event info
     $query = "SELECT t.id, t.status, e.name, e.start_time, e.end_time, e.location, e.description, e.image_url, t.created_at
               FROM tickets t 

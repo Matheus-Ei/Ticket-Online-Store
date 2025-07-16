@@ -7,7 +7,7 @@
     <h1 class="text-2xl font-semibold">Detalhes do Evento</h1>  
     <p class="text-gray-600 mb-4">Você está comprando um ingresso para o evento:</p>
 
-    <p class="text-sm text-gray-500">Você tem 2 minutos para completar a compra antes que a reserva expire.</p>
+    <p class="text-md text-gray-500">Você tem 2 minutos para completar a compra antes que a reserva expire.</p>
     <p class="text-lg text-gray-500 mb-4 text-yellow-600">Tempo restante: <span id="countdown"></span></p>
 
     <h2 class="text-xl font-semibold"><?= htmlspecialchars($event['name']) ?></h2>
@@ -72,9 +72,9 @@ function updateCountdown() {
 
     expireReservation();
 
-    // Reload the page after 2 seconds to create a new reservation
+    // Send back to buy page after 2 seconds
     setTimeout(() => {
-      window.location.reload();
+      window.location.href = '/events/<?= htmlspecialchars($event['id']) ?>';
     }, 2000);
 
     clearInterval(countdownInterval);

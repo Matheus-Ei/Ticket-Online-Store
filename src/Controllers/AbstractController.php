@@ -10,28 +10,25 @@ abstract class AbstractController {
   protected $model;
   protected $validator;
 
-  protected function render(string $viewPath, array $data = [], string $layout = 'sidebar') {
-    $userRole = SessionUtils::getUserRole();
-    $userId = SessionUtils::getUserId();
-    $isLoggedIn = SessionUtils::isLoggedIn();
-    $message = MessageUtils::getMessage();
-
+  protected function render(string $view, array $data = [], string $layout = 'sidebar'): void {
     $data = array_merge($data, [
-      'userRole' => $userRole,
-      'userId' => $userId,
-      'isLoggedIn' => $isLoggedIn,
-      'message' => $message,
+      'userRole' => SessionUtils::getUserRole(),
+      'userId' => SessionUtils::getUserId(),
+      'isLoggedIn' => SessionUtils::isLoggedIn(),
+      'message' => MessageUtils::getMessage(),
     ]);
 
-    extract($data);
+    extract($data); // Create variables from the data array
 
-    ob_start();
+    ob_start(); // Start output buffering
 
+    // Includes the message toaster and the view
     include GeralUtils::basePath('resources/partials/message-toaster.php');
-    include GeralUtils::basePath($viewPath);
+    include GeralUtils::basePath("resources/views/$view.php");
 
-    $content = ob_get_clean();
+    $content = ob_get_clean(); // Get the buffered content
 
+    // Include the content in the layout
     require GeralUtils::basePath("resources/layouts/{$layout}.php");
   }
 
@@ -40,7 +37,7 @@ abstract class AbstractController {
     exit;
   }
 
-  protected function ensureLoggedIn(?string $role = null) {
+  protected function checkLogin(?string $role = null) {
     // Check if the user is logged in
     if (!SessionUtils::isLoggedIn()) {
       $this->navigate('/users/login');
@@ -48,7 +45,7 @@ abstract class AbstractController {
     }
 
     // If a role is specified, check if the user has that role
-    if ($role && !SessionUtils::isRole($role)) {
+    if ($role && SessionUtils::getUserRole() !== $role) {
       $this->navigate('/');
       return false;
     }

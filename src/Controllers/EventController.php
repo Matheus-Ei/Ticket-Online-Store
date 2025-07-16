@@ -9,14 +9,12 @@ use App\Utils\SessionUtils;
 use App\Validators\EventValidator;
 
 class EventController extends AbstractController {
-  private $userRole;
   private $userId;
 
   public function __construct() {
     $this->model = new EventModel();
     $this->validator = new EventValidator();
 
-    $this->userRole = SessionUtils::getUserRole();
     $this->userId = SessionUtils::getUserId();
   }
 
@@ -26,7 +24,7 @@ class EventController extends AbstractController {
       'events' => $this->model->getAll(),
     ];
 
-    $this->render('resources/views/events/index.php', $data);
+    $this->render('events/index', $data);
   }
 
   public function viewSpecific($id) {
@@ -35,11 +33,11 @@ class EventController extends AbstractController {
       'event' => $this->model->get($id),
     ];
 
-    $this->render('resources/views/events/view-specific.php', $data);
+    $this->render('events/view-specific', $data);
   }
 
   public function viewPurchased() {
-    $this->ensureLoggedIn('client');
+    $this->checkLogin('client');
 
     $purchasedEvents = $this->model->getPurchasedByClient($this->userId);
 
@@ -48,7 +46,7 @@ class EventController extends AbstractController {
       'purchasedEvents' => $purchasedEvents,
     ];
 
-    $this->render('resources/views/events/view-purchased.php', $data);
+    $this->render('events/view-purchased', $data);
   }
 
   private function findAndVerifyOwner(int $eventId) {
@@ -60,7 +58,7 @@ class EventController extends AbstractController {
   }
 
   public function saveForm() {
-    $this->ensureLoggedIn('seller');
+    $this->checkLogin('seller');
 
     $eventId = $_GET['id'] ?? null;
 
@@ -72,11 +70,11 @@ class EventController extends AbstractController {
       $data = ['title' => 'Criar Evento'];
     }
 
-    $this->render('resources/views/events/save-form.php', $data);
+    $this->render('events/save-form', $data);
   }
 
   public function save() {
-    $this->ensureLoggedIn('seller');
+    $this->checkLogin('seller');
 
     $eventId = $_POST['id'] ?? null;
     $event = null;
@@ -119,7 +117,7 @@ class EventController extends AbstractController {
   }
 
   public function delete($id) {
-    $this->ensureLoggedIn('seller');
+    $this->checkLogin('seller');
 
     // Verify that the event ID is valid and the user is the owner
     $this->findAndVerifyOwner($id);

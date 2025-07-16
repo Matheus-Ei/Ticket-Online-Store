@@ -18,7 +18,7 @@ class TicketController extends AbstractController {
   }
 
   public function viewPurchased() {
-    $this->ensureLoggedIn('client');
+    $this->checkLogin('client');
 
     $purchasedTickets = $this->model->getPurchasedByClient($this->userId);
 
@@ -27,11 +27,11 @@ class TicketController extends AbstractController {
       'purchasedTickets' => $purchasedTickets,
     ];
 
-    $this->render('resources/views/tickets/view-purchased.php', $data);
+    $this->render('tickets/view-purchased', $data);
   }
 
   public function viewSpecific($id) {
-    $this->ensureLoggedIn('client');
+    $this->checkLogin('client');
 
     $ticket = $this->model->get($id);
 
@@ -42,11 +42,11 @@ class TicketController extends AbstractController {
     }
 
     $data = ['title' => 'Detalhes do Ingresso', 'ticket' => $ticket];
-    $this->render('resources/views/tickets/view-specific.php', $data);
+    $this->render('tickets/view-specific', $data);
   }
 
   public function buyForm() {
-    $this->ensureLoggedIn('client');
+    $this->checkLogin('client');
 
     $eventId = $_GET['event_id'] ?? null;
 
@@ -70,11 +70,11 @@ class TicketController extends AbstractController {
       'reservationTime' => $reservationTime ?? null,
     ];
 
-    $this->render('resources/views/tickets/buy-form.php', $data);
+    $this->render('tickets/buy-form', $data);
   }
 
   public function expireReservation($id) {
-    $this->ensureLoggedIn('client');
+    $this->checkLogin('client');
 
     if (!$id || !is_numeric($id)) {
       MessageUtils::setMessage('error', 'ID do ingresso inválido.');
@@ -90,7 +90,7 @@ class TicketController extends AbstractController {
   }
 
   public function buy() {
-    $this->ensureLoggedIn('client');
+    $this->checkLogin('client');
 
     $eventId = $_POST['event_id'] ?? null;
     $ticketId = $_POST['ticket_id'] ?? null;

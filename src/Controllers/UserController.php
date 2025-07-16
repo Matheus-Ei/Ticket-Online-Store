@@ -19,7 +19,7 @@ class UserController extends AbstractController {
       'title' => 'Criar Conta',
     ];
 
-    $this->render('resources/views/users/register-form.php', $data, 'clean');
+    $this->render('users/register-form', $data, 'clean');
   }
 
   public function loginForm() {
@@ -27,11 +27,11 @@ class UserController extends AbstractController {
       'title' => 'Entrar',
     ];
 
-    $this->render('resources/views/users/login-form.php', $data, 'clean');
+    $this->render('users/login-form', $data, 'clean');
   }
 
   public function viewProfile() {
-    $this->ensureLoggedIn();
+    $this->checkLogin();
 
     $userId = SessionUtils::getUserId();
     $user = $this->model->get($userId);
@@ -41,11 +41,11 @@ class UserController extends AbstractController {
       'user' => $user,
     ];
 
-    $this->render('resources/views/users/view-profile.php', $data);
+    $this->render('users/view-profile', $data);
   }
 
   public function editForm() {
-    $this->ensureLoggedIn();
+    $this->checkLogin();
 
     $userId = SessionUtils::getUserId();
     $user = $this->model->get($userId);
@@ -55,7 +55,7 @@ class UserController extends AbstractController {
       'user' => $user,
     ];
 
-    $this->render('resources/views/users/edit-form.php', $data);
+    $this->render('users/edit-form', $data);
   }
 
   public function register() {
@@ -95,14 +95,14 @@ class UserController extends AbstractController {
   }
 
   public function logout() {
-    $this->ensureLoggedIn();
+    $this->checkLogin();
 
     session_destroy();
     $this->navigate('/');
   }
 
   public function edit() {
-    $this->ensureLoggedIn();
+    $this->checkLogin();
 
     $userId = SessionUtils::getUserId();
 
@@ -130,7 +130,7 @@ class UserController extends AbstractController {
   }
 
   public function delete() {
-    $this->ensureLoggedIn();
+    $this->checkLogin();
 
     $userId = SessionUtils::getUserId();
 

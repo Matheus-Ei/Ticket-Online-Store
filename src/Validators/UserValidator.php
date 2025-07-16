@@ -13,7 +13,7 @@ class UserValidator extends AbstractValidator {
 
     // Password validation
     if (strlen($data->password ?? '') < 8) {
-      $errors['password'] = 'The password must be at least 8 characters long.';
+      $this->addError('password', 'The password must be at least 8 characters long.');
     }
 
     // Role validation

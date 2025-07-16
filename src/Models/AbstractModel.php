@@ -3,13 +3,13 @@
 namespace App\Models;
 
 abstract class AbstractModel {
-  abstract public function get($id);
+  abstract public function get(int $id): ?array;
 
-  abstract public function getAll();
+  abstract public function getAll(): array;
 
-  abstract public function create($data);
+  abstract public function create(object $data): int;
 
-  abstract public function update($id, $data);
+  abstract public function update(int $id, object $data): bool;
 
-  abstract public function delete($id);
+  abstract public function delete(int $id): bool;
 }

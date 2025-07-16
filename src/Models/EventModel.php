@@ -6,7 +6,7 @@ use Config\Database;
 use App\DTOs\EventData;
 
 class EventModel {
-  public function get(int $id) {
+  public function get($id) {
     $query = "SELECT 
                 e.*, 
                 e.ticket_quantity - COUNT(t.id) AS tickets_available 

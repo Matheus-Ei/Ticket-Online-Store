@@ -14,11 +14,4 @@ class SessionUtils {
   public static function getUserRole(): ?string {
     return $_SESSION['user_role'] ?? null;
   }
-
-  public static function isRole(string $role): bool {
-    return 
-      self::isLoggedIn() &&
-        isset($_SESSION['user_role']) &&
-        $_SESSION['user_role'] === $role;
-  }
 }
