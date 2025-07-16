@@ -4,13 +4,13 @@ namespace App\Controllers;
 
 use App\DTOs\UserData;
 use App\Utils\SessionUtils;
-use App\Models\UserModel;
+use App\Services\UserService;
 use App\Utils\MessageUtils;
 use App\Validators\UserValidator;
 
 class UserController extends AbstractController {
   public function __construct() {
-    $this->model = new UserModel();
+    $this->service = new UserService();
     $this->validator = new UserValidator();
   }
 
@@ -34,7 +34,7 @@ class UserController extends AbstractController {
     $this->checkLogin();
 
     $userId = SessionUtils::getUserId();
-    $user = $this->model->get($userId);
+    $user = $this->service->get($userId);
 
     $data = [
       'title' => 'Perfil do Usuário',
@@ -48,7 +48,7 @@ class UserController extends AbstractController {
     $this->checkLogin();
 
     $userId = SessionUtils::getUserId();
-    $user = $this->model->get($userId);
+    $user = $this->service->get($userId);
 
     $data = [
       'title' => 'Editar Perfil',
@@ -60,19 +60,17 @@ class UserController extends AbstractController {
 
   public function register() {
     try {
-      $hashed_password = $this->model->hashPassword($_POST['password']);
-
       $registrationData = new UserData(
         name: $_POST['name'],
         email: $_POST['email'],
-        passwordHash: $hashed_password,
+        password: $_POST['password'],
         role: $_POST['role']
       );
 
       // Validate the registration data
       $this->validator->validateData($registrationData);
 
-      $this->model->create($registrationData);
+      $this->service->create($registrationData);
 
       MessageUtils::setMessage('success', 'Conta criada com sucesso! Faça login para continuar.');
       $this->navigate('/users/login');
@@ -84,7 +82,7 @@ class UserController extends AbstractController {
 
   public function login() {
     try {
-      $this->model->login($_POST['email'], $_POST['password']);
+      $this->service->login($_POST['email'], $_POST['password']);
 
       MessageUtils::setMessage('success', 'Login realizado com sucesso!');
       $this->navigate('/users/profile');
@@ -107,19 +105,15 @@ class UserController extends AbstractController {
     $userId = SessionUtils::getUserId();
 
     try {
-      $user = $this->model->get($userId);
-
       $profileData = new UserData(
         name: $_POST['name'],
         email: $_POST['email'],
-        passwordHash: $user['password_hash'],
-        role: $user['role'],
+        password: 'THISPASSWORDWILLNOTBEUSED',
+        role: 'seller',
       );
 
-      // Validate the profile data
       $this->validator->validateData($profileData);
-
-      $this->model->update($userId, $profileData);
+      $this->service->update($userId, $profileData);
 
       MessageUtils::setMessage('success', 'Perfil atualizado com sucesso!');
       $this->navigate('/users/profile');
@@ -135,7 +129,7 @@ class UserController extends AbstractController {
     $userId = SessionUtils::getUserId();
 
     try {
-      $this->model->delete($userId);
+      $this->service->delete($userId);
       session_destroy();
 
       $this->navigate('/');

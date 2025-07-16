@@ -2,25 +2,25 @@
 
 namespace App\Controllers;
 
-use App\Models\EventModel;
-use App\Models\TicketModel;
+use App\Services\TicketService;
+use App\Services\EventService;
 use App\Utils\MessageUtils;
 use App\Utils\SessionUtils;
 
 class TicketController extends AbstractController {
   private $userId = null;
-  private $eventModel = null;
+  private $eventService;
 
   public function __construct() {
-    $this->model = new TicketModel();
+    $this->service = new TicketService();
     $this->userId = SessionUtils::getUserId();
-    $this->eventModel = new EventModel();
+    $this->eventService = new EventService();
   }
 
   public function viewPurchased() {
     $this->checkLogin('client');
 
-    $purchasedTickets = $this->model->getPurchasedByClient($this->userId);
+    $purchasedTickets = $this->service->getPurchased($this->userId);
 
     $data = [
       'title' => 'Ingressos Comprados',
@@ -33,29 +33,31 @@ class TicketController extends AbstractController {
   public function viewSpecific($id) {
     $this->checkLogin('client');
 
-    $ticket = $this->model->get($id);
+    try {
+      $ticket = $this->service->get($id, $this->userId);
 
-    $isOwner = $this->model->existsAndIsOwner($id, $this->userId);
-    if (!$isOwner) {
-      MessageUtils::setMessage('warning', 'Você não tem permissão ou este ingresso não existe.');
+      $data = ['title' => 'Detalhes do Ingresso', 'ticket' => $ticket];
+      $this->render('tickets/view-specific', $data);
+    } catch (\Exception $e) {
+      MessageUtils::setMessage('error', $e->getMessage());
       return $this->navigate('/tickets/purchased');
     }
-
-    $data = ['title' => 'Detalhes do Ingresso', 'ticket' => $ticket];
-    $this->render('tickets/view-specific', $data);
   }
 
   public function buyForm() {
     $this->checkLogin('client');
 
+    // TODO: Add validator for event ID
     $eventId = $_GET['event_id'] ?? null;
 
-    $event = $this->eventModel->get($eventId);
+    $event = $this->eventService->get($eventId, $this->userId);
+
+    // TODO: Check if there are tickets available for the event
 
     $ticketId = null;
     try {
-      $ticketId = $this->model->reserve($this->userId, $eventId);
-      $ticket = $this->model->get($ticketId);
+      $ticketId = $this->service->reserve($this->userId, $eventId);
+      $ticket = $this->service->get($ticketId, $this->userId);
 
       $_SESSION['reservation_time'] = $ticket['created_at'] ?? time();
       $reservationTime = $_SESSION['reservation_time'];
@@ -76,13 +78,14 @@ class TicketController extends AbstractController {
   public function expireReservation($id) {
     $this->checkLogin('client');
 
+    // TODO: Create the id validator method on AbstractValidator
     if (!$id || !is_numeric($id)) {
       MessageUtils::setMessage('error', 'ID do ingresso inválido.');
       return $this->navigate('/tickets/buy');
     }
 
     try {
-      $this->model->expireReservation($id);
+      $this->service->expireReservation($id);
       MessageUtils::setMessage('warning', 'Reserva expirada. Por favor, tente novamente.');
     } catch (\Exception $e) {
       MessageUtils::setMessage('error', $e->getMessage());
@@ -96,7 +99,8 @@ class TicketController extends AbstractController {
     $ticketId = $_POST['ticket_id'] ?? null;
 
     try {
-      $ticketId = $this->model->purchase($this->userId, $eventId, $ticketId);
+      // TODO: Add validators for the event ID and ticket ID
+      $ticketId = $this->service->purchase($this->userId, $eventId, $ticketId);
 
       MessageUtils::setMessage('success', 'Ingresso comprado com sucesso!');
       return $this->navigate("/tickets/{$ticketId}");

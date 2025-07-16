@@ -3,7 +3,7 @@
 namespace App\Controllers;
 
 use App\DTOs\EventData;
-use App\Models\EventModel;
+use App\Services\EventService;
 use App\Utils\MessageUtils;
 use App\Utils\SessionUtils;
 use App\Validators\EventValidator;
@@ -12,7 +12,7 @@ class EventController extends AbstractController {
   private $userId;
 
   public function __construct() {
-    $this->model = new EventModel();
+    $this->service = new EventService();
     $this->validator = new EventValidator();
 
     $this->userId = SessionUtils::getUserId();
@@ -21,7 +21,7 @@ class EventController extends AbstractController {
   public function index() {
     $data = [
       'title' => 'Eventos',
-      'events' => $this->model->getAll(),
+      'events' => $this->service->getAll(),
     ];
 
     $this->render('events/index', $data);
@@ -30,7 +30,7 @@ class EventController extends AbstractController {
   public function viewSpecific($id) {
     $data = [
       'title' => 'Detalhes do Evento',
-      'event' => $this->model->get($id),
+      'event' => $this->service->get($id),
     ];
 
     $this->render('events/view-specific', $data);
@@ -39,7 +39,7 @@ class EventController extends AbstractController {
   public function viewPurchased() {
     $this->checkLogin('client');
 
-    $purchasedEvents = $this->model->getPurchasedByClient($this->userId);
+    $purchasedEvents = $this->service->getPurchased($this->userId);
 
     $data = [
       'title' => 'Eventos Comprados',
@@ -49,14 +49,6 @@ class EventController extends AbstractController {
     $this->render('events/view-purchased', $data);
   }
 
-  private function findAndVerifyOwner(int $eventId) {
-    if (!$this->model->existsAndIsOwner($eventId, $this->userId)) {
-      $this->navigate('/events/');
-    }
-
-    return $this->model->get($eventId);
-  }
-
   public function saveForm() {
     $this->checkLogin('seller');
 
@@ -64,7 +56,7 @@ class EventController extends AbstractController {
 
     // If an event ID is provided, fetch the event details for editing
     if ($eventId) {
-      $event = $this->findAndVerifyOwner($eventId);
+      $event = $this->service->getWithOwner($eventId, $this->userId);
       $data = ['title' => 'Editar Evento', 'event' => $event];
     } else {
       $data = ['title' => 'Criar Evento'];
@@ -81,7 +73,7 @@ class EventController extends AbstractController {
 
     // If an event ID is provided, fetch the event details for editing
     if($eventId) {
-      $event = $this->findAndVerifyOwner($eventId);
+      $event = $this->service->getWithOwner($eventId, $this->userId);
     }
 
     // Create or update the event data
@@ -103,9 +95,9 @@ class EventController extends AbstractController {
 
       // If an event ID is provided, update the existing event
       if ($event) {
-        $this->model->update($eventId, $data);
+        $this->service->update($eventId, $data);
       } else {
-        $this->model->create($data);
+        $this->service->create($data);
       }
 
       MessageUtils::setMessage('success', 'Evento salvo com sucesso!');
@@ -119,11 +111,8 @@ class EventController extends AbstractController {
   public function delete($id) {
     $this->checkLogin('seller');
 
-    // Verify that the event ID is valid and the user is the owner
-    $this->findAndVerifyOwner($id);
-
     try {
-      $this->model->delete($id);
+      $this->service->delete($id, $this->userId);
 
       MessageUtils::setMessage('success', 'Evento excluído com sucesso!');
       $this->navigate('/events/');

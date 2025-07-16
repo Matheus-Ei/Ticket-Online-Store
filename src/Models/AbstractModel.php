@@ -3,7 +3,7 @@
 namespace App\Models;
 
 abstract class AbstractModel {
-  abstract public function get(int $id): ?array;
+  abstract public function getById(int $id): ?array;
 
   abstract public function getAll(): array;
 

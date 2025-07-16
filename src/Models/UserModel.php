@@ -6,9 +6,8 @@ use App\DTOs\UserData;
 use Config\Database;
 
 class UserModel {
-  public function get($id) {
-    $user = Database::selectOne("SELECT * FROM users WHERE id = :id", ['id' => $id]);
-    return $user;
+  public function getById($id) {
+    return Database::selectOne("SELECT * FROM users WHERE id = :id", ['id' => $id]);
   }
 
   public function getAll() {
@@ -19,31 +18,13 @@ class UserModel {
     return Database::selectOne("SELECT * FROM users WHERE email = :email", ['email' => $email]);
   }
 
-  public function hashPassword(string $password) {
-    return password_hash($password, PASSWORD_DEFAULT);
-  }
-
-  public function login(string $email, string $password) {
-    $user = $this->getByEmail($email);
-
-    if (!$user || !password_verify($password, $user['password_hash'])) {
-      throw new \Exception("Invalid email or password");
-    }
-
-    // Set session variables
-    $_SESSION['user_id'] = $user['id'];
-    $_SESSION['user_role'] = $user['role'];
-
-    return $user;
-  }
-
   public function create(UserData $data) {
     $query = "INSERT INTO users (name, password_hash, email, role) 
               VALUES (:name, :password_hash, :email, :role)";
 
     $params = [
       "name" => $data->name,
-      "password_hash" => $data->passwordHash,
+      "password_hash" => $data->password,
       "email" => $data->email,
       "role" => $data->role
     ];
@@ -62,7 +43,7 @@ class UserModel {
     $params = [
       "id" => $id,
       "name" => $data->name,
-      "password_hash" => $data->passwordHash,
+      "password_hash" => $data->password,
       "email" => $data->email,
       "role" => $data->role
     ];

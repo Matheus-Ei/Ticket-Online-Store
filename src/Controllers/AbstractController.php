@@ -7,7 +7,7 @@ use App\Utils\MessageUtils;
 use App\Utils\SessionUtils;
 
 abstract class AbstractController {
-  protected $model;
+  protected $service;
   protected $validator;
 
   protected function render(string $view, array $data = [], string $layout = 'sidebar'): void {
