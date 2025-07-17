@@ -67,7 +67,7 @@ class EventModel {
   public function getPurchasedByClient(int $clientId) {
     $query = "SELECT e.*
               FROM events e 
-                LEFT JOIN tickets t ON e.id = t.event_id AND (t.status = 'purchased' OR t.status = 'reserved')
+                LEFT JOIN tickets t ON e.id = t.event_id AND (t.status = 'purchased')
               WHERE t.client_id = :client_id
               GROUP BY e.id";
 

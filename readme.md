@@ -42,58 +42,58 @@ Aqui descrevi as principais tecnologias utilizadas no projeto:
 
 ## Funcionalidades
 Listei as principais funcionalidades implementadas na loja online dos requisitos do projeto:
-- [ x ] Landing page
-    - [ x ] Rota para listagem de eventos.
-    - [ x ] Botões para login e registro de usuários.
-    - [ x ] Botões para login e registro de clientes.
+- [x] Landing page
+    - [x] Rota para listagem de eventos.
+    - [x] Botões para login e registro de usuários.
+    - [x] Botões para login e registro de clientes.
  
-- [ x ] Usuários (vendedor)
-  - [ x ] Registro de usuários.
-  - [ x ] Visualização do perfil de usuário (apenas o proprietário).
-  - [ x ] Edição de perfil de usuário (apenas o proprietário).
-  - [ x ] Deletar o perfil de usuário (apenas o proprietário).
+- [x] Usuários (vendedor)
+  - [x] Registro de usuários.
+  - [x] Visualização do perfil de usuário (apenas o proprietário).
+  - [x] Edição de perfil de usuário (apenas o proprietário).
+  - [x] Deletar o perfil de usuário (apenas o proprietário).
 
-- [ x ] Clientes
-    - [ x ] Registro de clientes.
-    - [ x ] Perfil de cliente (apenas o proprietário).
-    - [ x ] Edição de perfil de cliente (apenas o proprietário).
-    - [ x ] Deletar o perfil de cliente (apenas o proprietário).
+- [x] Clientes
+    - [x] Registro de clientes.
+    - [x] Perfil de cliente (apenas o proprietário).
+    - [x] Edição de perfil de cliente (apenas o proprietário).
+    - [x] Deletar o perfil de cliente (apenas o proprietário).
 
-- [ x ] Ingressos
-  - [ x ] Listagem de ingressos disponíveis com quantidade superior a 0.
-  - [ x ] QR Code para cada ingresso.
-  - [ x ] Listagem de ingressos comprados pelo cliente (apenas o cliente proprietário).
-  - [ x ] Comprar ingressos (apenas por usuários).
+- [x] Ingressos
+  - [x] Listagem de ingressos disponíveis com quantidade superior a 0.
+  - [x] QR Code para cada ingresso.
+  - [x] Listagem de ingressos comprados pelo cliente (apenas o cliente proprietário).
+  - [x] Comprar ingressos (apenas por usuários).
 
-- [ x ] Eventos
-    - [ x ] Listagem de eventos disponíveis.
-    - [ x ] Listagem de eventos criados pelo usuário (apenas o usuário proprietário).
-    - [ x ] Criação de eventos (apenas por usuários).
-    - [ x ] Edição de eventos (apenas o proprietário).
-    - [ x ] Deletar eventos (apenas o proprietário).
+- [x] Eventos
+    - [x] Listagem de eventos disponíveis.
+    - [x] Listagem de eventos criados pelo usuário (apenas o usuário proprietário).
+    - [x] Criação de eventos (apenas por usuários).
+    - [x] Edição de eventos (apenas o proprietário).
+    - [x] Deletar eventos (apenas o proprietário).
 
-- [ x ] Compras
-    - [ x ] Registro de compras quando um cliente compra ingressos (apenas clientes).
-      - [ x ] Reserva de ingressos quando um cliente seleciona um evento por 2 minutos.
-    - [ x ] Historico de compras do cliente (apenas o cliente proprietário).
-    - [ x ] Gerar comprovante de compra PDF (apenas o cliente proprietário).
+- [x] Compras
+    - [x] Registro de compras quando um cliente compra ingressos (apenas clientes).
+      - [x] Reserva de ingressos quando um cliente seleciona um evento por 2 minutos.
+    - [x] Historico de compras do cliente (apenas o cliente proprietário).
+    - [x] Gerar comprovante de compra PDF (apenas o cliente proprietário).
 
-- [ x ] Autenticação
-  - [ x ] Login de clientes.
-  - [ x ] Login de usuários.
-  - [ x ] Verificação de autenticação para acessar áreas restritas.
-  - [ x ] Verificação de permissões para acessar áreas restritas.
+- [x] Autenticação
+  - [x] Login de clientes.
+  - [x] Login de usuários.
+  - [x] Verificação de autenticação para acessar áreas restritas.
+  - [x] Verificação de permissões para acessar áreas restritas.
 
 - [ ] Segurança
   - [ ] Proteção contra CSRF (Cross-Site Request Forgery).
-  - [ x ] Proteção contra XSS (Cross-Site Scripting).
-  - [ x ] Proteção contra SQL Injection.
+  - [x] Proteção contra XSS (Cross-Site Scripting).
+  - [x] Proteção contra SQL Injection.
   - [ ] Proteção contra ataques de força bruta.
 
-- [ x ] Validações
-    - [ x ] Validação de dados de entrada.
-    - [ x ] Validação de dados ao mostrar na view.
-    - [ x ] Validações nos dados do banco de dados.
+- [x] Validações
+    - [x] Validação de dados de entrada.
+    - [x] Validação de dados ao mostrar na view.
+    - [x] Validações nos dados do banco de dados.
 
 ## Estrutura de Endpoints
 Como os endpoints são organizados no projeto, cada recurso tem suas próprias rotas para operações.

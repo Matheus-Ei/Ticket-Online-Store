@@ -12,7 +12,7 @@
 
   <?php if ($isLoggedIn): ?>
   <body class="flex w-full">
-    <aside class="w-64 bg-gray-950 text-white h-screen flex-shrink-0 overflow-y-auto">
+    <aside class="w-32 sm:w-64 bg-gray-950 text-white h-screen flex-shrink-0 overflow-y-auto">
       <div class="py-8 px-4">
         <?php
         if ($userRole === 'seller') {include GeralUtils::basePath('resources/partials/sidebar-seller.php');} 
