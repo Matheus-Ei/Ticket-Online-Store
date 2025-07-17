@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\DTOs\EventData;
 use App\Services\EventService;
+use App\Services\TicketService;
 use App\Utils\MessageUtils;
 use App\Utils\SessionUtils;
 use App\Validators\EventValidator;
@@ -14,17 +15,35 @@ class EventController extends AbstractController {
   public function __construct() {
     $this->service = new EventService();
     $this->validator = new EventValidator();
-
     $this->userId = SessionUtils::getUserId();
   }
 
   public function index() {
+    $events = $this->service->getAll();
+
     $data = [
       'title' => 'Eventos',
-      'events' => $this->service->getAll(),
+      'events' => $events,
     ];
 
     $this->renderView('events/index', $data);
+  }
+
+  public function viewSellerEvents() {
+    $this->checkLogin('seller');
+
+    try {
+      $events = $this->service->getAll($this->userId);
+    } catch (\Exception $e) {
+      return $this->renderError($e);
+    }
+
+    $data = [
+      'title' => 'Meus Eventos',
+      'events' => $events,
+    ];
+
+    $this->renderView('events/view-seller-events', $data);
   }
 
   public function viewSpecific($id) {
@@ -32,6 +51,12 @@ class EventController extends AbstractController {
       $this->validator->validateId($id);
 
       $event = $this->service->get($id);
+      $userRole = SessionUtils::getUserRole();
+
+      if ($userRole === 'seller' && $event['created_by'] === $this->userId) {
+        $tickets = $this->service->getTicketsSold($id, $this->userId);
+      } 
+
     } catch (\Exception $e) {
       return $this->renderError($e);
     }
@@ -39,6 +64,7 @@ class EventController extends AbstractController {
     $data = [
       'title' => 'Detalhes do Evento',
       'event' => $event,
+      'tickets' => $tickets ?? [],
     ];
 
     $this->renderView('events/view-specific', $data);

@@ -138,6 +138,13 @@ class Router {
 
     [
       "method" => "get",
+      "endpoint" => "/events/seller",
+      "controller" => "App\Controllers\EventController",
+      "action" => "viewSellerEvents"
+    ],
+
+    [
+      "method" => "get",
       "endpoint" => "/events",
       "controller" => "App\Controllers\EventController",
       "action" => "index"

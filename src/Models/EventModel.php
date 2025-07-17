@@ -18,6 +18,20 @@ class EventModel {
     return Database::selectOne($query, ['id' => $id]);
   }
 
+  public function getTicketsSold(int $eventId, int $userId) {
+    $query = "SELECT 
+                t.status,
+                t.created_at,
+                u.name AS client_name,
+                u.email AS client_email
+              FROM tickets t 
+                JOIN events e ON t.event_id = e.id 
+                JOIN users u ON t.client_id = u.id
+              WHERE t.event_id = :id AND e.created_by = :created_by";
+
+    return Database::selectAll($query, ['id' => $eventId, 'created_by' => $userId]);
+  }
+
   public function getAll() {
     $query = "SELECT 
                 e.*, 
@@ -27,6 +41,18 @@ class EventModel {
               GROUP BY e.id";
 
     return Database::selectAll($query);
+  }
+
+  public function getAllBySeller(int $sellerId) {
+    $query = "SELECT 
+                e.*, 
+                e.ticket_quantity - COUNT(t.id) AS tickets_available 
+              FROM events e 
+                LEFT JOIN tickets t ON e.id = t.event_id AND (t.status = 'purchased' OR t.status = 'reserved')
+              WHERE e.created_by = :created_by
+              GROUP BY e.id";
+
+    return Database::selectAll($query, ['created_by' => $sellerId]);
   }
 
   public function getNumberTickets(int $eventId) {

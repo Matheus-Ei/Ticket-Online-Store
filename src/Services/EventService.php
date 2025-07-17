@@ -20,6 +20,16 @@ class EventService extends AbstractService {
     return $event;
   }
 
+  public function getTicketsSold(int $eventId, int $userId) {
+    $tickets = $this->model->getTicketsSold($eventId, $userId);
+
+    if (!$tickets) {
+      throw new \Exception('Evento não encontrado.', 404);
+    }
+
+    return $tickets;
+  }
+
   public function getWithOwner(int $id, int $userId) {
     $event = $this->model->getById($id);
 
@@ -30,7 +40,11 @@ class EventService extends AbstractService {
     return $event;
   }
 
-  public function getAll() {
+  public function getAll(?int $sellerId = null) {
+    if ($sellerId) {
+      return $this->model->getAllBySeller($sellerId);
+    }
+
     return $this->model->getAll();
   }
 
