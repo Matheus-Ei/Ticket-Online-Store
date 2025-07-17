@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\DTOs\UserData;
+use App\DTOs\UserDataEdit;
 use Config\Database;
 
 class UserModel {
@@ -32,20 +33,16 @@ class UserModel {
     return Database::insert($query, $params);
   }
 
-  public function update($id, UserData $data) {
+  public function update($id, UserDataEdit $data) {
     $query = "UPDATE users SET 
                 name = :name, 
-                password_hash = :password_hash, 
-                email = :email, 
-                role = :role 
+                email = :email
               WHERE id = :id";
 
     $params = [
       "id" => $id,
       "name" => $data->name,
-      "password_hash" => $data->password,
       "email" => $data->email,
-      "role" => $data->role
     ];
 
     return Database::execute($query, $params);

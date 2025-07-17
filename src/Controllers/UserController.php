@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\DTOs\UserData;
+use App\DTOs\UserDataEdit;
 use App\Utils\SessionUtils;
 use App\Services\UserService;
 use App\Utils\MessageUtils;
@@ -115,14 +116,12 @@ class UserController extends AbstractController {
     $userId = SessionUtils::getUserId();
 
     try {
-      $profileData = new UserData(
+      $profileData = new UserDataEdit(
         name: $_POST['name'],
-        email: $_POST['email'],
-        password: 'THISPASSWORDWILLNOTBEUSED',
-        role: 'seller',
+        email: $_POST['email']
       );
 
-      $this->validator->validateData($profileData);
+      $this->validator->validateDataEdit($profileData);
 
       $this->service->update($userId, $profileData);
 

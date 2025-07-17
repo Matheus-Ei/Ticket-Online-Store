@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\DTOs\UserData;
+use App\DTOs\UserDataEdit;
 use App\Models\UserModel;
 
 class UserService extends AbstractService {
@@ -54,16 +55,12 @@ class UserService extends AbstractService {
     return $this->model->create($data);
   }
 
-  public function update($id, UserData $data) {
+  public function update($id, UserDataEdit $data) {
     $user = $this->model->getById($id);
 
     if (!$user) {
       throw new \Exception("Usuário não encontrado", 404);
     }
-
-    // Update user data
-    $data->role = $user['role'];
-    $data->password = $user['password_hash'];
 
     return $this->model->update($id, $data);
   }

@@ -3,6 +3,7 @@
 namespace App\Validators;
 
 use App\DTOs\UserData;
+use App\DTOs\UserDataEdit;
 
 class UserValidator extends AbstractValidator {
   public function validateData(UserData $data): void {
@@ -19,6 +20,15 @@ class UserValidator extends AbstractValidator {
     // Role validation
     $allowedRoles = ['client', 'seller'];
     $this->validateStatus($data->role, 'Cargo', $allowedRoles);
+
+    $this->throwIfErrors();
+  }
+
+  public function validateDataEdit(UserDataEdit $data): void {
+    $this->resetErrors();
+
+    $this->ensureNotEmpty($data->name, 'Nome');
+    $this->validateEmail($data->email, 'Email');
 
     $this->throwIfErrors();
   }
