@@ -7,9 +7,22 @@ use Config\Database;
 
 class TicketModel {
   public function getById(int $id) {
-    $query = "SELECT t.id, t.status, e.name, e.start_time, e.end_time, e.location, e.description, e.image_url, t.created_at, t.client_id
+    $query = "SELECT 
+                 t.id, 
+                 t.status, 
+                 e.name, 
+                 e.start_time, 
+                 e.end_time, 
+                 e.location, 
+                 e.description, 
+                 e.image_url, 
+                 t.created_at, 
+                 t.client_id, 
+                 c.name AS client_name, 
+                 c.email AS client_email
               FROM tickets t 
                 JOIN events e ON t.event_id = e.id 
+                JOIN users c ON t.client_id = c.id
               WHERE t.id = :id";
 
     return Database::selectOne($query, ['id' => $id]);

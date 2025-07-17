@@ -5,6 +5,8 @@ namespace App\Services;
 use App\DTOs\TicketData;
 use App\Models\TicketModel;
 use App\Models\EventModel;
+use App\Utils\GeralUtils;
+use Dompdf\Dompdf;
 
 class TicketService extends AbstractService {
   private $eventModel;
@@ -22,6 +24,34 @@ class TicketService extends AbstractService {
     }
 
     return $ticket;
+  }
+
+  public function generatePdf(int $ticketId, $clientId) {
+    $ticket = $this->model->getById($ticketId);
+
+    if (!$ticket) {
+      throw new \Exception('Ingresso não encontrado.', 404);
+    }
+
+    if ($ticket['status'] !== 'purchased' || $ticket['client_id'] !== $clientId) {
+      throw new \Exception('O ingresso não está comprado.', 400);
+    }
+
+    $pdf_template = GeralUtils::basePath('resources/views/tickets/ticket-pdf.php');
+
+    // Get the html content from the template
+    ob_start();
+    require $pdf_template;
+    $html = ob_get_clean();
+
+    // Load the HTML content into Dompdf
+    $dompdf = new Dompdf();
+    $dompdf->loadHtml($html);
+    $dompdf->setPaper('A4', 'portrait');
+
+    // Render the HTML as PDF
+    $dompdf->render();
+    $dompdf->stream("ticket-{$ticketId}.pdf", ["Attachment" => true]);
   }
 
   public function getAll() {

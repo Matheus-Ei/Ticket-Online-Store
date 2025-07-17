@@ -81,6 +81,13 @@ class Router {
 
     [
       "method" => "get",
+      "endpoint" => "/tickets/generate-pdf/{ticketId}",
+      "controller" => "App\Controllers\TicketController",
+      "action" => "generatePdf"
+    ],
+
+    [
+      "method" => "get",
       "endpoint" => "/tickets/buy",
       "controller" => "App\Controllers\TicketController",
       "action" => "buyForm"

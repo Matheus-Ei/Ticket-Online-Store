@@ -14,6 +14,12 @@
     <p class="text-gray-600 mb-2"><strong>Localização:</strong> <?= htmlspecialchars($ticket['location']) ?></p>
     <p class="text-gray-600 mb-2"><strong>Status:</strong> <?= htmlspecialchars($ticket['status']) ?></p>
     <p class="text-gray-600 mb-2"><strong>Comprado em:</strong> <?= htmlspecialchars($ticket['created_at']) ?></p>
+
+    <div class="mt-4">
+      <a href="/tickets/generate-pdf/<?= $ticket['id'] ?>" class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+        Baixar Comprovante
+      </a>
+    </div>
   </div>
 
   <div class="mt-6">

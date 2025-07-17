@@ -36,6 +36,19 @@ class TicketController extends AbstractController {
     $this->renderView('tickets/view-purchased', $data);
   }
 
+  public function generatePdf($ticketId) {
+    $this->checkLogin('client');
+
+    try {
+      $this->validator->validateId($ticketId, 'ID do Ingresso');
+
+      return $this->service->generatePdf($ticketId, $this->userId);
+    } catch (\Exception $e) {
+      MessageUtils::setMessage('error', $e->getMessage());
+      return $this->navigate('/tickets/purchased');
+    }
+  }
+
   public function viewSpecific($id) {
     $this->checkLogin('client');
 
