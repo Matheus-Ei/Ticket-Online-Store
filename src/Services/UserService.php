@@ -14,7 +14,7 @@ class UserService extends AbstractService {
     $user = $this->model->getById($id);
 
     if (!$user) {
-      throw new \Exception("User not found");
+      throw new \Exception("Usuário não encontrado", 404);
     }
 
     return $user;
@@ -32,7 +32,7 @@ class UserService extends AbstractService {
     $user = $this->model->getByEmail($email);
 
     if (!$user || !password_verify($password, $user['password_hash'])) {
-      throw new \Exception("Invalid email or password");
+      throw new \Exception("Credenciais inválidas", 401);
     }
 
     // Set session variables
@@ -52,7 +52,7 @@ class UserService extends AbstractService {
     $user = $this->model->getById($id);
 
     if (!$user) {
-      throw new \Exception("User not found");
+      throw new \Exception("Usuário não encontrado", 404);
     }
 
     // Update user data
@@ -66,7 +66,7 @@ class UserService extends AbstractService {
     $user = $this->model->getById($id);
 
     if (!$user) {
-      throw new \Exception("User not found");
+      throw new \Exception("Usuário não encontrado", 404);
     }
 
     return $this->model->delete($id);

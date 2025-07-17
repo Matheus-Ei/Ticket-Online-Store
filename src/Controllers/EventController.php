@@ -24,29 +24,41 @@ class EventController extends AbstractController {
       'events' => $this->service->getAll(),
     ];
 
-    $this->render('events/index', $data);
+    $this->renderView('events/index', $data);
   }
 
   public function viewSpecific($id) {
+    try {
+      $this->validator->validateId($id);
+
+      $event = $this->service->get($id);
+    } catch (\Exception $e) {
+      return $this->renderError($e);
+    }
+
     $data = [
       'title' => 'Detalhes do Evento',
-      'event' => $this->service->get($id),
+      'event' => $event,
     ];
 
-    $this->render('events/view-specific', $data);
+    $this->renderView('events/view-specific', $data);
   }
 
   public function viewPurchased() {
     $this->checkLogin('client');
 
-    $purchasedEvents = $this->service->getPurchased($this->userId);
+    try {
+      $purchasedEvents = $this->service->getPurchased($this->userId);
+    } catch (\Exception $e) {
+      return $this->renderError($e);
+    }
 
     $data = [
       'title' => 'Eventos Comprados',
       'purchasedEvents' => $purchasedEvents,
     ];
 
-    $this->render('events/view-purchased', $data);
+    $this->renderView('events/view-purchased', $data);
   }
 
   public function saveForm() {
@@ -54,15 +66,22 @@ class EventController extends AbstractController {
 
     $eventId = $_GET['id'] ?? null;
 
-    // If an event ID is provided, fetch the event details for editing
-    if ($eventId) {
-      $event = $this->service->getWithOwner($eventId, $this->userId);
-      $data = ['title' => 'Editar Evento', 'event' => $event];
-    } else {
-      $data = ['title' => 'Criar Evento'];
-    }
+    try {
+      // If an event ID is provided, fetch the event details for editing
+      if ($eventId) {
+        $this->validator->validateId($eventId);
 
-    $this->render('events/save-form', $data);
+        $event = $this->service->getWithOwner($eventId, $this->userId);
+        $data = ['title' => 'Editar Evento', 'event' => $event];
+      } else {
+        $data = ['title' => 'Criar Evento'];
+      }
+
+      $this->renderView('events/save-form', $data);
+    } catch (\Exception $e) {
+      MessageUtils::setMessage('error', $e->getMessage());
+      $this->navigate('/events');
+    }
   }
 
   public function save() {
@@ -71,13 +90,15 @@ class EventController extends AbstractController {
     $eventId = $_POST['id'] ?? null;
     $event = null;
 
-    // If an event ID is provided, fetch the event details for editing
-    if($eventId) {
-      $event = $this->service->getWithOwner($eventId, $this->userId);
-    }
-
-    // Create or update the event data
     try {
+      $this->validator->validateId($eventId, "Event ID");
+
+      // If an event ID is provided, fetch the event details for editing
+      if($eventId) {
+        $event = $this->service->getWithOwner($eventId, $this->userId);
+      }
+
+      // Create or update the event data
       $data = new EventData(
         name: $_POST['name'] ?? $event['name'] ?? '',
         description: $_POST['description'] ?? $event['description'] ?? '',
@@ -90,15 +111,9 @@ class EventController extends AbstractController {
         createdBy: $this->userId
       );
 
-      // Validate required fields
       $this->validator->validateSave($data);
 
-      // If an event ID is provided, update the existing event
-      if ($event) {
-        $this->service->update($eventId, $data);
-      } else {
-        $this->service->create($data);
-      }
+      $this->service->save($eventId, $data);
 
       MessageUtils::setMessage('success', 'Evento salvo com sucesso!');
       $this->navigate('/events/');
@@ -112,6 +127,8 @@ class EventController extends AbstractController {
     $this->checkLogin('seller');
 
     try {
+      $this->validator->validateId($id, "Event ID");
+
       $this->service->delete($id, $this->userId);
 
       MessageUtils::setMessage('success', 'Evento excluído com sucesso!');

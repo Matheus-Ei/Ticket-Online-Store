@@ -10,7 +10,7 @@ abstract class AbstractController {
   protected $service;
   protected $validator;
 
-  protected function render(string $view, array $data = [], string $layout = 'sidebar'): void {
+  protected function renderView(string $view, array $data = [], string $layout = 'sidebar'): void {
     $data = array_merge($data, [
       'userRole' => SessionUtils::getUserRole(),
       'userId' => SessionUtils::getUserId(),
@@ -30,6 +30,16 @@ abstract class AbstractController {
 
     // Include the content in the layout
     require GeralUtils::basePath("resources/layouts/{$layout}.php");
+  }
+
+  protected function renderError($error): void {
+    $data = [
+      'title' => 'Error',
+      'errorMessage' => $error->getMessage(),
+      'statusCode' => $error->getCode() ?: 500,
+    ];
+
+    $this->renderView('errors/error-card', $data);
   }
 
   protected function navigate(string $url) {

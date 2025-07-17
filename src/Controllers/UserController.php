@@ -19,7 +19,7 @@ class UserController extends AbstractController {
       'title' => 'Criar Conta',
     ];
 
-    $this->render('users/register-form', $data, 'clean');
+    $this->renderView('users/register-form', $data, 'clean');
   }
 
   public function loginForm() {
@@ -27,35 +27,45 @@ class UserController extends AbstractController {
       'title' => 'Entrar',
     ];
 
-    $this->render('users/login-form', $data, 'clean');
+    $this->renderView('users/login-form', $data, 'clean');
   }
 
   public function viewProfile() {
     $this->checkLogin();
 
     $userId = SessionUtils::getUserId();
-    $user = $this->service->get($userId);
+
+    try {
+      $user = $this->service->get($userId);
+    } catch (\Exception $e) {
+      return $this->renderError($e);
+    }
 
     $data = [
       'title' => 'Perfil do Usuário',
       'user' => $user,
     ];
 
-    $this->render('users/view-profile', $data);
+    $this->renderView('users/view-profile', $data);
   }
 
   public function editForm() {
     $this->checkLogin();
 
     $userId = SessionUtils::getUserId();
-    $user = $this->service->get($userId);
+
+    try {
+      $user = $this->service->get($userId);
+    } catch (\Exception $e) {
+      return $this->renderError($e);
+    }
 
     $data = [
       'title' => 'Editar Perfil',
       'user' => $user,
     ];
 
-    $this->render('users/edit-form', $data);
+    $this->renderView('users/edit-form', $data);
   }
 
   public function register() {
@@ -113,6 +123,7 @@ class UserController extends AbstractController {
       );
 
       $this->validator->validateData($profileData);
+
       $this->service->update($userId, $profileData);
 
       MessageUtils::setMessage('success', 'Perfil atualizado com sucesso!');

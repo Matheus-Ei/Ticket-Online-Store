@@ -11,17 +11,23 @@ class EventService extends AbstractService {
   }
 
   public function get($id) {
-    return $this->model->getById($id);
+    $event = $this->model->getById($id);
+
+    if (!$event) {
+      throw new \Exception('Evento não encontrado.', 404);
+    }
+
+    return $event;
   }
 
   public function getWithOwner(int $id, int $userId) {
     $event = $this->model->getById($id);
 
-    if ($event && $event['created_by'] === $userId) {
-      return $event;
+    if (!$event || $event['created_by'] !== $userId) {
+      throw new \Exception('Evento não encontrado ou não foi criado por você.', 404);
     }
 
-    return null;
+    return $event;
   }
 
   public function getAll() {
@@ -32,11 +38,21 @@ class EventService extends AbstractService {
     return $this->model->getPurchasedByClient($clientId);
   }
 
-  public function create(EventData $data) {
-    return $this->model->create($data);
+  public function save($eventId, EventData $data) {
+    if ($eventId) {
+      $this->model->update($eventId, $data);
+    } else {
+      $this->model->create($data);
+    }
   }
 
   public function update(int $id, EventData $data) {
+    $event = $this->model->getById($id);
+
+    if (!$event) {
+      throw new \Exception('Evento não encontrado ou você não tem permissão para atualizá-lo.', 404);
+    }
+
     return $this->model->update($id, $data);
   }
 
@@ -44,7 +60,7 @@ class EventService extends AbstractService {
     $event = $this->getWithOwner($id, $userId);
 
     if (!$event) {
-      throw new \Exception('Evento não encontrado ou você não tem permissão para excluí-lo.');
+      throw new \Exception('Evento não encontrado ou você não tem permissão para excluí-lo.', 404);
     }
 
     return $this->model->delete($id);

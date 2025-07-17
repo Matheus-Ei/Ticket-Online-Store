@@ -9,7 +9,7 @@
 
   <h2 class="text-xl font-semibold mb-2"><?=htmlspecialchars($event['name'])?></h2>
 
-  <p class="text-gray-700 mb-4"><?=htmlspecialchars($event['description'])?></p>
+  <p class="text-gray-700 mb-4 line-clamp-2"><?=htmlspecialchars($event['description'])?></p>
 
   <p class="text-gray-500"><strong>Inicio:</strong> <?= date('F j, Y, g:i A', strtotime($event['start_time'])); ?></p>
 

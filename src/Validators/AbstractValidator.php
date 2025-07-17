@@ -19,19 +19,19 @@ abstract class AbstractValidator {
     $this->addError($fieldName, "The $fieldName is invalid.");
   }
 
-  protected function validateInt(int $value, string $fieldName, int $min = 1): void {
+  protected function validateInt($value, string $fieldName, int $min = 1): void {
     if ($value !== null && !filter_var($value, FILTER_VALIDATE_INT, ['options' => ['min_range' => $min]])) {
       $this->addValidationError($fieldName);
     }
   }
 
-  protected function validateFloat(float $value, string $fieldName, float $min = 0): void {
+  protected function validateFloat($value, string $fieldName, float $min = 0): void {
     if ($value !== null && !filter_var($value, FILTER_VALIDATE_FLOAT, ['options' => ['min_range' => $min]])) {
       $this->addValidationError($fieldName);
     }
   }
 
-  protected function ensureNotEmpty(string $value, string $fieldName): void {
+  protected function ensureNotEmpty($value, string $fieldName): void {
     if (empty(trim($value))) {
       $this->addError($fieldName, "The $fieldName cannot be empty.");
     }
@@ -44,13 +44,13 @@ abstract class AbstractValidator {
     }
   }
 
-  protected function validateEmail(string $email, string $fieldName): void {
+  protected function validateEmail($email, string $fieldName): void {
     if ($email !== null && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
       $this->addValidationError($fieldName);
     }
   }
 
-  protected function validateUrl(string $url, string $fieldName): void {
+  protected function validateUrl($url, string $fieldName): void {
     if ($url !== null && !filter_var($url, FILTER_VALIDATE_URL)) {
       $this->addValidationError($fieldName);
     }
@@ -61,4 +61,11 @@ abstract class AbstractValidator {
       throw new ValidationException($this->errors);
     }
   }
+
+  public function validateId($id, string $fieldName = 'ID'): void {
+    $this->resetErrors();
+    $this->validateInt($id, $fieldName);
+    $this->throwIfErrors();
+  }
+
 }
