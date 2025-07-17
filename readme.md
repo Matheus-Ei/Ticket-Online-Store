@@ -42,11 +42,10 @@ Aqui descrevi as principais tecnologias utilizadas no projeto:
 
 ## Funcionalidades
 Listei as principais funcionalidades implementadas na loja online dos requisitos do projeto:
-- [ ] Landing page
-    - [ ] Tela explicativa do projeto.
-    - [ ] Rota para listagem de ingressos.
-    - [ ] Botões para login e registro de usuários.
-    - [ ] Botões para login e registro de clientes.
+- [ x ] Landing page
+    - [ x ] Rota para listagem de eventos.
+    - [ x ] Botões para login e registro de usuários.
+    - [ x ] Botões para login e registro de clientes.
  
 - [ x ] Usuários (vendedor)
   - [ x ] Registro de usuários.
@@ -60,26 +59,24 @@ Listei as principais funcionalidades implementadas na loja online dos requisitos
     - [ x ] Edição de perfil de cliente (apenas o proprietário).
     - [ x ] Deletar o perfil de cliente (apenas o proprietário).
 
-- [ ] Ingressos
-  - [ ] Listagem de ingressos disponíveis com quantidade superior a 0.
-  - [ ] QR Code para cada ingresso.
-  - [ ] Listagem de ingressos comprados pelo cliente (apenas o cliente proprietário).
-  - [ ] Criação de ingressos (apenas por usuários).
-  - [ ] Edição de ingressos (apenas o usuário proprietário).
-  - [ ] Deletar ingressos (apenas o usuário proprietário).
+- [ x ] Ingressos
+  - [ x ] Listagem de ingressos disponíveis com quantidade superior a 0.
+  - [ x ] QR Code para cada ingresso.
+  - [ x ] Listagem de ingressos comprados pelo cliente (apenas o cliente proprietário).
+  - [ x ] Comprar ingressos (apenas por usuários).
 
-- [ ] Eventos
-    - [ ] Listagem de eventos disponíveis.
-    - [ ] Listagem de eventos criados pelo usuário (apenas o usuário proprietário).
-    - [ ] Criação de eventos (apenas por usuários).
-    - [ ] Edição de eventos (apenas o proprietário).
-    - [ ] Deletar eventos (apenas o proprietário).
+- [ x ] Eventos
+    - [ x ] Listagem de eventos disponíveis.
+    - [ x ] Listagem de eventos criados pelo usuário (apenas o usuário proprietário).
+    - [ x ] Criação de eventos (apenas por usuários).
+    - [ x ] Edição de eventos (apenas o proprietário).
+    - [ x ] Deletar eventos (apenas o proprietário).
 
-- [ ] Compras
-    - [ ] Registro de compras quando um cliente compra ingressos (apenas clientes).
-      - [ ] Reserva de ingressos quando um cliente seleciona um evento por 2 minutos.
-    - [ ] Historico de compras do cliente (apenas o cliente proprietário).
-    - [ ] Gerar comprovante de compra PDF (apenas o cliente proprietário).
+- [ x ] Compras
+    - [ x ] Registro de compras quando um cliente compra ingressos (apenas clientes).
+      - [ x ] Reserva de ingressos quando um cliente seleciona um evento por 2 minutos.
+    - [ x ] Historico de compras do cliente (apenas o cliente proprietário).
+    - [ x ] Gerar comprovante de compra PDF (apenas o cliente proprietário).
 
 - [ x ] Autenticação
   - [ x ] Login de clientes.
@@ -93,10 +90,10 @@ Listei as principais funcionalidades implementadas na loja online dos requisitos
   - [ x ] Proteção contra SQL Injection.
   - [ ] Proteção contra ataques de força bruta.
 
-- [ ] Validações
-    - [ ] Validação de dados de entrada.
-    - [ ] Validação de dados ao mostrar na view.
-    - [ ] Validações nos dados do banco de dados.
+- [ x ] Validações
+    - [ x ] Validação de dados de entrada.
+    - [ x ] Validação de dados ao mostrar na view.
+    - [ x ] Validações nos dados do banco de dados.
 
 ## Estrutura de Endpoints
 Como os endpoints são organizados no projeto, cada recurso tem suas próprias rotas para operações.
