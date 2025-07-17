@@ -3,8 +3,6 @@
 
   <td class="py-2 px-4 border-b border-gray-200"><?= htmlspecialchars($ticket['start_time']) ?></td>
 
-  <td class="py-2 px-4 border-b border-gray-200"><?= htmlspecialchars($ticket['end_time']) ?></td>
-
   <td class="py-2 px-4 border-b border-gray-200"><?= htmlspecialchars($ticket['location']) ?></td>
 
   <td class="py-2 px-4 border-b border-gray-200"><?= htmlspecialchars($ticket['status']) ?></td>

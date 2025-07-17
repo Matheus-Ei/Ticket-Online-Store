@@ -20,20 +20,14 @@ class EventService extends AbstractService {
     return $event;
   }
 
-  public function getTicketsSold(int $eventId, int $userId) {
-    $tickets = $this->model->getTicketsSold($eventId, $userId);
-
-    if (!$tickets) {
-      throw new \Exception('Evento não encontrado.', 404);
-    }
-
-    return $tickets;
+  public function getTicketsSold(int $eventId, int $sellerId) {
+    return $this->model->getTicketsSold($eventId, $sellerId);
   }
 
-  public function getWithOwner(int $id, int $userId) {
+  public function getWithOwner(int $id, int $sellerId) {
     $event = $this->model->getById($id);
 
-    if (!$event || $event['created_by'] !== $userId) {
+    if (!$event || $event['created_by'] !== $sellerId) {
       throw new \Exception('Evento não encontrado ou não foi criado por você.', 404);
     }
 
@@ -70,8 +64,8 @@ class EventService extends AbstractService {
     return $this->model->update($id, $data);
   }
 
-  public function delete(int $id, int $userId) {
-    $event = $this->getWithOwner($id, $userId);
+  public function delete(int $id, int $sellerId) {
+    $event = $this->getWithOwner($id, $sellerId);
 
     if (!$event) {
       throw new \Exception('Evento não encontrado ou você não tem permissão para excluí-lo.', 404);

@@ -4,7 +4,6 @@ namespace App\Controllers;
 
 use App\DTOs\EventData;
 use App\Services\EventService;
-use App\Services\TicketService;
 use App\Utils\MessageUtils;
 use App\Utils\SessionUtils;
 use App\Validators\EventValidator;
@@ -56,7 +55,6 @@ class EventController extends AbstractController {
       if ($userRole === 'seller' && $event['created_by'] === $this->userId) {
         $tickets = $this->service->getTicketsSold($id, $this->userId);
       } 
-
     } catch (\Exception $e) {
       return $this->renderError($e);
     }

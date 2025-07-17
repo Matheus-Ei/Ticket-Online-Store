@@ -6,7 +6,11 @@
   <div class="bg-white border border-gray-200 rounded-lg p-6">
     <p class="text-gray-600 mb-2"><strong>Nome do Evento:</strong> <?= htmlspecialchars($ticket['name']) ?></p>
     <p class="text-gray-600 mb-2"><strong>Data e Hora de Início:</strong> <?= htmlspecialchars($ticket['start_time']) ?></p>
+
+    <?php if (isset($ticket['end_time'])):?>
     <p class="text-gray-600 mb-2"><strong>Data e Hora de Fim:</strong> <?= htmlspecialchars($ticket['end_time']) ?></p>
+    <?php endif; ?>
+
     <p class="text-gray-600 mb-2"><strong>Localização:</strong> <?= htmlspecialchars($ticket['location']) ?></p>
     <p class="text-gray-600 mb-2"><strong>Status:</strong> <?= htmlspecialchars($ticket['status']) ?></p>
     <p class="text-gray-600 mb-2"><strong>Comprado em:</strong> <?= htmlspecialchars($ticket['created_at']) ?></p>
