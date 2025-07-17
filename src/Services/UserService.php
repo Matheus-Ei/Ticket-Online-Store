@@ -43,6 +43,12 @@ class UserService extends AbstractService {
   }
 
   public function create(UserData $data) {
+    // Check if email already exists
+    $existingUser = $this->model->getByEmail($data->email);
+    if ($existingUser) {
+      throw new \Exception("Email já cadastrado", 400);
+    }
+
     // Hash the password
     $data->password = $this->hashPassword($data->password);
     return $this->model->create($data);

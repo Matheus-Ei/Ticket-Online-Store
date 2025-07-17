@@ -70,15 +70,16 @@ class TicketService extends AbstractService {
   }
 
   public function reserve(int $clientId, int $eventId) {
-    $hasTickets = $this->eventModel->getById($eventId)['tickets_available'] > 0;
-    if (!$hasTickets) {
-      throw new \Exception('Nenhum ingresso disponível para este evento.', 404);
-    }
-
     // Verify if the client already has a reserved ticket for this event
     $reservedTicket = $this->model->getReservedByClient($clientId, $eventId);
     if($reservedTicket) {
       return $this->model->getById($reservedTicket['id']);
+    }
+
+    // Verify if the event exists and has available tickets
+    $hasTickets = $this->eventModel->getById($eventId)['tickets_available'] > 0;
+    if (!$hasTickets) {
+      throw new \Exception('Nenhum ingresso disponível para este evento.', 404);
     }
 
     $ticketData = new TicketData(

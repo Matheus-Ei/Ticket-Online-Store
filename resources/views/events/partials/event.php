@@ -17,9 +17,11 @@
   <p class="text-gray-500"><strong>Fim:</strong> <?=date('F j, Y, g:i A', strtotime($event['end_time']))?></p>
   <?php endif; ?>
 
-  <p class="text-gray-500 mb-4"><strong>Localização:</strong> <?=htmlspecialchars($event['location'])?></p>
+  <?php if ($event['location']): ?>
+  <p class="text-gray-500"><strong>Localização:</strong> <?=htmlspecialchars($event['location'])?></p>
+  <?php endif ?>
 
-  <p class="text-green-600 font-bold mb-4">
+  <p class="text-green-600 font-bold mb-4 mt-4">
     <?php if ($event['ticket_price'] > 0): ?>
     $<?=number_format($event['ticket_price'], 2)?> por ingresso
     <?php else: ?>
@@ -27,37 +29,43 @@
     <?php endif; ?>
   </p>
 
+  <?php if (isset($event['tickets_available'])): ?>
   <p class="text-gray-500"><strong>Ingressos disponíveis:</strong> <?=htmlspecialchars($event['tickets_available'])?></p>
+  <?php endif; ?>
+
   <p class="text-gray-500 mb-4"><strong>Ingressos totais:</strong> <?=htmlspecialchars($event['ticket_quantity'])?></p>
 
-  <a 
-    href="/events/<?=$event['id']?>" 
-    class="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
-  >
-    Ver Detalhes
-  </a>
 
-  <?php if ($userRole === 'seller' && $event['created_by'] === $userId): ?>
-  <a 
-    href="/events/save?id=<?=$event['id']?>" 
-    class="inline-block bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600 transition"
-  >
-    Editar Evento
-  </a>
-
-  <form 
-    method="POST" 
-    action="/events/delete/<?=$event['id']?>" 
-    class="inline-block" 
-    onSubmit="return confirm('Tem certeza que deseja excluir este evento? Esta ação não pode ser desfeita.');"
-  >
-    <button 
-      type="submit" 
-      class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition cursor-pointer"
+  <div class='flex flex-col xl:flex-row gap-2 mt-4'>
+    <a 
+      href="/events/<?=$event['id']?>" 
+      class="w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition xl:text-center"
     >
-      Excluir Evento
-    </button>
-  </form>
-  <?php endif; ?>
+      Visualizar
+    </a>
+
+    <?php if ($userRole === 'seller' && $event['created_by'] === $userId): ?>
+    <a 
+      href="/events/save?id=<?=$event['id']?>" 
+      class="w-full bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600 transition xl:text-center"
+    >
+      Editar
+    </a>
+
+    <form 
+      method="POST" 
+      action="/events/delete/<?=$event['id']?>" 
+      class="w-full" 
+      onSubmit="return confirm('Tem certeza que deseja excluir este evento? Esta ação não pode ser desfeita.');"
+    >
+      <button 
+        type="submit" 
+        class="w-full bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition cursor-pointer text-start xl:text-center"
+      >
+        Excluir
+      </button>
+    </form>
+    <?php endif; ?>
+  </div>
 </div>
 

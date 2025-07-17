@@ -8,17 +8,17 @@ class UserValidator extends AbstractValidator {
   public function validateData(UserData $data): void {
     $this->resetErrors();
 
-    $this->ensureNotEmpty($data->name, 'Name');
+    $this->ensureNotEmpty($data->name, 'Nome');
     $this->validateEmail($data->email, 'Email');
 
     // Password validation
     if (strlen($data->password ?? '') < 8) {
-      $this->addError('password', 'The password must be at least 8 characters long.');
+      $this->addError('password', 'A senha deve ter pelo menos 8 caracteres.');
     }
 
     // Role validation
     $allowedRoles = ['client', 'seller'];
-    $this->validateStatus($data->role, 'Role', $allowedRoles);
+    $this->validateStatus($data->role, 'Cargo', $allowedRoles);
 
     $this->throwIfErrors();
   }

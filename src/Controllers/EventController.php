@@ -91,10 +91,9 @@ class EventController extends AbstractController {
     $event = null;
 
     try {
-      $this->validator->validateId($eventId, "Event ID");
-
       // If an event ID is provided, fetch the event details for editing
       if($eventId) {
+        $this->validator->validateId($eventId, "Event ID");
         $event = $this->service->getWithOwner($eventId, $this->userId);
       }
 
@@ -104,7 +103,7 @@ class EventController extends AbstractController {
         description: $_POST['description'] ?? $event['description'] ?? '',
         imageUrl: $_POST['image_url'] ?? $event['image_url'] ?? '',
         startTime: new \DateTime($_POST['start_time'] ?? $event['start_time'] ?? 'now'),
-        endTime: isset($_POST['end_time']) ? new \DateTime($_POST['end_time']) : null,
+        endTime: !empty($_POST['end_time']) ? new \DateTime($_POST['end_time']) : null,
         location: $_POST['location'] ?? $event['location'] ?? '',
         ticketPrice: $_POST['ticket_price'] ?? $event['ticket_price'] ?? 0.0,
         ticketQuantity: $_POST['ticket_quantity'] ?? $event['ticket_quantity'] ?? 0,

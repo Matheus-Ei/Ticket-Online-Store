@@ -16,7 +16,7 @@ abstract class AbstractValidator {
   }
 
   protected function addValidationError(string $fieldName): void {
-    $this->addError($fieldName, "The $fieldName is invalid.");
+    $this->addError($fieldName, "O $fieldName é inválido.");
   }
 
   protected function validateInt($value, string $fieldName, int $min = 1): void {
@@ -33,13 +33,13 @@ abstract class AbstractValidator {
 
   protected function ensureNotEmpty($value, string $fieldName): void {
     if (empty(trim($value))) {
-      $this->addError($fieldName, "The $fieldName cannot be empty.");
+      $this->addError($fieldName, "O $fieldName não pode estar vazio.");
     }
   }
 
   protected function validateStatus(string $status, string $fieldName, array $allowedStatuses): void {
     if ($status !== null && !in_array($status, $allowedStatuses)) {
-      $error = "The $fieldName must be one of: " . implode(', ', $allowedStatuses);
+      $error = "O $fieldName deve ser um destes: " . implode(', ', $allowedStatuses);
       $this->addError($fieldName, $error);
     }
   }

@@ -9,7 +9,7 @@
     <input type="hidden" name="id" value="<?= isset($event) ? htmlspecialchars($event['id']) : '' ?>">
 
     <div>
-      <label for="name" class="block text-sm font-medium text-gray-700">Nome do Evento</label>
+      <label for="name" class="block text-sm font-medium text-gray-700">* Nome do Evento</label>
 
       <input 
         type="text" 
@@ -30,7 +30,6 @@
         name="description" 
         rows="4" 
         placeholder="Descreva o evento"
-        required 
         class="px-2 py-1 mt-1 block w-full border-gray-200 rounded-md border focus:border-blue-500 focus:ring-blue-500 outline-none"
       ><?= isset($event) ? htmlspecialchars($event['description']) : '' ?></textarea>
     </div>
@@ -49,7 +48,7 @@
     </div>
 
     <div>
-      <label for="start_time" class="block text-sm font-medium text-gray-700">Data e Hora de Início</label>
+      <label for="start_time" class="block text-sm font-medium text-gray-700">* Data e Hora de Início</label>
 
       <input 
         type="datetime-local" 
@@ -70,7 +69,7 @@
         id="end_time" 
         name="end_time" 
         placeholder="Selecione a data e hora de término"
-        value="<?= isset($event) && $event['end_time'] ? date('Y-m-d\TH:i', strtotime($event['end_time'])) : '' ?>"
+        value="<?= isset($event) && $event['end_time'] ? date('Y-m-d\TH:i', strtotime($event['end_time'])) : null ?>"
         class="px-2 py-1 mt-1 block w-full border-gray-200 rounded-md border focus:border-blue-500 focus:ring-blue-500 outline-none"
       >
     </div>
@@ -84,13 +83,12 @@
         name="location" 
         placeholder="Qual é o local do evento?"
         value="<?= isset($event) ? htmlspecialchars($event['location']) : '' ?>" 
-        required 
         class="px-2 py-1 mt-1 block w-full border-gray-200 rounded-md border focus:border-blue-500 focus:ring-blue-500 outline-none"
       >
     </div>
 
     <div>
-      <label for="ticket_price" class="block text-sm font-medium text-gray-700">Preço do Ingresso</label>
+      <label for="ticket_price" class="block text-sm font-medium text-gray-700">* Preço do Ingresso</label>
 
       <input 
         type="number" 
@@ -106,7 +104,7 @@
     </div>
 
     <div>
-      <label for="ticket_quantity" class="block text-sm font-medium text-gray-700">Quantidade de Ingressos</label>
+      <label for="ticket_quantity" class="block text-sm font-medium text-gray-700">* Quantidade de Ingressos</label>
 
       <input 
         type="number" 

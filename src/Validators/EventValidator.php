@@ -10,40 +10,37 @@ class EventValidator extends AbstractValidator {
     $this->resetErrors();
 
     // --- Required Fields ---
-    $this->ensureNotEmpty($data->name, 'Name');
-    $this->validateInt($data->createdBy, 'Created By');
-    $this->validateInt($data->ticketQuantity, 'Ticket Quantity', 1);
-    $this->validateFloat($data->ticketPrice, 'Ticket Price', 0);
+    $this->ensureNotEmpty($data->name, 'Nome');
+    $this->validateInt($data->createdBy, 'Criado por');
+    $this->validateInt($data->ticketQuantity, 'Quantidade de ingressos', 1);
+    $this->validateFloat($data->ticketPrice, 'Valor do Ingresso', 0);
 
     // Start Time validation
     $startTime = $data->startTime;
     if (!$startTime) {
-      $this->addError('startTime', 'The start time must be a valid ISO 8601 date.');
+      $this->addError('startTime', 'A data de início é obrigatória no formato ISO 8601.');
     } elseif ($startTime < new DateTime()) {
-      $this->addError('startTime', 'The start time must be in the future.');
+      $this->addError('startTime', 'A data de início não pode ser no passado.');
     }
 
     // --- Optional Fields ---
     // End Time validation
-    if (isset($data->endTime)) {
-      $endTime = $data->endTime;
-      if (!$endTime) {
-        $this->addError('endTime', 'If provided, the end time must be a valid ISO 8601 date.');
-      } elseif ($startTime && $endTime <= $startTime) {
-        $this->addError('endTime', 'The end time must be after the start time.');
+    if (isset($data->endTime) && !empty($data->endTime)) {
+      if ($startTime && $data->endTime <= $startTime) {
+        $this->addError('endTime', 'A data de término deve ser posterior à data de início.');
       }
     }
 
     if (isset($data->location) && !empty($data->location)) {
-      $this->ensureNotEmpty($data->location, 'Location');
+      $this->ensureNotEmpty($data->location, 'Localização');
     }
 
     if (isset($data->description) && !empty($data->description)) {
-      $this->ensureNotEmpty($data->description, 'Description');
+      $this->ensureNotEmpty($data->description, 'Descrição');
     }
 
     if (isset($data->imageUrl) && !empty($data->imageUrl)) {
-      $this->validateUrl($data->imageUrl, 'Image URL');
+      $this->validateUrl($data->imageUrl, 'URL da Imagem');
     }
 
     $this->throwIfErrors();
