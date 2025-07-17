@@ -23,7 +23,21 @@ class TicketService extends AbstractService {
       throw new \Exception('Ingresso não encontrado ou não pertence ao usuário.', 404);
     }
 
+    $ticket['qr_code'] = $this->generatePdfQrCode($ticket['id']);
+
     return $ticket;
+  }
+
+  public function generatePdfQrCode ($ticketId) {
+    if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') {
+      $security = 'https://';
+    } else {
+      $security = 'http://';
+    }
+
+    $qrCodeUrl = $security . $_SERVER['HTTP_HOST'] . '/tickets/generate-pdf/' . $ticketId;
+    $qrCode = GeralUtils::generateQRCode($qrCodeUrl);
+    return $qrCode;
   }
 
   public function generatePdf(int $ticketId, $clientId) {
@@ -36,6 +50,8 @@ class TicketService extends AbstractService {
     if ($ticket['status'] !== 'purchased' || $ticket['client_id'] !== $clientId) {
       throw new \Exception('O ingresso não está comprado.', 400);
     }
+
+    $ticket['qr_code'] = $this->generatePdfQrCode($ticketId);
 
     $pdf_template = GeralUtils::basePath('resources/views/tickets/ticket-pdf.php');
 
