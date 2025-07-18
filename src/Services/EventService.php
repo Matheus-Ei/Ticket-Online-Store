@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\DTOs\EventData;
+use App\Exceptions\NotFoundException;
 use App\Models\EventModel;
 
 class EventService extends AbstractService {
@@ -13,9 +14,7 @@ class EventService extends AbstractService {
   public function get($id) {
     $event = $this->model->getById($id);
 
-    if (!$event) {
-      throw new \Exception('Evento não encontrado.', 404);
-    }
+    if (!$event) {throw new NotFoundException('Evento não encontrado.');}
 
     return $event;
   }
@@ -28,7 +27,7 @@ class EventService extends AbstractService {
     $event = $this->model->getById($id);
 
     if (!$event || $event['created_by'] !== $sellerId) {
-      throw new \Exception('Evento não encontrado ou não foi criado por você.', 404);
+      throw new NotFoundException('Evento não encontrado ou não foi criado por você.');
     }
 
     return $event;
@@ -58,7 +57,7 @@ class EventService extends AbstractService {
     $event = $this->model->getById($id);
 
     if (!$event) {
-      throw new \Exception('Evento não encontrado ou você não tem permissão para atualizá-lo.', 404);
+      throw new NotFoundException('Evento não encontrado ou você não tem permissão para atualizá-lo.');
     }
 
     return $this->model->update($id, $data);
@@ -68,7 +67,7 @@ class EventService extends AbstractService {
     $event = $this->getWithOwner($id, $sellerId);
 
     if (!$event) {
-      throw new \Exception('Evento não encontrado ou você não tem permissão para excluí-lo.', 404);
+      throw new NotFoundException('Evento não encontrado ou você não tem permissão para excluí-lo.');
     }
 
     return $this->model->delete($id);

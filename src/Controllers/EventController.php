@@ -4,18 +4,13 @@ namespace App\Controllers;
 
 use App\DTOs\EventData;
 use App\Services\EventService;
-use App\Utils\SessionUtils;
 use App\Validators\EventValidator;
 
 class EventController extends AbstractController {
-  private $userId;
-
   public function __construct(
     private EventService $service,
     private EventValidator $validator,
-  ) {
-    $this->userId = SessionUtils::getUserId();
-  }
+  ) {}
 
   public function index() {
     $events = $this->service->getAll();
@@ -31,11 +26,7 @@ class EventController extends AbstractController {
   public function viewSellerEvents() {
     $this->checkLogin('seller');
 
-    try {
-      $events = $this->service->getAll($this->userId);
-    } catch (\Exception $e) {
-      return $this->renderError($e);
-    }
+    $events = $this->service->getAll($this->getUserId());
 
     $data = [
       'title' => 'Meus Eventos',
@@ -46,18 +37,14 @@ class EventController extends AbstractController {
   }
 
   public function viewSpecific($id) {
-    try {
       $this->validator->validateId($id);
 
       $event = $this->service->get($id);
-      $userRole = SessionUtils::getUserRole();
+      $userRole = $this->getUserRole();
 
-      if ($userRole === 'seller' && $event['created_by'] === $this->userId) {
-        $tickets = $this->service->getTicketsSold($id, $this->userId);
+      if ($userRole === 'seller' && $event['created_by'] === $this->getUserId()) {
+        $tickets = $this->service->getTicketsSold($id, $this->getUserId());
       } 
-    } catch (\Exception $e) {
-      return $this->renderError($e);
-    }
 
     $data = [
       'title' => 'Detalhes do Evento',
@@ -71,11 +58,7 @@ class EventController extends AbstractController {
   public function viewPurchased() {
     $this->checkLogin('client');
 
-    try {
-      $purchasedEvents = $this->service->getPurchased($this->userId);
-    } catch (\Exception $e) {
-      return $this->renderError($e);
-    }
+    $purchasedEvents = $this->service->getPurchased($this->getUserId());
 
     $data = [
       'title' => 'Eventos Comprados',
@@ -95,7 +78,7 @@ class EventController extends AbstractController {
       if ($eventId) {
         $this->validator->validateId($eventId);
 
-        $event = $this->service->getWithOwner($eventId, $this->userId);
+        $event = $this->service->getWithOwner($eventId, $this->getUserId());
         $data = ['title' => 'Editar Evento', 'event' => $event];
       } else {
         $data = ['title' => 'Criar Evento'];
@@ -103,7 +86,7 @@ class EventController extends AbstractController {
 
       $this->renderView('events/save-form', $data);
     } catch (\Exception $e) {
-      SessionUtils::setMessage('error', $e->getMessage());
+      $this->setMessage('error', $e->getMessage());
       $this->navigate('/events');
     }
   }
@@ -118,7 +101,7 @@ class EventController extends AbstractController {
       // If an event ID is provided, fetch the event details for editing
       if($eventId) {
         $this->validator->validateId($eventId, "Event ID");
-        $event = $this->service->getWithOwner($eventId, $this->userId);
+        $event = $this->service->getWithOwner($eventId, $this->getUserId());
       }
 
       // Create or update the event data
@@ -131,17 +114,17 @@ class EventController extends AbstractController {
         location: $_POST['location'] ?? $event['location'] ?? '',
         ticketPrice: $_POST['ticket_price'] ?? $event['ticket_price'] ?? 0.0,
         ticketQuantity: $_POST['ticket_quantity'] ?? $event['ticket_quantity'] ?? 0,
-        createdBy: $this->userId
+        createdBy: $this->getUserId()
       );
 
       $this->validator->validateSave($data);
 
       $this->service->save($eventId, $data);
 
-      SessionUtils::setMessage('success', 'Evento salvo com sucesso!');
+      $this->setMessage('success', 'Evento salvo com sucesso!');
       $this->navigate('/events/');
     } catch (\Exception $e) {
-      SessionUtils::setMessage('error', $e->getMessage());
+      $this->setMessage('error', $e->getMessage());
       $this->navigate('/events/');
     }
   }
@@ -152,12 +135,12 @@ class EventController extends AbstractController {
     try {
       $this->validator->validateId($id, "Event ID");
 
-      $this->service->delete($id, $this->userId);
+      $this->service->delete($id, $this->getUserId());
 
-      SessionUtils::setMessage('success', 'Evento excluído com sucesso!');
+      $this->setMessage('success', 'Evento excluído com sucesso!');
       $this->navigate('/events/');
     } catch (\Exception $e) {
-      SessionUtils::setMessage('error', $e->getMessage());
+      $this->setMessage('error', $e->getMessage());
       $this->navigate('/events/');
     }
   }

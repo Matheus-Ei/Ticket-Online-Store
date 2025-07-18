@@ -2,10 +2,10 @@
 
 require __DIR__.'/../vendor/autoload.php';
 
+use App\Utils\ErrorUtils;
 use App\Utils\GeralUtils;
 use Core\Container;
 use Core\Router;
-use Core\Database;
 use Core\DependencyProvider;
 
 // Loads the dotenv
@@ -21,12 +21,19 @@ if(GeralUtils::getEnv("ENVIROMENT") === "production") {
   ini_set('error_log', '../errors.log');
 }
 
+// Start the session
 session_start(); 
 
 // Setup the DI container
 $container = new Container();
 DependencyProvider::register($container);
 
-$router = new Router($container);
-$router->run();
+try {
+  // Setup router and run the application
+  $router = new Router($container);
+  $router->run();
+} catch (Throwable $e) {
+  $errorUtils = new ErrorUtils($container);
+  $errorUtils->handleException($e);
+}
 

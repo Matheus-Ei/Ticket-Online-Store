@@ -3,7 +3,6 @@
 namespace Core;
 
 use PDO;
-use PDOException;
 use App\Utils\GeralUtils;
 
 class Database {
@@ -17,14 +16,10 @@ class Database {
       $user = GeralUtils::getEnv('DATABASE_USER');
       $password = GeralUtils::getEnv('DATABASE_PASSWORD');
 
-      try {
-        $this->pdo = new PDO("pgsql:host=$host;port=$port;dbname=$dbname", $user, $password, [
-          PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-          PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-        ]);
-      } catch (PDOException $e) {
-        die("Error connecting the database: " . $e->getMessage());
-      }
+      $this->pdo = new PDO("pgsql:host=$host;port=$port;dbname=$dbname", $user, $password, [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+      ]);
     }
 
     return $this->pdo;

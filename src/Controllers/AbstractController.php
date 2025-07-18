@@ -3,15 +3,44 @@
 namespace App\Controllers;
 
 use App\Utils\GeralUtils;
-use App\Utils\SessionUtils;
 
 abstract class AbstractController {
+  protected function isLoggedIn(): bool {
+    return isset($_SESSION['user_id']) && !empty($_SESSION['user_id']);
+  }
+
+  protected function getUserId(): ?int {
+    return $_SESSION['user_id'] ?? null;
+  }
+
+  protected function getUserRole(): ?string {
+    return $_SESSION['user_role'] ?? null;
+  }
+
+  protected function setMessage(string $type, string $text): void {
+    $_SESSION['message'] = [
+      'type' => $type,
+      'text' => $text
+    ];
+  }
+
+  protected function getMessage(): array {
+    // If a message is set in the session, retrieve it and clear it
+    if (isset($_SESSION['message'])) {
+      $message = $_SESSION['message'];
+      unset($_SESSION['message']); 
+      return $message;
+    }
+
+    return ['type' => '', 'text' => ''];
+  }
+
   protected function renderView(string $view, array $data = [], string $layout = 'sidebar'): void {
     $data = array_merge($data, [
-      'userRole' => SessionUtils::getUserRole(),
-      'userId' => SessionUtils::getUserId(),
-      'isLoggedIn' => SessionUtils::isLoggedIn(),
-      'message' => SessionUtils::getMessage(),
+      'userRole' => $this->getUserRole(),
+      'userId' => $this->getUserId(),
+      'isLoggedIn' => $this->isLoggedIn(),
+      'message' => $this->getMessage(),
     ]);
 
     extract($data); // Create variables from the data array
@@ -28,16 +57,6 @@ abstract class AbstractController {
     require GeralUtils::basePath("resources/layouts/{$layout}.php");
   }
 
-  protected function renderError($error): void {
-    $data = [
-      'title' => 'Error',
-      'errorMessage' => $error->getMessage(),
-      'statusCode' => $error->getCode() ?: 500,
-    ];
-
-    $this->renderView('errors/error-card', $data);
-  }
-
   protected function navigate(string $url) {
     header("Location: $url");
     exit;
@@ -45,13 +64,13 @@ abstract class AbstractController {
 
   protected function checkLogin(?string $role = null) {
     // Check if the user is logged in
-    if (!SessionUtils::isLoggedIn()) {
+    if (!$this->isLoggedIn()) {
       $this->navigate('/users/login');
       return false;
     }
 
     // If a role is specified, check if the user has that role
-    if ($role && SessionUtils::getUserRole() !== $role) {
+    if ($role && $this->getUserRole() !== $role) {
       $this->navigate('/');
       return false;
     }

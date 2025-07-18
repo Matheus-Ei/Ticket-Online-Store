@@ -3,5 +3,4 @@
 namespace App\Services;
 
 
-abstract class AbstractService {
-}
+abstract class AbstractService {}

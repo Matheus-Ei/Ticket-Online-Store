@@ -3,6 +3,9 @@
 namespace App\Services;
 
 use App\DTOs\TicketData;
+use App\Exceptions\NotFoundException;
+use App\Exceptions\UnauthorizedException;
+use App\Exceptions\ValidationException;
 use App\Models\TicketModel;
 use App\Models\EventModel;
 use App\Utils\GeralUtils;
@@ -18,7 +21,7 @@ class TicketService extends AbstractService {
     $ticket = $this->model->getById((int) $id);
 
     if (!$ticket || $ticket['client_id'] !== $client_id) {
-      throw new \Exception('Ingresso não encontrado ou não pertence ao usuário.', 404);
+      throw new NotFoundException('Ingresso não encontrado ou não pertence ao usuário.');
     }
 
     $ticket['qr_code'] = $this->generatePdfQrCode($ticket['id']);
@@ -36,11 +39,11 @@ class TicketService extends AbstractService {
     $ticket = $this->model->getById($ticketId);
 
     if (!$ticket) {
-      throw new \Exception('Ingresso não encontrado.', 404);
+      throw new NotFoundException('Ingresso não encontrado.');
     }
 
     if ($ticket['status'] !== 'purchased' || $ticket['client_id'] !== $clientId) {
-      throw new \Exception('O ingresso não está comprado. ou não pertence ao usuário.', 403);
+      throw new UnauthorizedException('O ingresso não está comprado. ou não pertence ao usuário.');
     }
 
     $ticket['qr_code'] = $this->generatePdfQrCode($ticketId);
@@ -75,13 +78,13 @@ class TicketService extends AbstractService {
       $ticket = $this->model->getById($ticketId);
 
       if (!$ticket || $ticket['client_id'] !== $clientId) {
-        throw new \Exception('Ingresso não encontrado ou não pertence ao usuário.', 404);
+        throw new NotFoundException('Ingresso não encontrado ou não pertence ao usuário.');
       }
 
       switch ($ticket['status']) {
-        case 'purchased': throw new \Exception('O ingresso já foi comprado.', 400);
-        case 'expired':   throw new \Exception('O ingresso expirou.', 400);
-        case 'canceled':  throw new \Exception('O ingresso foi cancelado.', 400);
+        case 'purchased': throw new ValidationException(message: 'O ingresso já foi comprado.');
+        case 'expired':   throw new ValidationException(message: 'O ingresso expirou.');
+        case 'canceled':  throw new ValidationException(message: 'O ingresso foi cancelado.');
       }
 
       $this->model->updateStatus($ticketId, 'purchased');
@@ -89,12 +92,12 @@ class TicketService extends AbstractService {
     }
 
     if (!$clientId || !$eventId) {
-      throw new \Exception('ID do cliente e ID do evento são necessários.', 400);
+      throw new ValidationException(message: 'ID do cliente e do evento são obrigatórios.');
     }
 
     $hasTickets = $this->eventModel->getNumberTickets($eventId) > 0;
     if (!$hasTickets) {
-      throw new \Exception('Nenhum ingresso disponível para este evento.', 404);
+      throw new ValidationException(message: 'Nenhum ingresso disponível para este evento.');
     }
 
     $ticketData = new TicketData(
@@ -117,7 +120,7 @@ class TicketService extends AbstractService {
     // Verify if the event exists and has available tickets
     $hasTickets = $this->eventModel->getById($eventId)['tickets_available'] > 0;
     if (!$hasTickets) {
-      throw new \Exception('Nenhum ingresso disponível para este evento.', 404);
+      throw new ValidationException(message: 'Nenhum ingresso disponível para este evento.');
     }
 
     $ticketData = new TicketData(
@@ -127,11 +130,6 @@ class TicketService extends AbstractService {
     );
 
     $ticketId = $this->model->create($ticketData);
-
-    if (!$ticketId) {
-      throw new \Exception('Erro ao reservar ingresso.', 500);
-    }
-
     return $this->model->getById($ticketId);
   }
 
@@ -139,7 +137,7 @@ class TicketService extends AbstractService {
     $ticket = $this->model->getById($ticketId);
 
     if (!$ticket || $ticket['status'] !== 'reserved') {
-      throw new \Exception('Ingresso não encontrado ou não está reservado.', 404);
+      throw new NotFoundException('Ingresso não encontrado ou não está reservado.');
     }
 
     $this->model->updateStatus($ticketId, 'expired');

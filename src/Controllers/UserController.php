@@ -4,7 +4,6 @@ namespace App\Controllers;
 
 use App\DTOs\UserData;
 use App\DTOs\UserDataEdit;
-use App\Utils\SessionUtils;
 use App\Services\UserService;
 use App\Validators\UserValidator;
 
@@ -15,17 +14,13 @@ class UserController extends AbstractController {
   ) {}
 
   public function registerForm() {
-    $data = [
-      'title' => 'Criar Conta',
-    ];
+    $data = ['title' => 'Criar Conta'];
 
     $this->renderView('users/register-form', $data, 'clean');
   }
 
   public function loginForm() {
-    $data = [
-      'title' => 'Entrar',
-    ];
+    $data = ['title' => 'Entrar'];
 
     $this->renderView('users/login-form', $data, 'clean');
   }
@@ -33,13 +28,7 @@ class UserController extends AbstractController {
   public function viewProfile() {
     $this->checkLogin();
 
-    $userId = SessionUtils::getUserId();
-
-    try {
-      $user = $this->service->get($userId);
-    } catch (\Exception $e) {
-      return $this->renderError($e);
-    }
+    $user = $this->service->get($this->getUserId());
 
     $data = [
       'title' => 'Perfil do Usuário',
@@ -52,13 +41,7 @@ class UserController extends AbstractController {
   public function editForm() {
     $this->checkLogin();
 
-    $userId = SessionUtils::getUserId();
-
-    try {
-      $user = $this->service->get($userId);
-    } catch (\Exception $e) {
-      return $this->renderError($e);
-    }
+    $user = $this->service->get($this->getUserId());
 
     $data = [
       'title' => 'Editar Perfil',
@@ -82,10 +65,10 @@ class UserController extends AbstractController {
 
       $this->service->create($registrationData);
 
-      SessionUtils::setMessage('success', 'Conta criada com sucesso! Faça login para continuar.');
+      $this->setMessage('success', 'Conta criada com sucesso! Faça login para continuar.');
       $this->navigate('/users/login');
     } catch (\Exception $e) {
-      SessionUtils::setMessage('error', $e->getMessage());
+      $this->setMessage('error', $e->getMessage());
       $this->navigate('/users/register');
     }
   }
@@ -94,10 +77,10 @@ class UserController extends AbstractController {
     try {
       $this->service->login($_POST['email'], $_POST['password']);
 
-      SessionUtils::setMessage('success', 'Login realizado com sucesso!');
+      $this->setMessage('success', 'Login realizado com sucesso!');
       $this->navigate('/users/profile');
     } catch (\Exception $e) {
-      SessionUtils::setMessage('error', $e->getMessage());
+      $this->setMessage('error', $e->getMessage());
       $this->navigate('/users/login');
     }
   }
@@ -112,8 +95,6 @@ class UserController extends AbstractController {
   public function edit() {
     $this->checkLogin();
 
-    $userId = SessionUtils::getUserId();
-
     try {
       $profileData = new UserDataEdit(
         name: $_POST['name'],
@@ -122,12 +103,12 @@ class UserController extends AbstractController {
 
       $this->validator->validateDataEdit($profileData);
 
-      $this->service->update($userId, $profileData);
+      $this->service->update($this->getUserId(), $profileData);
 
-      SessionUtils::setMessage('success', 'Perfil atualizado com sucesso!');
+      $this->setMessage('success', 'Perfil atualizado com sucesso!');
       $this->navigate('/users/profile');
     } catch (\Exception $e) {
-      SessionUtils::setMessage('error', $e->getMessage());
+      $this->setMessage('error', $e->getMessage());
       $this->navigate('/users/edit');
     }
   }
@@ -135,15 +116,13 @@ class UserController extends AbstractController {
   public function delete() {
     $this->checkLogin();
 
-    $userId = SessionUtils::getUserId();
-
     try {
-      $this->service->delete($userId);
+      $this->service->delete($this->getUserId());
       session_destroy();
 
       $this->navigate('/');
     } catch (\Exception $e) {
-      SessionUtils::setMessage('error', $e->getMessage());
+      $this->setMessage('error', $e->getMessage());
       $this->navigate('/users/profile');
     }
   }

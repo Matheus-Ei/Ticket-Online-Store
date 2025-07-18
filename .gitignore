@@ -1,2 +1,8 @@
+# Ignore development related files
 /vendor/
 .env
+
+# Ignore log files and temp files
+*.log
+/logs/
+

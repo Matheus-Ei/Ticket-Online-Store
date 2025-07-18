@@ -4,6 +4,9 @@ namespace App\Services;
 
 use App\DTOs\UserData;
 use App\DTOs\UserDataEdit;
+use App\Exceptions\NotFoundException;
+use App\Exceptions\UnauthorizedException;
+use App\Exceptions\ValidationException;
 use App\Models\UserModel;
 
 class UserService extends AbstractService {
@@ -15,7 +18,7 @@ class UserService extends AbstractService {
     $user = $this->model->getById($id);
 
     if (!$user) {
-      throw new \Exception("Usuário não encontrado", 404);
+      throw new NotFoundException("Usuário não encontrado");
     }
 
     return $user;
@@ -33,7 +36,7 @@ class UserService extends AbstractService {
     $user = $this->model->getByEmail($email);
 
     if (!$user || !password_verify($password, $user['password_hash'])) {
-      throw new \Exception("Credenciais inválidas", 401);
+      throw new UnauthorizedException("Credenciais inválidas");
     }
 
     // Set session variables
@@ -47,7 +50,7 @@ class UserService extends AbstractService {
     // Check if email already exists
     $existingUser = $this->model->getByEmail($data->email);
     if ($existingUser) {
-      throw new \Exception("Email já cadastrado", 400);
+      throw new ValidationException(message: "Email já cadastrado");
     }
 
     // Hash the password
@@ -59,7 +62,7 @@ class UserService extends AbstractService {
     $user = $this->model->getById($id);
 
     if (!$user) {
-      throw new \Exception("Usuário não encontrado", 404);
+      throw new NotFoundException("Usuário não encontrado");
     }
 
     return $this->model->update($id, $data);
@@ -69,7 +72,7 @@ class UserService extends AbstractService {
     $user = $this->model->getById($id);
 
     if (!$user) {
-      throw new \Exception("Usuário não encontrado", 404);
+      throw new NotFoundException("Usuário não encontrado");
     }
 
     return $this->model->delete($id);

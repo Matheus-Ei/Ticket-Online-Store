@@ -4,28 +4,19 @@ namespace App\Controllers;
 
 use App\Services\TicketService;
 use App\Services\EventService;
-use App\Utils\SessionUtils;
 use App\Validators\EventValidator;
 
 class TicketController extends AbstractController {
-  private $userId = null;
-
   public function __construct(
     private TicketService $service,
     private EventService $eventService,
     private EventValidator $validator,
-  ) {
-    $this->userId = SessionUtils::getUserId();
-  }
+  ) {}
 
   public function viewPurchased() {
     $this->checkLogin('client');
 
-    try {
-      $purchasedTickets = $this->service->getPurchased($this->userId);
-    } catch (\Exception $e) {
-      return $this->renderError($e);
-    }
+    $purchasedTickets = $this->service->getPurchased($this->getUserId());
 
     $data = [
       'title' => 'Ingressos Comprados',
@@ -41,9 +32,9 @@ class TicketController extends AbstractController {
     try {
       $this->validator->validateId($ticketId, 'ID do Ingresso');
 
-      return $this->service->generatePdf($ticketId, $this->userId);
+      return $this->service->generatePdf($ticketId, $this->getUserId());
     } catch (\Exception $e) {
-      SessionUtils::setMessage('error', $e->getMessage());
+      $this->setMessage('error', $e->getMessage());
       return $this->navigate('/tickets/purchased');
     }
   }
@@ -51,16 +42,12 @@ class TicketController extends AbstractController {
   public function viewSpecific($id) {
     $this->checkLogin('client');
 
-    try {
       $this->validator->validateId($id, 'Ticket ID');
 
-      $ticket = $this->service->get($id, $this->userId);
+      $ticket = $this->service->get($id, $this->getUserId());
 
       $data = ['title' => 'Detalhes do Ingresso', 'ticket' => $ticket];
       $this->renderView('tickets/view-specific', $data);
-    } catch (\Exception $e) {
-      $this->renderError($e);
-    }
   }
 
   public function buyForm() {
@@ -71,12 +58,12 @@ class TicketController extends AbstractController {
 
     try {
       // Gets the event details
-      $event = $this->eventService->get($eventId, $this->userId);
+      $event = $this->eventService->get($eventId, $this->getUserId());
 
       // Makes a reservation for the ticket
       $this->validator->validateId($eventId, 'Event ID');
 
-      $ticket = $this->service->reserve($this->userId, $eventId);
+      $ticket = $this->service->reserve($this->getUserId(), $eventId);
 
       // Store reservation time in session
       $_SESSION['reservation_time'] = $ticket['created_at'];
@@ -91,7 +78,7 @@ class TicketController extends AbstractController {
 
       $this->renderView('tickets/buy-form', $data);
     } catch (\Exception $e) {
-      SessionUtils::setMessage('warning', $e->getMessage());
+      $this->setMessage('warning', $e->getMessage());
       $this->navigate("/events/{$eventId}");
     }
   }
@@ -103,9 +90,9 @@ class TicketController extends AbstractController {
       $this->validator->validateId($id, 'Ticket ID');
 
       $this->service->expireReservation($id);
-      SessionUtils::setMessage('warning', 'Reserva expirada. Por favor, tente novamente.');
+      $this->setMessage('warning', 'Reserva expirada. Por favor, tente novamente.');
     } catch (\Exception $e) {
-      SessionUtils::setMessage('error', $e->getMessage());
+      $this->setMessage('error', $e->getMessage());
     }
   }
 
@@ -119,12 +106,12 @@ class TicketController extends AbstractController {
       $this->validator->validateId($eventId, 'Event ID');
       $this->validator->validateId($ticketId, 'Ticket ID');
 
-      $ticketId = $this->service->purchase($this->userId, $eventId, $ticketId);
+      $ticketId = $this->service->purchase($this->getUserId(), $eventId, $ticketId);
 
-      SessionUtils::setMessage('success', 'Ingresso comprado com sucesso!');
+      $this->setMessage('success', 'Ingresso comprado com sucesso!');
       return $this->navigate("/tickets/{$ticketId}");
     } catch (\Exception $e) {
-      SessionUtils::setMessage('error', $e->getMessage());
+      $this->setMessage('error', $e->getMessage());
       $this->navigate('/events');
     }
   }
