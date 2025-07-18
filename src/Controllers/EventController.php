@@ -37,14 +37,14 @@ class EventController extends AbstractController {
   }
 
   public function viewSpecific($id) {
-      $this->validator->validateId($id);
+    $this->validator->validateId($id);
 
-      $event = $this->service->get($id);
-      $userRole = $this->getUserRole();
+    $event = $this->service->get($id);
+    $userRole = $this->getUserRole();
 
-      if ($userRole === 'seller' && $event['created_by'] === $this->getUserId()) {
-        $tickets = $this->service->getTicketsSold($id, $this->getUserId());
-      } 
+    if ($userRole === 'seller' && $event['created_by'] === $this->getUserId()) {
+      $tickets = $this->service->getTicketsSold($id, $this->getUserId());
+    } 
 
     $data = [
       'title' => 'Detalhes do Evento',
@@ -73,22 +73,17 @@ class EventController extends AbstractController {
 
     $eventId = $_GET['id'] ?? null;
 
-    try {
-      // If an event ID is provided, fetch the event details for editing
-      if ($eventId) {
-        $this->validator->validateId($eventId);
+    // If an event ID is provided, fetch the event details for editing
+    if ($eventId) {
+      $this->validator->validateId($eventId);
 
-        $event = $this->service->getWithOwner($eventId, $this->getUserId());
-        $data = ['title' => 'Editar Evento', 'event' => $event];
-      } else {
-        $data = ['title' => 'Criar Evento'];
-      }
-
-      $this->renderView('events/save-form', $data);
-    } catch (\Exception $e) {
-      $this->setMessage('error', $e->getMessage());
-      $this->navigate('/events');
+      $event = $this->service->getWithOwner($eventId, $this->getUserId());
+      $data = ['title' => 'Editar Evento', 'event' => $event];
+    } else {
+      $data = ['title' => 'Criar Evento'];
     }
+
+    $this->renderView('events/save-form', $data);
   }
 
   public function save() {
@@ -97,51 +92,41 @@ class EventController extends AbstractController {
     $eventId = $_POST['id'] ?? null;
     $event = null;
 
-    try {
-      // If an event ID is provided, fetch the event details for editing
-      if($eventId) {
-        $this->validator->validateId($eventId, "Event ID");
-        $event = $this->service->getWithOwner($eventId, $this->getUserId());
-      }
-
-      // Create or update the event data
-      $data = new EventData(
-        name: $_POST['name'] ?? $event['name'] ?? '',
-        description: $_POST['description'] ?? $event['description'] ?? '',
-        imageUrl: $_POST['image_url'] ?? $event['image_url'] ?? '',
-        startTime: new \DateTime($_POST['start_time'] ?? $event['start_time'] ?? 'now'),
-        endTime: !empty($_POST['end_time']) ? new \DateTime($_POST['end_time']) : null,
-        location: $_POST['location'] ?? $event['location'] ?? '',
-        ticketPrice: $_POST['ticket_price'] ?? $event['ticket_price'] ?? 0.0,
-        ticketQuantity: $_POST['ticket_quantity'] ?? $event['ticket_quantity'] ?? 0,
-        createdBy: $this->getUserId()
-      );
-
-      $this->validator->validateSave($data);
-
-      $this->service->save($eventId, $data);
-
-      $this->setMessage('success', 'Evento salvo com sucesso!');
-      $this->navigate('/events/');
-    } catch (\Exception $e) {
-      $this->setMessage('error', $e->getMessage());
-      $this->navigate('/events/');
+    // If an event ID is provided, fetch the event details for editing
+    if($eventId) {
+      $this->validator->validateId($eventId, "Event ID");
+      $event = $this->service->getWithOwner($eventId, $this->getUserId());
     }
+
+    // Create or update the event data
+    $data = new EventData(
+      name: $_POST['name'] ?? $event['name'] ?? '',
+      description: $_POST['description'] ?? $event['description'] ?? '',
+      imageUrl: $_POST['image_url'] ?? $event['image_url'] ?? '',
+      startTime: new \DateTime($_POST['start_time'] ?? $event['start_time'] ?? 'now'),
+      endTime: !empty($_POST['end_time']) ? new \DateTime($_POST['end_time']) : null,
+      location: $_POST['location'] ?? $event['location'] ?? '',
+      ticketPrice: $_POST['ticket_price'] ?? $event['ticket_price'] ?? 0.0,
+      ticketQuantity: $_POST['ticket_quantity'] ?? $event['ticket_quantity'] ?? 0,
+      createdBy: $this->getUserId()
+    );
+
+    $this->validator->validateSave($data);
+
+    $this->service->save($eventId, $data);
+
+    $this->setMessage('success', 'Evento salvo com sucesso!');
+    $this->navigate('/events/');
   }
 
   public function delete($id) {
     $this->checkLogin('seller');
 
-    try {
-      $this->validator->validateId($id, "Event ID");
+    $this->validator->validateId($id, "Event ID");
 
-      $this->service->delete($id, $this->getUserId());
+    $this->service->delete($id, $this->getUserId());
 
-      $this->setMessage('success', 'Evento excluído com sucesso!');
-      $this->navigate('/events/');
-    } catch (\Exception $e) {
-      $this->setMessage('error', $e->getMessage());
-      $this->navigate('/events/');
-    }
+    $this->setMessage('success', 'Evento excluído com sucesso!');
+    $this->navigate('/events/');
   }
 }

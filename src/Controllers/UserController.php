@@ -52,37 +52,27 @@ class UserController extends AbstractController {
   }
 
   public function register() {
-    try {
-      $registrationData = new UserData(
-        name: $_POST['name'],
-        email: $_POST['email'],
-        password: $_POST['password'],
-        role: $_POST['role']
-      );
+    $registrationData = new UserData(
+      name: $_POST['name'],
+      email: $_POST['email'],
+      password: $_POST['password'],
+      role: $_POST['role']
+    );
 
-      // Validate the registration data
-      $this->validator->validateData($registrationData);
+    // Validate the registration data
+    $this->validator->validateData($registrationData);
 
-      $this->service->create($registrationData);
+    $this->service->create($registrationData);
 
-      $this->setMessage('success', 'Conta criada com sucesso! Faça login para continuar.');
-      $this->navigate('/users/login');
-    } catch (\Exception $e) {
-      $this->setMessage('error', $e->getMessage());
-      $this->navigate('/users/register');
-    }
+    $this->setMessage('success', 'Conta criada com sucesso! Faça login para continuar.');
+    $this->navigate('/users/login');
   }
 
   public function login() {
-    try {
-      $this->service->login($_POST['email'], $_POST['password']);
+    $this->service->login($_POST['email'], $_POST['password']);
 
-      $this->setMessage('success', 'Login realizado com sucesso!');
-      $this->navigate('/users/profile');
-    } catch (\Exception $e) {
-      $this->setMessage('error', $e->getMessage());
-      $this->navigate('/users/login');
-    }
+    $this->setMessage('success', 'Login realizado com sucesso!');
+    $this->navigate('/users/profile');
   }
 
   public function logout() {
@@ -95,35 +85,25 @@ class UserController extends AbstractController {
   public function edit() {
     $this->checkLogin();
 
-    try {
-      $profileData = new UserDataEdit(
-        name: $_POST['name'],
-        email: $_POST['email']
-      );
+    $profileData = new UserDataEdit(
+      name: $_POST['name'],
+      email: $_POST['email']
+    );
 
-      $this->validator->validateDataEdit($profileData);
+    $this->validator->validateDataEdit($profileData);
 
-      $this->service->update($this->getUserId(), $profileData);
+    $this->service->update($this->getUserId(), $profileData);
 
-      $this->setMessage('success', 'Perfil atualizado com sucesso!');
-      $this->navigate('/users/profile');
-    } catch (\Exception $e) {
-      $this->setMessage('error', $e->getMessage());
-      $this->navigate('/users/edit');
-    }
+    $this->setMessage('success', 'Perfil atualizado com sucesso!');
+    $this->navigate('/users/profile');
   }
 
   public function delete() {
     $this->checkLogin();
 
-    try {
-      $this->service->delete($this->getUserId());
-      session_destroy();
+    $this->service->delete($this->getUserId());
+    session_destroy();
 
-      $this->navigate('/');
-    } catch (\Exception $e) {
-      $this->setMessage('error', $e->getMessage());
-      $this->navigate('/users/profile');
-    }
+    $this->navigate('/');
   }
 }
