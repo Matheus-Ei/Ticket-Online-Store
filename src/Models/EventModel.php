@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
-use Config\Database;
+use Core\Database;
 use App\DTOs\EventData;
 
 class EventModel {
+  public function __construct(private Database $database) {}
+
   public function getById(int $id) {
     $query = "SELECT 
                 e.*, 
@@ -15,7 +17,7 @@ class EventModel {
               WHERE e.id = :id 
               GROUP BY e.id";
 
-    return Database::selectOne($query, ['id' => $id]);
+    return $this->database->selectOne($query, ['id' => $id]);
   }
 
   public function getTicketsSold(int $eventId, int $sellerId) {
@@ -30,7 +32,7 @@ class EventModel {
             WHERE t.event_id = :id AND e.created_by = :created_by
             ORDER BY t.created_at DESC";
 
-    return Database::selectAll($query, ['id' => $eventId, 'created_by' => $sellerId]);
+    return $this->database->selectAll($query, ['id' => $eventId, 'created_by' => $sellerId]);
   }
 
   public function getAll() {
@@ -43,7 +45,7 @@ class EventModel {
               GROUP BY e.id
               HAVING (e.ticket_quantity - COUNT(t.id)) > 0;";
 
-    return Database::selectAll($query);
+    return $this->database->selectAll($query);
   }
 
   public function getAllBySeller(int $sellerId) {
@@ -55,12 +57,12 @@ class EventModel {
               WHERE e.created_by = :created_by
               GROUP BY e.id";
 
-    return Database::selectAll($query, ['created_by' => $sellerId]);
+    return $this->database->selectAll($query, ['created_by' => $sellerId]);
   }
 
   public function getNumberTickets(int $eventId) {
     $query = "SELECT COUNT(*) as count FROM tickets WHERE event_id = :event_id AND status IN ('purchased', 'reserved')";
-    $result = Database::selectOne($query, ['event_id' => $eventId]);
+    $result = $this->database->selectOne($query, ['event_id' => $eventId]);
     return $result['count'];
   }
 
@@ -71,7 +73,7 @@ class EventModel {
               WHERE t.client_id = :client_id
               GROUP BY e.id";
 
-    return Database::selectAll($query, ['client_id' => $clientId]);
+    return $this->database->selectAll($query, ['client_id' => $clientId]);
   }
 
   public function create(EventData $data) {
@@ -90,7 +92,7 @@ class EventModel {
       'created_by' => $data->createdBy
     ];
 
-    return Database::insert($query, $params);
+    return $this->database->insert($query, $params);
   }
 
   public function update(int $id, EventData $data) {
@@ -118,11 +120,11 @@ class EventModel {
       'ticket_quantity' => $data->ticketQuantity,
     ];
 
-    return Database::execute($query, $params);
+    return $this->database->execute($query, $params);
   }
 
   public function delete(int $id) {
     $query = "DELETE FROM events WHERE id = :id";
-    return Database::execute($query, ["id" => $id]);
+    return $this->database->execute($query, ["id" => $id]);
   }
 }

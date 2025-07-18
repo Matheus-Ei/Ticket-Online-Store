@@ -84,11 +84,10 @@ Listei as principais funcionalidades implementadas na loja online dos requisitos
   - [x] Verificação de autenticação para acessar áreas restritas.
   - [x] Verificação de permissões para acessar áreas restritas.
 
-- [ ] Segurança
-  - [ ] Proteção contra CSRF (Cross-Site Request Forgery).
+- [x] Segurança
+  - [x] Proteção contra CSRF (Cross-Site Request Forgery).
   - [x] Proteção contra XSS (Cross-Site Scripting).
   - [x] Proteção contra SQL Injection.
-  - [ ] Proteção contra ataques de força bruta.
 
 - [x] Validações
     - [x] Validação de dados de entrada.

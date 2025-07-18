@@ -3,7 +3,7 @@
   "autoload": {
     "psr-4": {
       "App\\": "src/",
-      "Config\\": "config/"
+      "Core\\": "core/"
     }
   },
   "authors": [

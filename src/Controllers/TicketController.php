@@ -4,19 +4,18 @@ namespace App\Controllers;
 
 use App\Services\TicketService;
 use App\Services\EventService;
-use App\Utils\MessageUtils;
 use App\Utils\SessionUtils;
 use App\Validators\EventValidator;
 
 class TicketController extends AbstractController {
   private $userId = null;
-  private $eventService;
 
-  public function __construct() {
-    $this->service = new TicketService();
+  public function __construct(
+    private TicketService $service,
+    private EventService $eventService,
+    private EventValidator $validator,
+  ) {
     $this->userId = SessionUtils::getUserId();
-    $this->eventService = new EventService();
-    $this->validator = new EventValidator();
   }
 
   public function viewPurchased() {
@@ -44,7 +43,7 @@ class TicketController extends AbstractController {
 
       return $this->service->generatePdf($ticketId, $this->userId);
     } catch (\Exception $e) {
-      MessageUtils::setMessage('error', $e->getMessage());
+      SessionUtils::setMessage('error', $e->getMessage());
       return $this->navigate('/tickets/purchased');
     }
   }
@@ -92,7 +91,7 @@ class TicketController extends AbstractController {
 
       $this->renderView('tickets/buy-form', $data);
     } catch (\Exception $e) {
-      MessageUtils::setMessage('warning', $e->getMessage());
+      SessionUtils::setMessage('warning', $e->getMessage());
       $this->navigate("/events/{$eventId}");
     }
   }
@@ -104,9 +103,9 @@ class TicketController extends AbstractController {
       $this->validator->validateId($id, 'Ticket ID');
 
       $this->service->expireReservation($id);
-      MessageUtils::setMessage('warning', 'Reserva expirada. Por favor, tente novamente.');
+      SessionUtils::setMessage('warning', 'Reserva expirada. Por favor, tente novamente.');
     } catch (\Exception $e) {
-      MessageUtils::setMessage('error', $e->getMessage());
+      SessionUtils::setMessage('error', $e->getMessage());
     }
   }
 
@@ -122,10 +121,10 @@ class TicketController extends AbstractController {
 
       $ticketId = $this->service->purchase($this->userId, $eventId, $ticketId);
 
-      MessageUtils::setMessage('success', 'Ingresso comprado com sucesso!');
+      SessionUtils::setMessage('success', 'Ingresso comprado com sucesso!');
       return $this->navigate("/tickets/{$ticketId}");
     } catch (\Exception $e) {
-      MessageUtils::setMessage('error', $e->getMessage());
+      SessionUtils::setMessage('error', $e->getMessage());
       $this->navigate('/events');
     }
   }

@@ -9,12 +9,10 @@ use App\Utils\GeralUtils;
 use Dompdf\Dompdf;
 
 class TicketService extends AbstractService {
-  private $eventModel;
-
-  public function __construct() {
-    $this->model = new TicketModel();
-    $this->eventModel = new EventModel();
-  }
+  public function __construct(
+    private TicketModel $model,
+    private EventModel $eventModel
+  ) {}
 
   public function get($id, $client_id) {
     $ticket = $this->model->getById((int) $id);

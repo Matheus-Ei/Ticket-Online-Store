@@ -3,9 +3,11 @@
 namespace App\Models;
 
 use App\DTOs\TicketData;
-use Config\Database;
+use Core\Database;
 
 class TicketModel {
+  public function __construct(private Database $database) {}
+
   public function getById(int $id) {
     $query = "SELECT 
                  t.id, 
@@ -25,11 +27,11 @@ class TicketModel {
                 JOIN users c ON t.client_id = c.id
               WHERE t.id = :id";
 
-    return Database::selectOne($query, ['id' => $id]);
+    return $this->database->selectOne($query, ['id' => $id]);
   }
 
   public function getAll() {
-    return Database::selectAll("SELECT * FROM tickets");
+    return $this->database->selectAll("SELECT * FROM tickets");
   }
 
   public function getPurchasedByClient(int $clientId) {
@@ -37,7 +39,7 @@ class TicketModel {
               FROM tickets t 
                 JOIN events e ON t.event_id = e.id 
               WHERE t.client_id = :client_id AND t.status = 'purchased'";
-    return Database::selectAll($query, ['client_id' => $clientId]);
+    return $this->database->selectAll($query, ['client_id' => $clientId]);
   }
 
   public function create(TicketData $data) {
@@ -50,16 +52,16 @@ class TicketModel {
       'event_id' => $data->eventId
     ];
 
-    return Database::insert($query, $params);
+    return $this->database->insert($query, $params);
   }
 
   public function updateStatus(int $id, string $status) {
     $query = "UPDATE tickets SET status = :status WHERE id = :id";
-    return Database::execute($query, ['status' => $status, 'id' => $id]);
+    return $this->database->execute($query, ['status' => $status, 'id' => $id]);
   }
 
   public function getReservedByClient(int $clientId, int $eventId) {
     $query = "SELECT * FROM tickets WHERE event_id = :event_id AND client_id = :client_id AND status = 'reserved'";
-    return Database::selectOne($query, ['event_id' => $eventId, 'client_id' => $clientId]);
+    return $this->database->selectOne($query, ['event_id' => $eventId, 'client_id' => $clientId]);
   }
 }

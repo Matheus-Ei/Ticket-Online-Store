@@ -7,9 +7,9 @@ use App\DTOs\UserDataEdit;
 use App\Models\UserModel;
 
 class UserService extends AbstractService {
-  public function __construct() {
-    $this->model = new UserModel();
-  }
+  public function __construct(
+    private UserModel $model
+  ) {}
 
   public function get($id) {
     $user = $this->model->getById($id);

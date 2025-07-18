@@ -4,19 +4,21 @@ namespace App\Models;
 
 use App\DTOs\UserData;
 use App\DTOs\UserDataEdit;
-use Config\Database;
+use Core\Database;
 
 class UserModel {
+  public function __construct(private Database $database) {}
+
   public function getById($id) {
-    return Database::selectOne("SELECT * FROM users WHERE id = :id", ['id' => $id]);
+    return $this->database->selectOne("SELECT * FROM users WHERE id = :id", ['id' => $id]);
   }
 
   public function getAll() {
-    return Database::selectAll("SELECT name, email, role FROM users");
+    return $this->database->selectAll("SELECT name, email, role FROM users");
   }
 
   public function getByEmail(string $email) {
-    return Database::selectOne("SELECT * FROM users WHERE email = :email", ['email' => $email]);
+    return $this->database->selectOne("SELECT * FROM users WHERE email = :email", ['email' => $email]);
   }
 
   public function create(UserData $data) {
@@ -30,7 +32,7 @@ class UserModel {
       "role" => $data->role
     ];
 
-    return Database::insert($query, $params);
+    return $this->database->insert($query, $params);
   }
 
   public function update($id, UserDataEdit $data) {
@@ -45,11 +47,11 @@ class UserModel {
       "email" => $data->email,
     ];
 
-    return Database::execute($query, $params);
+    return $this->database->execute($query, $params);
   }
 
   public function delete($id) {
     $query = "DELETE FROM users WHERE id = :id";
-    return Database::execute($query, ["id" => $id]);
+    return $this->database->execute($query, ["id" => $id]);
   }
 }

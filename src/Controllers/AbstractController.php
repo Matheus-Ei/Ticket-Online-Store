@@ -3,19 +3,15 @@
 namespace App\Controllers;
 
 use App\Utils\GeralUtils;
-use App\Utils\MessageUtils;
 use App\Utils\SessionUtils;
 
 abstract class AbstractController {
-  protected $service;
-  protected $validator;
-
   protected function renderView(string $view, array $data = [], string $layout = 'sidebar'): void {
     $data = array_merge($data, [
       'userRole' => SessionUtils::getUserRole(),
       'userId' => SessionUtils::getUserId(),
       'isLoggedIn' => SessionUtils::isLoggedIn(),
-      'message' => MessageUtils::getMessage(),
+      'message' => SessionUtils::getMessage(),
     ]);
 
     extract($data); // Create variables from the data array

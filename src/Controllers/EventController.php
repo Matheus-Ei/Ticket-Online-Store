@@ -4,16 +4,16 @@ namespace App\Controllers;
 
 use App\DTOs\EventData;
 use App\Services\EventService;
-use App\Utils\MessageUtils;
 use App\Utils\SessionUtils;
 use App\Validators\EventValidator;
 
 class EventController extends AbstractController {
   private $userId;
 
-  public function __construct() {
-    $this->service = new EventService();
-    $this->validator = new EventValidator();
+  public function __construct(
+    private EventService $service,
+    private EventValidator $validator,
+  ) {
     $this->userId = SessionUtils::getUserId();
   }
 
@@ -103,7 +103,7 @@ class EventController extends AbstractController {
 
       $this->renderView('events/save-form', $data);
     } catch (\Exception $e) {
-      MessageUtils::setMessage('error', $e->getMessage());
+      SessionUtils::setMessage('error', $e->getMessage());
       $this->navigate('/events');
     }
   }
@@ -138,10 +138,10 @@ class EventController extends AbstractController {
 
       $this->service->save($eventId, $data);
 
-      MessageUtils::setMessage('success', 'Evento salvo com sucesso!');
+      SessionUtils::setMessage('success', 'Evento salvo com sucesso!');
       $this->navigate('/events/');
     } catch (\Exception $e) {
-      MessageUtils::setMessage('error', $e->getMessage());
+      SessionUtils::setMessage('error', $e->getMessage());
       $this->navigate('/events/');
     }
   }
@@ -154,10 +154,10 @@ class EventController extends AbstractController {
 
       $this->service->delete($id, $this->userId);
 
-      MessageUtils::setMessage('success', 'Evento excluído com sucesso!');
+      SessionUtils::setMessage('success', 'Evento excluído com sucesso!');
       $this->navigate('/events/');
     } catch (\Exception $e) {
-      MessageUtils::setMessage('error', $e->getMessage());
+      SessionUtils::setMessage('error', $e->getMessage());
       $this->navigate('/events/');
     }
   }

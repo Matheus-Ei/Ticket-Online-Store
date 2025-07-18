@@ -6,14 +6,13 @@ use App\DTOs\UserData;
 use App\DTOs\UserDataEdit;
 use App\Utils\SessionUtils;
 use App\Services\UserService;
-use App\Utils\MessageUtils;
 use App\Validators\UserValidator;
 
 class UserController extends AbstractController {
-  public function __construct() {
-    $this->service = new UserService();
-    $this->validator = new UserValidator();
-  }
+  public function __construct(
+    private UserService $service,
+    private UserValidator $validator
+  ) {}
 
   public function registerForm() {
     $data = [
@@ -83,10 +82,10 @@ class UserController extends AbstractController {
 
       $this->service->create($registrationData);
 
-      MessageUtils::setMessage('success', 'Conta criada com sucesso! Faça login para continuar.');
+      SessionUtils::setMessage('success', 'Conta criada com sucesso! Faça login para continuar.');
       $this->navigate('/users/login');
     } catch (\Exception $e) {
-      MessageUtils::setMessage('error', $e->getMessage());
+      SessionUtils::setMessage('error', $e->getMessage());
       $this->navigate('/users/register');
     }
   }
@@ -95,10 +94,10 @@ class UserController extends AbstractController {
     try {
       $this->service->login($_POST['email'], $_POST['password']);
 
-      MessageUtils::setMessage('success', 'Login realizado com sucesso!');
+      SessionUtils::setMessage('success', 'Login realizado com sucesso!');
       $this->navigate('/users/profile');
     } catch (\Exception $e) {
-      MessageUtils::setMessage('error', $e->getMessage());
+      SessionUtils::setMessage('error', $e->getMessage());
       $this->navigate('/users/login');
     }
   }
@@ -125,10 +124,10 @@ class UserController extends AbstractController {
 
       $this->service->update($userId, $profileData);
 
-      MessageUtils::setMessage('success', 'Perfil atualizado com sucesso!');
+      SessionUtils::setMessage('success', 'Perfil atualizado com sucesso!');
       $this->navigate('/users/profile');
     } catch (\Exception $e) {
-      MessageUtils::setMessage('error', $e->getMessage());
+      SessionUtils::setMessage('error', $e->getMessage());
       $this->navigate('/users/edit');
     }
   }
@@ -144,7 +143,7 @@ class UserController extends AbstractController {
 
       $this->navigate('/');
     } catch (\Exception $e) {
-      MessageUtils::setMessage('error', $e->getMessage());
+      SessionUtils::setMessage('error', $e->getMessage());
       $this->navigate('/users/profile');
     }
   }

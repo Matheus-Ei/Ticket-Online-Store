@@ -1,9 +1,10 @@
 <?php
 
-namespace Config;
+namespace Core;
 
 class Router {
   public $router = null;
+  protected $container = null;
 
   public $routes = [
     // Users routes
@@ -172,13 +173,17 @@ class Router {
     ],
   ];
 
-  public function __construct() {
+  public function __construct(Container $container) {
     $this->router = new \Bramus\Router\Router();
+    $this->container = $container;
     $this->setup();
   }
 
   public function register($method, $endpoint, $controller, $action) {
-    $this->router->$method($endpoint, "$controller@$action");
+    $this->router->$method($endpoint, function(...$params) use ($controller, $action) {
+      $controllerInstance = $this->container->get($controller); // Get the controller instance from the container
+      call_user_func_array([$controllerInstance, $action], $params); // Call the action method on the controller instance
+    });  
   }
 
   public function setup() {

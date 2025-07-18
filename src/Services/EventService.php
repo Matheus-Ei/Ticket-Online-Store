@@ -6,9 +6,9 @@ use App\DTOs\EventData;
 use App\Models\EventModel;
 
 class EventService extends AbstractService {
-  public function __construct() {
-    $this->model = new EventModel();
-  }
+  public function __construct(
+    private EventModel $model
+  ) {}
 
   public function get($id) {
     $event = $this->model->getById($id);
