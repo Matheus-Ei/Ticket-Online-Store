@@ -33,7 +33,6 @@ try {
   $router = new Router($container);
   $router->run();
 } catch (Throwable $e) {
-  $errorUtils = new ErrorUtils($container);
-  $errorUtils->handleException($e);
+  ErrorUtils::handleException($e);
 }
 

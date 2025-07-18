@@ -58,7 +58,7 @@ abstract class AbstractValidator {
 
   protected function throwIfErrors(): void {
     if (!empty($this->errors)) {
-      throw new ValidationException($this->errors);
+      throw new ValidationException(errors: $this->errors);
     }
   }
 
