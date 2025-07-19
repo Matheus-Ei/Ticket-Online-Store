@@ -55,7 +55,7 @@ class UserServiceTest extends TestCase
   }
 
   public function testCreateUserSuccess() {
-    $userData = new UserData('Test User', 'new@example.com', 'client', 'password123');
+    $userData = new UserData('Test User', 'new@example.com', 'password123', 'client');
 
     $this->userModelMock->method('getByEmail')->with('new@example.com')->willReturn(null);
     $this->userModelMock->expects($this->once())->method('create')->willReturn(1);
@@ -69,7 +69,7 @@ class UserServiceTest extends TestCase
     $this->expectException(ValidationException::class);
     $this->expectExceptionMessage("Email já cadastrado");
 
-    $userData = new UserData('Test User', 'exists@example.com', 'client', 'password123');
+    $userData = new UserData('Test User', 'exists@example.com', 'password123', 'client');
 
     $this->userModelMock->method('getByEmail')
       ->with('exists@example.com')

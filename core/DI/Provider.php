@@ -31,7 +31,7 @@ class Provider {
         $database = new Database();
       }
 
-      return new Database();
+      return $database;
     });
 
     // Session manager as a singleton

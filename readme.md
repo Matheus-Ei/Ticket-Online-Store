@@ -1,5 +1,6 @@
 # Php-Online-Store
 Esse repositório contém o código fonte de uma loja online de **ingressos** desenvolvida em PHP, utilizando o padrão MVC, tailwindCss para os estilos, e PostgreSQL como banco de dados.
+**Eu hospedei esse site em: [Php-Online-Store](https://matheus-eickhoff.online) caso tenha interesse em ver**
 
 ## Instalação
 Para instalar o projeto, é importante ter o Docker e o Docker Compose instalados em sua máquina. Siga os passos abaixo para configurar o ambiente:
@@ -47,6 +48,72 @@ Aqui descrevi as principais tecnologias utilizadas no projeto:
 - **Docker**: Utilizado para containerização do ambiente de desenvolvimento.
 - **Docker Compose**: Utilizado para orquestrar os containers do Docker.
 - **PHPUnit**: Framework de testes para PHP.
+
+## Explicando Decisões Técnicas
+Na sessão a seguir, explico algumas decisões técnicas que tomei durante o desenvolvimento do projeto:
+
+### Padrão MVC
+Optei por utilizar o padrão MVC (Model-View-Controller) para organizar o código do projeto. Isso ajuda a separar as responsabilidades, tornando o código mais modular e fácil de manter.
+
+### Injeção de Dependências
+Utilizei o padrão de injeção de dependências para gerenciar as dependências entre os componentes do sistema. Isso facilita a testabilidade e a manutenção do código, permitindo que as classes sejam mais independentes umas das outras. Tambem diminue o acoplamento entre as classes, tornando o código mais flexível e fácil de modificar.
+
+Para isso eu criei uma classe `Container` que é responsável por gerenciar as dependências e instâncias dos serviços utilizados no projeto. Essa classe permite registrar serviços e resolvê-los quando necessário, facilitando a injeção de dependências em controllers e outros componentes, e usei a classe estática `Provider` para registrar as binds no container.
+
+### PostgreSQL com pasta /sql
+Escolhi o PostgreSQL por que já tinha conhecimento prévio nesse banco de dados e porque acredito que é robusto e confiável.
+
+A pasta `/sql` contém os scripts de criação do banco de dados e das tabelas, além de alguns dados iniciais para facilitar o desenvolvimento e os testes.
+
+Preferi não colocar os scripts de criação do banco de dados diretamente no código PHP, pois isso poderia tornar o código mais complexo e menos legível. Em vez disso, optei por manter os scripts SQL separados, permitindo que sejam executados manualmente.
+
+### TailwindCSS
+Como não era a ideia principal do projeto focar no front-end e sim na lógica geral, escolhi a maneira mais facil e que eu já estava acostumado a ultilizar para fazer a estilização.
+
+### Docker e Docker Compose
+Já que era um dos bonus eu adicionei o Docker e o Docker Compose, mas mesmo que não fosse eu iria ultilizar, porque facilita a configuração e replicação do ambiente de desenvolvimento, e tambem facilita rodar o banco de dados PostgreSQL em um container isolado.
+
+### Cron-tab para Expiração de Ingressos
+Não achei uma maneira mais facil de implementar a expiração dos ingressos automatica reservados. Eu poderia simplimente delegar isso ao front-end(tambem fiz isso, mas não deixei apenas por isso), mas não teria uma forma de garantir que não teriam ingressos reservados no banco de dados e que não seriam expirados. 
+
+Então ultilizei o front-end para expirar os ingressos, mas caso o cliente fechasse a tab ou tivesse algum erro, o cron-tab serviria para garantir que os ingressos seriam expirados após 2 minutos. Coloquei ele em um container separado para que ele pudesse rodar em background e não interferir no funcionamento da aplicação principal.
+
+### Handler de Erro Global
+Decidi implementar um handler de erro global porque isso removeria muito código repetido dos controllers(DRY - Don't Repeat Yourself) e tornaria o código mais limpo e fácil de manter.
+
+Esse handler é responsável por capturar e tratar erros de forma centralizada, permitindo que a aplicação responda de maneira adequada a diferentes tipos de exceções. ele também registra os erros em um arquivo de log, facilitando a identificação e resolução de problemas.
+
+### Validações em uma Camada Separada
+Criei uma camada de validações separada para centralizar as regras de validação de dados. Isso ajuda a manter o código mais organizado e facilita a manutenção das regras de validação. Limpando os controllers tambem e deixando eles mais focados na lógica de controle.
+
+### Testes Unitários
+Implementei testes unitários para os services do sistema, utilizando o PHPUnit. 
+Os testes ajudam a garantir que as regras de negócio estejam funcionando corretamente e que futuras alterações no código não quebrem funcionalidades existentes.
+
+
+## Arquitetura do Projeto
+A arquitetura do projeto é baseada no padrão MVC (Model-View-Controller), que separa as responsabilidades em diferentes camadas. A seguir, uma breve descrição de cada camada:
+
+### Views
+Responsável por exibir as informações ao usuário. 
+Aqui estão inclusos coisas como os layouts, que são como templates que posso usar e que removem muita repetição de código HTML.
+Também tem os partials, que são pedaços de código HTML reutilizáveis, como cabeçalhos, rodapés e formulários.
+
+### Controllers
+Responsável por receber as requisições do usuário, processar os dados e chamar os serviços apropriados. 
+
+### Services
+Implementa a lógica de negócio do sistema. Os serviços contêm as regras de negócio e interagem com a camada de persistência (Model). Caso algo não esteja correto, eles lançam exceções que são tratadas pelo handler de erro global.
+
+### Models
+Interage diretamente com o banco de dados. Utiliza o PDO para executar consultas SQL e mapear os resultados para objetos do sistema.
+
+### Validations
+Responsável por validar os dados de entrada antes de serem processados pelos serviços. Lançam exceções em caso de dados inválidos (ValidationException).
+
+### Exceptions
+Define as exceções personalizadas utilizadas no sistema, como `ValidationException`, `NotFoundException`, `UnauthorizedException`, entre outras. 
+
 
 ## Funcionalidades
 Listei as principais funcionalidades implementadas na loja online dos requisitos do projeto:
@@ -96,6 +163,7 @@ Listei as principais funcionalidades implementadas na loja online dos requisitos
   - [x] Proteção contra CSRF (Cross-Site Request Forgery).
   - [x] Proteção contra XSS (Cross-Site Scripting).
   - [x] Proteção contra SQL Injection.
+  - [x] Proteção contra Session Fixation.
 
 - [x] Validações
     - [x] Validação de dados de entrada.

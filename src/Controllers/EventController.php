@@ -136,7 +136,7 @@ class EventController extends AbstractController {
 
     $this->validator->validateSave($data);
 
-    $this->service->save($data, $eventId);
+    $this->service->save($data, (int) $eventId);
 
     $this->setMessage('success', 'Evento salvo com sucesso!');
     $this->navigate('/events/');

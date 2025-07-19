@@ -25,7 +25,7 @@ class TicketService extends AbstractService {
   }
 
   public function get(int $id, int $client_id): array {
-    $ticket = $this->model->getById((int) $id);
+    $ticket = $this->model->getById($id);
 
     if (!$ticket || $ticket['client_id'] !== $client_id) {
       throw new NotFoundException('Ingresso não encontrado ou não pertence ao usuário.');
@@ -90,10 +90,18 @@ class TicketService extends AbstractService {
       throw new ValidationException(message: 'ID do cliente e do evento são obrigatórios.');
     }
 
-    $ticket = $this->reserve($clientId, $eventId);
-    $this->model->updateStatus($ticket['id'], 'purchased');
+    try {
+      $this->eventModel->createTransaction();
 
-    return $ticket['id'];
+      $ticket = $this->reserve($clientId, $eventId);
+      $this->model->updateStatus($ticket['id'], 'purchased');
+
+      $this->eventModel->commitTransaction();
+      return $ticket['id'];
+    } catch (\Throwable $e) {
+      $this->eventModel->rollbackTransaction();
+      throw $e;
+    }
   }
 
   public function expireReservation(int $clientId, int $eventId): void {
