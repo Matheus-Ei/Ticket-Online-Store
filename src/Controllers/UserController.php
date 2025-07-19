@@ -75,10 +75,14 @@ class UserController extends AbstractController {
   }
 
   public function login() {
-    $this->service->login(
+    $user = $this->service->login(
       $this->request->post('email'), 
       $this->request->post('password')
     );
+
+    // Create session variables
+    $this->session->set('user_id', $user['id']);
+    $this->session->set('user_role', $user['role']);
 
     $this->setMessage('success', 'Login realizado com sucesso!');
     $this->navigate('/users/profile');

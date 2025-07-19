@@ -9,6 +9,8 @@ use App\Exceptions\ValidationException;
 use App\Models\TicketModel;
 use App\Models\EventModel;
 use App\Utils\GeralUtils;
+use App\Utils\PdfUtils;
+use App\Utils\QrCodeUtils;
 use Dompdf\Dompdf;
 
 class TicketService extends AbstractService {
@@ -30,14 +32,12 @@ class TicketService extends AbstractService {
   }
 
   public function generatePdfQrCode ($ticketId) {
-    // TODO: Create a Ultility class to handle QR codes
     $qrCodeUrl = GeralUtils::getEnv('BASE_URL') . '/tickets/generate-pdf/' . $ticketId;
-    $qrCode = GeralUtils::generateQRCode($qrCodeUrl);
+    $qrCode = QrCodeUtils::generate($qrCodeUrl);
     return $qrCode;
   }
 
   public function generatePdf(int $ticketId, $clientId) {
-    // TODO: Create a Ultility class to handle PDFs
     $ticket = $this->model->getById($ticketId);
 
     if (!$ticket) {
@@ -52,19 +52,7 @@ class TicketService extends AbstractService {
 
     $pdf_template = GeralUtils::basePath('resources/views/tickets/ticket-pdf.php');
 
-    // Get the html content from the template
-    ob_start();
-    require $pdf_template;
-    $html = ob_get_clean();
-
-    // Load the HTML content into Dompdf
-    $dompdf = new Dompdf();
-    $dompdf->loadHtml($html);
-    $dompdf->setPaper('A4', 'portrait');
-
-    // Render the HTML as PDF
-    $dompdf->render();
-    $dompdf->stream("ticket-{$ticketId}.pdf", ["Attachment" => true]);
+    PdfUtils::render($pdf_template, "ticket-{$ticketId}.pdf", ['ticket' => $ticket]);
   }
 
   public function getAll() {

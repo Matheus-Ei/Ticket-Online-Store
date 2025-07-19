@@ -39,10 +39,6 @@ class UserService extends AbstractService {
       throw new UnauthorizedException("Credenciais inválidas");
     }
 
-    // TODO: Send this verification to controller
-    $_SESSION['user_id'] = $user['id'];
-    $_SESSION['user_role'] = $user['role'];
-
     return $user;
   }
 

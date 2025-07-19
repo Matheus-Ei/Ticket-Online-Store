@@ -1,11 +1,8 @@
 <?php
 
 namespace App\Utils;
-use chillerlan\QRCode\QRCode;
 
 class GeralUtils {
-
-
   public static function basePath(string $path): string {
     $absolutePath = __DIR__ . '/../../' . $path;
     return $absolutePath;
@@ -19,11 +16,5 @@ class GeralUtils {
     echo '<pre>';
     var_dump($value);
     echo '</pre>';
-  }
-
-  public static function generateQRCode(string $url): string {
-    $qrCodeOutput = (new QRCode)->render($url);
-
-    return $qrCodeOutput;
   }
 }

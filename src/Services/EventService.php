@@ -19,8 +19,14 @@ class EventService extends AbstractService {
     return $event;
   }
 
-  public function getTicketsSold(int $eventId, int $sellerId) {
-    return $this->model->getTicketsSold($eventId, $sellerId);
+  public function getTicketsSold(int $eventId, ?int $userId, ?string $userRole) {
+    if ($userRole === 'seller') {
+      return $this->model->getTicketsSold($eventId, $userId);
+    }
+
+    return [];
+
+
   }
 
   public function getWithOwner(int $id, int $sellerId) {
