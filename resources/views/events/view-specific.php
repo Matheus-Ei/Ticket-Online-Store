@@ -29,12 +29,17 @@
 
 
     <?php if($userRole !== 'seller'): ?>
-    <a 
-      href='/tickets/buy?event_id=<?= htmlspecialchars($event['id']) ?>'
-      class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 w-fit cursor-pointer"
-    >
-      Comprar Ingresso
-    </a>
+    <form action="/tickets/reserve" method="POST" class="mb-4">
+      <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
+
+      <input type="hidden" name="event_id" value="<?= htmlspecialchars($event['id']) ?>">
+      <button 
+        type="submit" 
+        class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 w-fit cursor-pointer"
+      >
+        Comprar Ingresso
+      </button>
+    </form>
     <?php endif; ?>
   </div>
 

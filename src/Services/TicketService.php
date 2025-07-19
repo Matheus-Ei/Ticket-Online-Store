@@ -63,43 +63,6 @@ class TicketService extends AbstractService {
     return $this->model->getPurchasedByClient($clientId);
   }
 
-  public function purchase(int $clientId, int $eventId, ?int $ticketId) {
-    if ($ticketId) {
-      $ticket = $this->model->getById($ticketId);
-
-      if (!$ticket || $ticket['client_id'] !== $clientId) {
-        throw new NotFoundException('Ingresso não encontrado ou não pertence ao usuário.');
-      }
-
-      switch ($ticket['status']) {
-        case 'purchased': throw new ValidationException(message: 'O ingresso já foi comprado.');
-        case 'expired':   throw new ValidationException(message: 'O ingresso expirou.');
-        case 'canceled':  throw new ValidationException(message: 'O ingresso foi cancelado.');
-      }
-
-      $this->model->updateStatus($ticketId, 'purchased');
-      return $ticketId;
-    }
-
-    if (!$clientId || !$eventId) {
-      throw new ValidationException(message: 'ID do cliente e do evento são obrigatórios.');
-    }
-
-    $hasTickets = $this->eventModel->getNumberTickets($eventId) > 0;
-    if (!$hasTickets) {
-      throw new ValidationException(message: 'Nenhum ingresso disponível para este evento.');
-    }
-
-    $ticketData = new TicketData(
-      status: 'purchased',
-      clientId: $clientId,
-      eventId: $eventId
-    );
-
-    $newTicketId = $this->model->create($ticketData);
-    return $newTicketId;
-  }
-
   public function reserve(int $clientId, int $eventId) {
     // Verify if the client already has a reserved ticket for this event
     $reservedTicket = $this->model->getReservedByClient($clientId, $eventId);
@@ -123,13 +86,24 @@ class TicketService extends AbstractService {
     return $this->model->getById($ticketId);
   }
 
-  public function expireReservation(int $ticketId) {
-    $ticket = $this->model->getById($ticketId);
+  public function purchase(int $clientId, int $eventId) {
+    if (!$clientId || !$eventId) {
+      throw new ValidationException(message: 'ID do cliente e do evento são obrigatórios.');
+    }
+
+    $ticket = $this->reserve($clientId, $eventId);
+    $this->model->updateStatus($ticket['id'], 'purchased');
+
+    return $ticket['id'];
+  }
+
+  public function expireReservation(int $clientId, int $eventId) {
+    $ticket = $this->model->getReservedByClient($clientId, $eventId);
 
     if (!$ticket || $ticket['status'] !== 'reserved') {
       throw new NotFoundException('Ingresso não encontrado ou não está reservado.');
     }
 
-    $this->model->updateStatus($ticketId, 'expired');
+    $this->model->updateStatus($ticket['id'], 'expired');
   }
 }

@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS users (
     password_hash TEXT NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE,
     role role_type NOT NULL DEFAULT 'client',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMPTZ DEFAULT now()
 );
 
 CREATE TABLE IF NOT EXISTS events (
@@ -19,15 +19,15 @@ CREATE TABLE IF NOT EXISTS events (
     name VARCHAR(100) NOT NULL,
     description TEXT,
     image_url TEXT,
-    start_time TIMESTAMP NOT NULL,
-    end_time TIMESTAMP,
+    start_time TIMESTAMPTZ NOT NULL,
+    end_time TIMESTAMPTZ,
     location VARCHAR(255),
 
     ticket_price DECIMAL(10, 2) NOT NULL DEFAULT 0.00 CHECK (ticket_price >= 0),
     ticket_quantity INT NOT NULL DEFAULT 0 CHECK (ticket_quantity >= 0),
 
     created_by INT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMPTZ DEFAULT now(),
 
     FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE CASCADE
 );
@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS tickets (
     id SERIAL PRIMARY KEY,
 
     status ticket_status NOT NULL DEFAULT 'reserved',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMPTZ DEFAULT now(),
 
     client_id INT NOT NULL,
     event_id INT NOT NULL,

@@ -7,8 +7,10 @@
     <h1 class="text-2xl font-semibold">Detalhes do Evento</h1>  
     <p class="text-gray-600 mb-4">Você está comprando um ingresso para o evento:</p>
 
+    <?php if (isset($reservationTime)): ?>
     <p class="text-md text-gray-500">Você tem 2 minutos para completar a compra antes que a reserva expire.</p>
     <p class="text-lg text-gray-500 mb-4 text-yellow-600">Tempo restante: <span id="countdown"></span></p>
+    <?php endif ?>
 
     <h2 class="text-xl font-semibold"><?= htmlspecialchars($event['name']) ?></h2>
     <p class="text-gray-600 mb-2"><?= htmlspecialchars($event['description']) ?></p>
@@ -27,10 +29,6 @@
 
     <input type="hidden" name="event_id" value="<?= htmlspecialchars($event['id']) ?>">
 
-    <?php if (isset($ticketId)): ?>
-    <input type="hidden" name="ticket_id" value="<?= htmlspecialchars($ticketId) ?>">
-    <?php endif; ?>
-
     <div>
       <label for="email" class="block text-gray-700 mb-2">Email</label>
       <input 
@@ -48,21 +46,24 @@
   </form>
 </div>
 
-<?php $reservationTimeISO = date('c', strtotime($reservationTime))?>
+<?php $reservationTimeUTC = (new DateTime($reservationTime))->format('Y-m-d\TH:i:s\Z');?>
 
 <?php if (isset($reservationTime)): ?>
 <script>
-const reservationTime = new Date("<?= htmlspecialchars($reservationTimeISO) ?>").getTime();
+const reservationTimeUTCString = "<?= htmlspecialchars($reservationTimeUTC) ?>";
+const reservationTime = new Date(reservationTimeUTCString).getTime();
+
 const countdownElement = document.getElementById('countdown');
-const ticketId = <?= isset($ticketId) ? json_encode($ticketId) : 'null' ?>;
 
 function expireReservation() {
-  if (ticketId) {
-    fetch(`/tickets/expire/${ticketId}`, {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'}
+  fetch(`/tickets/expire`, {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({
+      csrf_token: '<?= htmlspecialchars($csrf_token) ?>',
+      event_id: <?= htmlspecialchars($event['id']) ?>
     })
-  }
+  })
 }
 
 function updateCountdown() {

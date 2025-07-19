@@ -51,44 +51,56 @@ class TicketController extends AbstractController {
     $this->renderView('tickets/view-specific', $data);
   }
 
-  public function buyForm() {
+  public function reserve() {
     $this->checkLogin('client');
 
-    $eventId = $this->request->get('event_id');
-    $ticketId = null;
+    $this->validator->validateCsrfToken(
+      $this->session->get('csrf_token'),
+      $this->request->post('csrf_token')
+    );
 
-    // Gets the event details
-    $event = $this->eventService->get($eventId, $this->getUserId());
-
-    // TODO: When the user clicks in "Buy" should be redirected to a reservation route, that will reservate and redirect to this form
-    // TODO: Instead of reservating here, we should check if the user has a reservation in the session
-
-    // Makes a reservation for the ticket
+    $eventId = $this->request->post('event_id');
     $this->validator->validateId($eventId, 'Event ID');
 
     $ticket = $this->service->reserve($this->getUserId(), $eventId);
 
-    // Store reservation time in session
     $reservationTime = $ticket['created_at'];
     $this->session->set('reservation_time', $reservationTime);
+
+    $this->navigate("/tickets/buy?event_id={$eventId}");
+  }
+
+  public function buyForm() {
+    $this->checkLogin('client');
+
+    $eventId = $this->request->get('event_id');
+
+    // Gets the event details
+    $event = $this->eventService->get($eventId, $this->getUserId());
+
+    $reservationTime = $this->session->get('reservation_time');
 
     $data = [
       'title' => 'Comprar Ingresso',
       'event' => $event,
-      'ticketId' => $ticket['id'],
-      'reservationTime' => $reservationTime ?? null,
+      'reservationTime' => $reservationTime,
       'csrf_token' => $this->session->get('csrf_token'),
     ];
 
     $this->renderView('tickets/buy-form', $data);
   }
 
-  public function expireReservation($id) {
+  public function expireReservation() {
     $this->checkLogin('client');
 
-    $this->validator->validateId($id, 'Ticket ID');
+    $this->validator->validateCsrfToken(
+      $this->session->get('csrf_token'),
+      $this->request->json('csrf_token')
+    );
 
-    $this->service->expireReservation($id);
+    $eventId = $this->request->json('event_id');
+
+    $this->service->expireReservation($this->getUserId(), $eventId);
     $this->setMessage('warning', 'Reserva expirada. Por favor, tente novamente.');
   }
 
@@ -101,12 +113,9 @@ class TicketController extends AbstractController {
     );
 
     $eventId = $this->request->post('event_id');
-    $ticketId = $this->request->post('ticket_id');
-
     $this->validator->validateId($eventId, 'Event ID');
-    $this->validator->validateId($ticketId, 'Ticket ID');
 
-    $ticketId = $this->service->purchase($this->getUserId(), $eventId, $ticketId);
+    $ticketId = $this->service->purchase($this->getUserId(), $eventId);
 
     $this->setMessage('success', 'Ingresso comprado com sucesso!');
     return $this->navigate("/tickets/{$ticketId}");
