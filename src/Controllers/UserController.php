@@ -87,7 +87,7 @@ class UserController extends AbstractController {
   public function logout() {
     $this->checkLogin();
 
-    session_destroy();
+    $this->session->destroy();
     $this->navigate('/');
   }
 

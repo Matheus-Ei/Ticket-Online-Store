@@ -30,12 +30,14 @@ class TicketService extends AbstractService {
   }
 
   public function generatePdfQrCode ($ticketId) {
+    // TODO: Create a Ultility class to handle QR codes
     $qrCodeUrl = GeralUtils::getEnv('BASE_URL') . '/tickets/generate-pdf/' . $ticketId;
     $qrCode = GeralUtils::generateQRCode($qrCodeUrl);
     return $qrCode;
   }
 
   public function generatePdf(int $ticketId, $clientId) {
+    // TODO: Create a Ultility class to handle PDFs
     $ticket = $this->model->getById($ticketId);
 
     if (!$ticket) {

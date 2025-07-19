@@ -4,6 +4,8 @@ namespace App\Utils;
 use chillerlan\QRCode\QRCode;
 
 class GeralUtils {
+
+
   public static function basePath(string $path): string {
     $absolutePath = __DIR__ . '/../../' . $path;
     return $absolutePath;

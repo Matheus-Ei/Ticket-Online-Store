@@ -47,7 +47,11 @@ class EventController extends AbstractController {
 
     $event = $this->service->get($id);
 
-    if ($this->getUserRole() === 'seller' && $event['created_by'] === $this->getUserId()) {
+    $userRole = $this->getUserRole();
+    $userId = $this->getUserId();
+
+    // TODO: Send this business logic to the service layer
+    if ($userRole === 'seller' && $event['created_by'] === $userId) {
       $tickets = $this->service->getTicketsSold($id, $this->getUserId());
     } 
 

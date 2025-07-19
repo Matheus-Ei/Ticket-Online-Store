@@ -60,6 +60,9 @@ class TicketController extends AbstractController {
     // Gets the event details
     $event = $this->eventService->get($eventId, $this->getUserId());
 
+    // TODO: When the user clicks in "Buy" should be redirected to a reservation route, that will reservate and redirect to this form
+    // TODO: Instead of reservating here, we should check if the user has a reservation in the session
+
     // Makes a reservation for the ticket
     $this->validator->validateId($eventId, 'Event ID');
 

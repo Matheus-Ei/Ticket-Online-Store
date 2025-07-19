@@ -25,6 +25,10 @@ class Session {
     unset($_SESSION[$key]);
   }
 
+  public function regenerateId(bool $deleteOldSession = false): void {
+    session_regenerate_id($deleteOldSession);
+  }
+
   public function destroy(): void {
     session_destroy();
   }

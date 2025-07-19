@@ -5,31 +5,40 @@ namespace App\Utils;
 use App\Exceptions\NotFoundException;
 use App\Exceptions\UnauthorizedException;
 use App\Exceptions\ValidationException;
+use Core\DI\Container;
+use Core\Session;
 use PDOException;
 use Throwable;
 
-// TODO: Use the container to inject dependencies like session, request, etc.
 class ErrorUtils {
-  private static function setMessage(string $type, string $text): void {
-    $_SESSION['message'] = [
-      'type' => $type,
-      'text' => $text
-    ];
+  private Session $session;
+
+  public function __construct(
+    Container $container
+  ) {
+    $this->session = $container->get(Session::class);
   }
 
-  private static function redirectPreviousPage(): void {
+  private function setMessage(string $type, string $text): void {
+    $this->session->set('message', [
+      'type' => $type,
+      'text' => $text
+    ]);
+  }
+
+  private function redirectPreviousPage(): void {
     $referer = $_SERVER['HTTP_REFERER'] ?? '/';
     header("Location: $referer");
     exit();
   }
 
-  private static function renderError(string $errorMessage, int $statusCode, string $title = 'Erro'): void {
+  private function renderError(string $errorMessage, int $statusCode, string $title = 'Erro'): void {
     $data = [
       'title' => $title,
       'errorMessage' => $errorMessage,
       'statusCode' => $statusCode,
-      'isLoggedIn' => isset($_SESSION['user_id']) && !empty($_SESSION['user_id']),
-      'userRole' => $_SESSION['user_role'] ?? null,
+      'isLoggedIn' => $this->session->get('user_id') && !empty($this->session->get('user_id')),
+      'userRole' => $this->session->get('user_role'),
     ];
 
     extract($data);
@@ -42,34 +51,34 @@ class ErrorUtils {
     exit();
   }
 
-  public static function handleException(Throwable $e): void {
+  public function handleException(Throwable $e): void {
     switch (true) {
       case $e instanceof ValidationException:
-        self::setMessage('error', $e->getMessage());
+        $this->setMessage('error', $e->getMessage());
 
-        $_SESSION['old_input'] = $e->getInputData();
+        $this->session->set('old_input', $e->getInputData());
 
-        self::redirectPreviousPage();
+        $this->redirectPreviousPage();
         break;
 
       case $e instanceof PDOException:
-        self::renderError('Ocorreu um erro ao acessar o banco de dados. Por favor, tente novamente mais tarde.', 500, 'Erro de Banco de Dados');
+        $this->renderError('Ocorreu um erro ao acessar o banco de dados. Por favor, tente novamente mais tarde.', 500, 'Erro de Banco de Dados');
         http_response_code(500);
         break;
 
       case $e instanceof NotFoundException:
-        self::renderError($e->getMessage(), 404, 'Não Encontrado');
+        $this->renderError($e->getMessage(), 404, 'Não Encontrado');
         http_response_code(404);
         break;
 
       case $e instanceof UnauthorizedException:
-        self::setMessage('error', $e->getMessage());
-        self::redirectPreviousPage();
+        $this->setMessage('error', $e->getMessage());
+        $this->redirectPreviousPage();
         break;
 
       default:
         // Render one error page for all other exceptions
-        self::renderError('Ocorreu um erro inesperado no servidor. Nossa equipe já foi notificada.', 500);
+        $this->renderError('Ocorreu um erro inesperado no servidor. Nossa equipe já foi notificada.', 500);
         http_response_code(500);
         break;
     }
