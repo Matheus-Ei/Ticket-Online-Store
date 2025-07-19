@@ -38,7 +38,8 @@ class UserModel extends AbstractModel {
   }
 
   public function update($id, UserDataEdit $data): int {
-    $query = "UPDATE users SET 
+    $query = "UPDATE users 
+              SET 
                 name = :name, 
                 email = :email
               WHERE id = :id";

@@ -36,6 +36,11 @@ class TicketModel extends AbstractModel {
     return $this->database->selectAll("SELECT * FROM tickets");
   }
 
+  public function getReservedByClient(int $clientId, int $eventId): ?array {
+    $query = "SELECT * FROM tickets WHERE event_id = :event_id AND client_id = :client_id AND status = 'reserved'";
+    return $this->database->selectOne($query, ['event_id' => $eventId, 'client_id' => $clientId]);
+  }
+
   public function getPurchasedByClient(int $clientId): array {
     $query = "SELECT t.id, t.status, e.name, e.start_time, e.end_time, e.location
               FROM tickets t 
@@ -60,11 +65,6 @@ class TicketModel extends AbstractModel {
   public function updateStatus(int $id, string $status): int {
     $query = "UPDATE tickets SET status = :status WHERE id = :id";
     return $this->database->execute($query, ['status' => $status, 'id' => $id]);
-  }
-
-  public function getReservedByClient(int $clientId, int $eventId): ?array {
-    $query = "SELECT * FROM tickets WHERE event_id = :event_id AND client_id = :client_id AND status = 'reserved'";
-    return $this->database->selectOne($query, ['event_id' => $eventId, 'client_id' => $clientId]);
   }
 
   public function delete(int $id): int {

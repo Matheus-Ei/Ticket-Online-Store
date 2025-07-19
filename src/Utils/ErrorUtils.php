@@ -56,10 +56,10 @@ class ErrorUtils {
 
   public function handleException(Throwable $e): void {
     $this->logger->error($e->getMessage(), [
-        'exception' => $e,
-        'file' => $e->getFile(),
-        'line' => $e->getLine(),
-        'trace' => $e->getTraceAsString()
+      'exception' => $e,
+      'file' => $e->getFile(),
+      'line' => $e->getLine(),
+      'trace' => $e->getTraceAsString()
     ]);
 
     switch (true) {

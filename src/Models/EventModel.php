@@ -10,6 +10,18 @@ class EventModel extends AbstractModel {
     parent::__construct($database);
   }
 
+  public function getById(int $id): ?array {
+    $query = "SELECT 
+                e.*, 
+                e.ticket_quantity - COUNT(t.id) AS tickets_available 
+              FROM events e 
+                LEFT JOIN tickets t ON e.id = t.event_id AND (t.status = 'purchased' OR t.status = 'reserved')
+              WHERE e.id = :id 
+              GROUP BY e.id";
+
+    return $this->database->selectOne($query, ['id' => $id]);
+  }
+
   public function getAll(): array {
     $query = "SELECT 
                 e.*, 
@@ -23,27 +35,15 @@ class EventModel extends AbstractModel {
     return $this->database->selectAll($query);
   }
 
-  public function getById(int $id): ?array {
-    $query = "SELECT 
-                e.*, 
-                e.ticket_quantity - COUNT(t.id) AS tickets_available 
-              FROM events e 
-                LEFT JOIN tickets t ON e.id = t.event_id AND (t.status = 'purchased' OR t.status = 'reserved')
-              WHERE e.id = :id 
-              GROUP BY e.id";
-
-    return $this->database->selectOne($query, ['id' => $id]);
-  }
-
   public function getTicketsSold(int $eventId, int $sellerId): array {
     $query = "SELECT 
                 t.status,
                 t.created_at,
                 u.name AS client_name,
                 u.email AS client_email
-              FROM tickets t 
-                JOIN events e ON t.event_id = e.id 
-                JOIN users u ON t.client_id = u.id
+            FROM tickets t 
+              JOIN events e ON t.event_id = e.id 
+              JOIN users u ON t.client_id = u.id
             WHERE t.event_id = :id AND e.created_by = :created_by
             ORDER BY t.created_at DESC";
 
@@ -54,10 +54,10 @@ class EventModel extends AbstractModel {
     $query = "SELECT 
                 e.*, 
                 e.ticket_quantity - COUNT(t.id) AS tickets_available 
-              FROM events e 
-                LEFT JOIN tickets t ON e.id = t.event_id AND (t.status = 'purchased' OR t.status = 'reserved')
-              WHERE e.created_by = :created_by
-              GROUP BY e.id";
+            FROM events e 
+              LEFT JOIN tickets t ON e.id = t.event_id AND (t.status = 'purchased' OR t.status = 'reserved')
+            WHERE e.created_by = :created_by
+            GROUP BY e.id";
 
     return $this->database->selectAll($query, ['created_by' => $sellerId]);
   }
@@ -98,7 +98,8 @@ class EventModel extends AbstractModel {
   }
 
   public function update(int $id, EventData $data): int {
-    $query = "UPDATE events SET 
+    $query = "UPDATE events 
+              SET 
                 name = :name, 
                 description = :description, 
                 image_url = :image_url, 

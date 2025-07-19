@@ -32,15 +32,7 @@ class TicketController extends AbstractController {
     $this->renderView('tickets/view-purchased', $data);
   }
 
-  public function generatePdf($ticketId) {
-    $this->checkLogin('client');
-
-    $this->validator->validateId($ticketId, 'ID do Ingresso');
-
-    return $this->service->generatePdf($ticketId, $this->getUserId());
-  }
-
-  public function viewSpecific($id) {
+  public function viewSpecific(mixed $id) {
     $this->checkLogin('client');
 
     $this->validator->validateId($id, 'Ticket ID');
@@ -49,25 +41,6 @@ class TicketController extends AbstractController {
 
     $data = ['title' => 'Detalhes do Ingresso', 'ticket' => $ticket];
     $this->renderView('tickets/view-specific', $data);
-  }
-
-  public function reserve() {
-    $this->checkLogin('client');
-
-    $this->validator->validateCsrfToken(
-      $this->session->get('csrf_token'),
-      $this->request->post('csrf_token')
-    );
-
-    $eventId = $this->request->post('event_id');
-    $this->validator->validateId($eventId, 'Event ID');
-
-    $ticket = $this->service->reserve($this->getUserId(), $eventId);
-
-    $reservationTime = $ticket['created_at'];
-    $this->session->set('reservation_time', $reservationTime);
-
-    $this->navigate("/tickets/buy?event_id={$eventId}");
   }
 
   public function buyForm() {
@@ -88,6 +61,33 @@ class TicketController extends AbstractController {
     ];
 
     $this->renderView('tickets/buy-form', $data);
+  }
+
+  public function generatePdf(mixed $ticketId) {
+    $this->checkLogin('client');
+
+    $this->validator->validateId($ticketId, 'ID do Ingresso');
+
+    return $this->service->generatePdf($ticketId, $this->getUserId());
+  }
+
+  public function reserve() {
+    $this->checkLogin('client');
+
+    $this->validator->validateCsrfToken(
+      $this->session->get('csrf_token'),
+      $this->request->post('csrf_token')
+    );
+
+    $eventId = $this->request->post('event_id');
+    $this->validator->validateId($eventId, 'Event ID');
+
+    $ticket = $this->service->reserve($this->getUserId(), $eventId);
+
+    $reservationTime = $ticket['created_at'];
+    $this->session->set('reservation_time', $reservationTime);
+
+    $this->navigate("/tickets/buy?event_id={$eventId}");
   }
 
   public function expireReservation() {

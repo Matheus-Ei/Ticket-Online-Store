@@ -5,26 +5,26 @@
 
   <div class="flex justify-between bg-white border border-gray-200 rounded-lg p-6">
     <div class='flex flex-col justify-center'>
-    <p class="text-gray-600 mb-2"><strong>Nome do Evento:</strong> <?= htmlspecialchars($ticket['name']) ?></p>
-    <p class="text-gray-600 mb-2"><strong>Data e Hora de Início:</strong> <?= htmlspecialchars($ticket['start_time']) ?></p>
+      <p class="text-gray-600 mb-2"><strong>Nome do Evento:</strong> <?= htmlspecialchars($ticket['name']) ?></p>
+      <p class="text-gray-600 mb-2"><strong>Data e Hora de Início:</strong> <?= htmlspecialchars($ticket['start_time']) ?></p>
 
-    <?php if (isset($ticket['end_time'])):?>
-    <p class="text-gray-600 mb-2"><strong>Data e Hora de Fim:</strong> <?= htmlspecialchars($ticket['end_time']) ?></p>
-    <?php endif; ?>
+      <?php if (isset($ticket['end_time'])):?>
+      <p class="text-gray-600 mb-2"><strong>Data e Hora de Fim:</strong> <?= htmlspecialchars($ticket['end_time']) ?></p>
+      <?php endif; ?>
 
-    <p class="text-gray-600 mb-2"><strong>Localização:</strong> <?= htmlspecialchars($ticket['location']) ?></p>
-    <p class="text-gray-600 mb-2"><strong>Status:</strong> <?= htmlspecialchars($ticket['status']) ?></p>
-    <p class="text-gray-600 mb-2"><strong>Comprado em:</strong> <?= htmlspecialchars($ticket['created_at']) ?></p>
+      <p class="text-gray-600 mb-2"><strong>Localização:</strong> <?= htmlspecialchars($ticket['location']) ?></p>
+      <p class="text-gray-600 mb-2"><strong>Status:</strong> <?= htmlspecialchars($ticket['status']) ?></p>
+      <p class="text-gray-600 mb-2"><strong>Comprado em:</strong> <?= htmlspecialchars($ticket['created_at']) ?></p>
 
     </div>
 
     <div class='flex flex-col items-center justify-center'>
 
-    <div class="mt-4">
-      <a href="/tickets/generate-pdf/<?= $ticket['id'] ?>" class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-        Baixar Comprovante
-      </a>
-    </div>
+      <div class="mt-4">
+        <a href="/tickets/generate-pdf/<?= $ticket['id'] ?>" class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+          Baixar Comprovante
+        </a>
+      </div>
       <img src="<?= $ticket['qr_code'] ?>" alt="QR Code" class="w-64 h-64">
 
     </div>

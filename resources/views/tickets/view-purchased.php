@@ -19,7 +19,7 @@
 
       <tbody>
         <?php foreach ($purchasedTickets as $ticket) {
-          require 'partials/ticket-row.php';
+        require 'partials/ticket-row.php';
         }?>
       </tbody>
     </table>

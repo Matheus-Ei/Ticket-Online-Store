@@ -44,7 +44,7 @@ class EventController extends AbstractController {
     $this->renderView('events/view-seller-events', $data);
   }
 
-  public function viewSpecific($id) {
+  public function viewSpecific(mixed $id) {
     $this->validator->validateId($id);
 
     $event = $this->service->get($id);
@@ -136,13 +136,13 @@ class EventController extends AbstractController {
 
     $this->validator->validateSave($data);
 
-    $this->service->save($eventId, $data);
+    $this->service->save($data, $eventId);
 
     $this->setMessage('success', 'Evento salvo com sucesso!');
     $this->navigate('/events/');
   }
 
-  public function delete($id) {
+  public function delete(mixed $id) {
     $this->checkLogin('seller');
 
     $this->validator->validateId($id, "Event ID");

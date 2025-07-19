@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
 
 class EventServiceTest extends TestCase
 {
-   /** @var EventModel&\PHPUnit\Framework\MockObject\MockObject */
+  /** @var EventModel&\PHPUnit\Framework\MockObject\MockObject */
   private $eventModelMock;
   private EventService $eventService;
 
@@ -60,7 +60,7 @@ class EventServiceTest extends TestCase
     $this->eventModelMock->expects($this->once())->method('create')->with($eventData);
     $this->eventModelMock->expects($this->never())->method('update');
 
-    $this->eventService->save(null, $eventData);
+    $this->eventService->save($eventData, null);
   }
 
   public function testSaveForUpdate() {
@@ -69,6 +69,6 @@ class EventServiceTest extends TestCase
     $this->eventModelMock->expects($this->once())->method('update')->with(1, $eventData);
     $this->eventModelMock->expects($this->never())->method('create');
 
-    $this->eventService->save(1, $eventData);
+    $this->eventService->save($eventData, 1);
   }
 }

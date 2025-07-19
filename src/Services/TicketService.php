@@ -11,7 +11,6 @@ use App\Models\EventModel;
 use App\Utils\GeralUtils;
 use App\Utils\PdfUtils;
 use App\Utils\QrCodeUtils;
-use Dompdf\Dompdf;
 
 class TicketService extends AbstractService {
   public function __construct(
@@ -19,7 +18,13 @@ class TicketService extends AbstractService {
     private EventModel $eventModel
   ) {}
 
-  public function get($id, $client_id) {
+  public function generatePdfQrCode(int $ticketId): string {
+    $qrCodeUrl = GeralUtils::getEnv('BASE_URL') . '/tickets/generate-pdf/' . $ticketId;
+    $qrCode = QrCodeUtils::generate($qrCodeUrl);
+    return $qrCode;
+  }
+
+  public function get(int $id, int $client_id): array {
     $ticket = $this->model->getById((int) $id);
 
     if (!$ticket || $ticket['client_id'] !== $client_id) {
@@ -31,13 +36,15 @@ class TicketService extends AbstractService {
     return $ticket;
   }
 
-  public function generatePdfQrCode ($ticketId) {
-    $qrCodeUrl = GeralUtils::getEnv('BASE_URL') . '/tickets/generate-pdf/' . $ticketId;
-    $qrCode = QrCodeUtils::generate($qrCodeUrl);
-    return $qrCode;
+  public function getAll(): array {
+    return $this->model->getAll();
   }
 
-  public function generatePdf(int $ticketId, $clientId) {
+  public function getPurchased(int $clientId): array {
+    return $this->model->getPurchasedByClient($clientId);
+  }
+
+  public function generatePdf(int $ticketId, int $clientId): void {
     $ticket = $this->model->getById($ticketId);
 
     if (!$ticket) {
@@ -55,15 +62,7 @@ class TicketService extends AbstractService {
     PdfUtils::render($pdf_template, "ticket-{$ticketId}.pdf", ['ticket' => $ticket]);
   }
 
-  public function getAll() {
-    return $this->model->getAll();
-  }
-
-  public function getPurchased(int $clientId) {
-    return $this->model->getPurchasedByClient($clientId);
-  }
-
-  public function reserve(int $clientId, int $eventId) {
+  public function reserve(int $clientId, int $eventId): array {
     // Verify if the client already has a reserved ticket for this event
     $reservedTicket = $this->model->getReservedByClient($clientId, $eventId);
     if($reservedTicket) {
@@ -86,7 +85,7 @@ class TicketService extends AbstractService {
     return $this->model->getById($ticketId);
   }
 
-  public function purchase(int $clientId, int $eventId) {
+  public function purchase(int $clientId, int $eventId): int {
     if (!$clientId || !$eventId) {
       throw new ValidationException(message: 'ID do cliente e do evento são obrigatórios.');
     }
@@ -97,7 +96,7 @@ class TicketService extends AbstractService {
     return $ticket['id'];
   }
 
-  public function expireReservation(int $clientId, int $eventId) {
+  public function expireReservation(int $clientId, int $eventId): void {
     $ticket = $this->model->getReservedByClient($clientId, $eventId);
 
     if (!$ticket || $ticket['status'] !== 'reserved') {

@@ -14,7 +14,7 @@ class UserService extends AbstractService {
     private UserModel $model
   ) {}
 
-  public function get($id) {
+  public function get(int $id): array {
     $user = $this->model->getById($id);
 
     if (!$user) {
@@ -24,15 +24,15 @@ class UserService extends AbstractService {
     return $user;
   }
 
-  public function hashPassword(string $password) {
-    return password_hash($password, PASSWORD_DEFAULT);
-  }
-
-  public function getAll() {
+  public function getAll(): array {
     return $this->model->getAll();
   }
 
-  public function login(string $email, string $password) {
+  public function hashPassword(string $password): string {
+    return password_hash($password, PASSWORD_DEFAULT);
+  }
+
+  public function login(string $email, string $password): array {
     $user = $this->model->getByEmail($email);
 
     if (!$user || !password_verify($password, $user['password_hash'])) {
@@ -42,7 +42,7 @@ class UserService extends AbstractService {
     return $user;
   }
 
-  public function create(UserData $data) {
+  public function create(UserData $data): int {
     // Check if email already exists
     $existingUser = $this->model->getByEmail($data->email);
     if ($existingUser) {
@@ -54,7 +54,7 @@ class UserService extends AbstractService {
     return $this->model->create($data);
   }
 
-  public function update($id, UserDataEdit $data) {
+  public function update($id, UserDataEdit $data): int {
     $user = $this->model->getById($id);
 
     if (!$user) {
@@ -64,7 +64,7 @@ class UserService extends AbstractService {
     return $this->model->update($id, $data);
   }
 
-  public function delete($id) {
+  public function delete($id): int {
     $user = $this->model->getById($id);
 
     if (!$user) {

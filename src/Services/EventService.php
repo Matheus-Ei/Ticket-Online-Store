@@ -11,7 +11,7 @@ class EventService extends AbstractService {
     private EventModel $model
   ) {}
 
-  public function get($id) {
+  public function get(int $id): array {
     $event = $this->model->getById($id);
 
     if (!$event) {throw new NotFoundException('Evento não encontrado.');}
@@ -19,17 +19,23 @@ class EventService extends AbstractService {
     return $event;
   }
 
-  public function getTicketsSold(int $eventId, ?int $userId, ?string $userRole) {
+  public function getAll(?int $sellerId = null): array {
+    if ($sellerId) {
+      return $this->model->getAllBySeller($sellerId);
+    }
+
+    return $this->model->getAll();
+  }
+
+  public function getTicketsSold(int $eventId, ?int $userId, ?string $userRole): array {
     if ($userRole === 'seller') {
       return $this->model->getTicketsSold($eventId, $userId);
     }
 
     return [];
-
-
   }
 
-  public function getWithOwner(int $id, int $sellerId) {
+  public function getWithOwner(int $id, int $sellerId): array {
     $event = $this->model->getById($id);
 
     if (!$event || $event['created_by'] !== $sellerId) {
@@ -39,19 +45,11 @@ class EventService extends AbstractService {
     return $event;
   }
 
-  public function getAll(?int $sellerId = null) {
-    if ($sellerId) {
-      return $this->model->getAllBySeller($sellerId);
-    }
-
-    return $this->model->getAll();
-  }
-
-  public function getPurchased(int $clientId) {
+  public function getPurchased(int $clientId): array {
     return $this->model->getPurchasedByClient($clientId);
   }
 
-  public function save($eventId, EventData $data) {
+  public function save(EventData $data, ?int $eventId): void {
     if ($eventId) {
       $this->model->update($eventId, $data);
     } else {
@@ -59,17 +57,7 @@ class EventService extends AbstractService {
     }
   }
 
-  public function update(int $id, EventData $data) {
-    $event = $this->model->getById($id);
-
-    if (!$event) {
-      throw new NotFoundException('Evento não encontrado ou você não tem permissão para atualizá-lo.');
-    }
-
-    return $this->model->update($id, $data);
-  }
-
-  public function delete(int $id, int $sellerId) {
+  public function delete(int $id, int $sellerId): int {
     $event = $this->getWithOwner($id, $sellerId);
 
     if (!$event) {
