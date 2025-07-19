@@ -82,6 +82,9 @@ class UserController extends AbstractController {
       $this->request->post('password')
     );
 
+    // Regenerate session ID to prevent session fixation attacks
+    $this->session->regenerateId(true);
+
     // Create session variables
     $this->session->set('user_id', $user['id']);
     $this->session->set('user_role', $user['role']);

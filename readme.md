@@ -29,6 +29,13 @@ Para instalar o projeto, é importante ter o Docker e o Docker Compose instalado
    http://localhost:8080
    ```
 
+## Rodar Testes
+Para rodar os testes do projeto, você pode utilizar o PHPUnit. Certifique-se de que o PHPUnit está instalado e configurado corretamente. Em seguida, execute o seguinte comando:
+
+```bash
+./vendor/bin/phpunit
+```
+
 ## Tecnologias Utilizadas
 Aqui descrevi as principais tecnologias utilizadas no projeto:
 
@@ -39,6 +46,7 @@ Aqui descrevi as principais tecnologias utilizadas no projeto:
 - **TailwindCSS**: Framework CSS utilizado para estilização.
 - **Docker**: Utilizado para containerização do ambiente de desenvolvimento.
 - **Docker Compose**: Utilizado para orquestrar os containers do Docker.
+- **PHPUnit**: Framework de testes para PHP.
 
 ## Funcionalidades
 Listei as principais funcionalidades implementadas na loja online dos requisitos do projeto:
@@ -94,26 +102,38 @@ Listei as principais funcionalidades implementadas na loja online dos requisitos
     - [x] Validação de dados ao mostrar na view.
     - [x] Validações nos dados do banco de dados.
 
+- [x] Testes
+    - [x] Testes unitários dos services para as principais funcionalidades com regra de negócio.
+
 ## Estrutura de Endpoints
-Como os endpoints são organizados no projeto, cada recurso tem suas próprias rotas para operações.
-- `/`: Rota para a página inicial.
+A seguir, a estrutura de endpoints da aplicação, agrupada por recurso.
 
-- `/users/register`: Rota para o registro de usuários.
-- `/users/login`: Rota para o login de usuários.
-- `/users/profile`: Rota para o perfil de usuário.
-- `/users/edit`: Rota para editar o perfil de usuário.
-- `/users/delete`: Rota para deletar o perfil de usuário.
+#### Eventos
+  - `GET /` ou `/events`: Rota principal que lista todos os eventos disponíveis.
+  - `GET /events/purchased`: Lista os eventos cujos ingressos foram comprados pelo cliente logado.
+  - `GET /events/save`: Exibe o formulário para criar ou editar um evento. Pode receber um `id` como parâmetro de query para edição (`/events/save?id={id}`).
+  - `POST /events/save`: Processa a criação ou atualização de um evento.
+  - `GET /events/seller`: Exibe todos os eventos criados pelo vendedor logado.
+  - `GET /events/{id}`: Exibe os detalhes de um evento específico.
+  - `POST /events/delete/{id}`: Deleta um evento específico (apenas o proprietário).
 
-- `/tickets`: Rota para listar ingressos disponíveis.
-- `/tickets/{id}`: Rota para visualizar detalhes de um ingresso (apenas o proprietário).
+#### Usuários (Clientes e Vendedores)
+  - `GET /users/register`: Exibe o formulário de registro.
+  - `POST /users/register`: Processa o registro de um novo usuário.
+  - `GET /users/login`: Exibe o formulário de login.
+  - `POST /users/login`: Processa o login de um usuário.
+  - `POST /users/logout`: Desconecta o usuário logado.
+  - `GET /users/profile`: Exibe o perfil do usuário logado.
+  - `GET /users/edit`: Exibe o formulário para editar o perfil.
+  - `POST /users/edit`: Processa a atualização do perfil.
+  - `POST /users/delete`: Deleta a conta do usuário logado.
 
-- `/tickets/reserve`: Rota para criar e reservar ingressos (apenas clientes).
-- `/tickets/buy`: Rota para comprar ingressos (apenas clientes).
-- `/tickets/purchased`: Rota para listar ingressos comprados pelo cliente (apenas o cliente proprietário).
+#### Ingressos (Tickets)
+  - `GET /tickets/purchased`: Lista todos os ingressos comprados pelo cliente logado.
+  - `POST /tickets/reserve`: Reserva um ingresso para um evento, antes da compra efetiva.
+  - `GET /tickets/buy`: Exibe a página de confirmação de compra de um ingresso reservado.
+  - `POST /tickets/buy`: Efetiva a compra de um ingresso.
+  - `POST /tickets/expire`: Endpoint para expirar uma reserva de ingresso que não foi comprada a tempo.
+  - `GET /tickets/{id}`: Exibe os detalhes de um ingresso específico comprado.
+  - `GET /tickets/generate-pdf/{ticketId}`: Gera e baixa o comprovante de compra de um ingresso em formato PDF.
 
-- `/events`: Rota para listar eventos disponíveis.
-- `/events/{id}`: Rota para visualizar detalhes de um evento.
-- `/events/save`: Rota para criar eventos (apenas usuários).
-- `/events/save?id={id}`: Rota para editar eventos (apenas o proprietário).
-- `/events/delete`: Rota para deletar eventos (apenas o proprietário).
-- `/events/purchased`: Rota para listar eventos comprados pelo cliente (apenas o cliente proprietário).

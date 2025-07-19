@@ -4,5 +4,5 @@
 
 # Ignore log files and temp files
 *.log
-/logs/
 
+.phpunit.result.cache
