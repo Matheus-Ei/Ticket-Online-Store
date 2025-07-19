@@ -77,6 +77,7 @@ class TicketController extends AbstractController {
       'event' => $event,
       'ticketId' => $ticket['id'],
       'reservationTime' => $reservationTime ?? null,
+      'csrf_token' => $this->session->get('csrf_token'),
     ];
 
     $this->renderView('tickets/buy-form', $data);
@@ -93,6 +94,11 @@ class TicketController extends AbstractController {
 
   public function buy() {
     $this->checkLogin('client');
+
+    $this->validator->validateCsrfToken(
+      $this->session->get('csrf_token'),
+      $this->request->post('csrf_token')
+    );
 
     $eventId = $this->request->post('event_id');
     $ticketId = $this->request->post('ticket_id');

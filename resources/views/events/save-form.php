@@ -1,5 +1,7 @@
 <div class="container mx-auto">
   <form action="/events/save" method="POST" class="bg-white rounded-lg border border-gray-200 p-6 space-y-6">
+    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
+
     <h1 class="text-3xl font-bold mb-2"><?= isset($event) ? 'Editar Evento' : 'Criar Evento' ?></h1>
 
     <p class="text-gray-600 mb-6">

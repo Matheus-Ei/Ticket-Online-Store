@@ -23,6 +23,8 @@
   </div>
 
   <form action="/tickets/buy" method="POST" class="space-y-4">
+    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
+
     <input type="hidden" name="event_id" value="<?= htmlspecialchars($event['id']) ?>">
 
     <?php if (isset($ticketId)): ?>

@@ -39,6 +39,7 @@ class UserController extends AbstractController {
     $data = [
       'title' => 'Perfil do Usuário',
       'user' => $user,
+      'csrf_token' => $this->session->get('csrf_token'),
     ];
 
     $this->renderView('users/view-profile', $data);
@@ -52,6 +53,7 @@ class UserController extends AbstractController {
     $data = [
       'title' => 'Editar Perfil',
       'user' => $user,
+      'csrf_token' => $this->session->get('csrf_token'),
     ];
 
     $this->renderView('users/edit-form', $data);
@@ -98,6 +100,11 @@ class UserController extends AbstractController {
   public function edit() {
     $this->checkLogin();
 
+    $this->validator->validateCsrfToken(
+      $this->session->get('csrf_token'),
+      $this->request->post('csrf_token')
+    );
+
     $profileData = new UserDataEdit(
       name: $this->request->post('name'),
       email: $this->request->post('email')
@@ -113,6 +120,11 @@ class UserController extends AbstractController {
 
   public function delete() {
     $this->checkLogin();
+
+    $this->validator->validateCsrfToken(
+      $this->session->get('csrf_token'),
+      $this->request->post('csrf_token')
+    );
 
     $this->service->delete($this->getUserId());
     session_destroy();

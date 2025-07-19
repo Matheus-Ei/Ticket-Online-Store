@@ -24,6 +24,7 @@ class EventController extends AbstractController {
     $data = [
       'title' => 'Eventos',
       'events' => $events,
+      'csrf_token' => $this->session->get('csrf_token'),
     ];
 
     $this->renderView('events/index', $data);
@@ -37,6 +38,7 @@ class EventController extends AbstractController {
     $data = [
       'title' => 'Meus Eventos',
       'events' => $events,
+      'csrf_token' => $this->session->get('csrf_token'),
     ];
 
     $this->renderView('events/view-seller-events', $data);
@@ -56,6 +58,7 @@ class EventController extends AbstractController {
       'title' => 'Detalhes do Evento',
       'event' => $event,
       'tickets' => $tickets,
+      'csrf_token' => $this->session->get('csrf_token'),
     ];
 
     $this->renderView('events/view-specific', $data);
@@ -84,9 +87,17 @@ class EventController extends AbstractController {
       $this->validator->validateId($eventId);
 
       $event = $this->service->getWithOwner($eventId, $this->getUserId());
-      $data = ['title' => 'Editar Evento', 'event' => $event];
+      $data = [
+        'title' => 'Editar Evento', 
+        'event' => $event, 
+        'csrf_token' => $this->session->get('csrf_token')
+      ];
     } else {
-      $data = ['title' => 'Criar Evento'];
+      $data = [
+        'title' => 'Criar Evento', 
+        'event' => null, 
+        'csrf_token' => $this->session->get('csrf_token')
+      ];
     }
 
     $this->renderView('events/save-form', $data);
@@ -94,6 +105,12 @@ class EventController extends AbstractController {
 
   public function save() {
     $this->checkLogin('seller');
+
+    // Validate CSRF token
+    $this->validator->validateCsrfToken(
+      $this->session->get('csrf_token'), 
+      $this->request->post('csrf_token')
+    );
 
     $eventId = $this->request->post('id') ?? null;
     $event = null;
@@ -129,6 +146,11 @@ class EventController extends AbstractController {
     $this->checkLogin('seller');
 
     $this->validator->validateId($id, "Event ID");
+
+    $this->validator->validateCsrfToken(
+      $this->session->get('csrf_token'), 
+      $this->request->post('csrf_token')
+    );
 
     $this->service->delete($id, $this->getUserId());
 

@@ -2,6 +2,8 @@
   <h1 class="text-2xl font-bold mb-4">Editar perfil</h1>
 
   <form action="/users/edit" method="post">
+    <input type="hidden" name="csrf_token" value="<?=htmlspecialchars($csrf_token)?>">
+
     <div class="mb-4">
       <label for="name" class="block text-gray-700 text-sm font-bold mb-2">Nome:</label>
 

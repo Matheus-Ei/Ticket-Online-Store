@@ -58,6 +58,8 @@
       class="w-full" 
       onSubmit="return confirm('Tem certeza que deseja excluir este evento? Esta ação não pode ser desfeita.');"
     >
+      <input type="hidden" name="csrf_token" value="<?=htmlspecialchars($csrf_token)?>">
+
       <button 
         type="submit" 
         class="w-full bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition cursor-pointer text-start xl:text-center"

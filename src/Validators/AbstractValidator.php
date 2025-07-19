@@ -62,6 +62,16 @@ abstract class AbstractValidator {
     }
   }
 
+  public function validateCsrfToken($serverToken, $formToken): void {
+    $this->resetErrors();
+
+    if (empty($serverToken) || empty($formToken) || !hash_equals($serverToken, $formToken)) {
+      $this->addError('csrf_token', 'O token CSRF é inválido ou não corresponde.');
+    }
+
+    $this->throwIfErrors();
+  }
+
   public function validateId($id, string $fieldName = 'ID'): void {
     $this->resetErrors();
     $this->validateInt($id, $fieldName);

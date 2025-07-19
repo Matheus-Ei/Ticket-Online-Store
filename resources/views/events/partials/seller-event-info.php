@@ -12,6 +12,8 @@
     </a>
 
     <form action="/events/delete/<?=$event['id']?>" method="POST" onsubmit="return confirm('Tem certeza que deseja excluir este evento?');">
+      <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
+
       <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 cursor-pointer">
         Excluir Evento
       </button>

@@ -20,6 +20,8 @@
     <a href="/users/edit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 cursor-pointer">Editar Perfil</a>
 
     <form action="/users/delete" method="post" onsubmit="return confirm('Are you sure you want to delete your account?');">
+      <input type="hidden" name="csrf_token" value="<?=htmlspecialchars($csrf_token)?>">
+
       <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 cursor-pointer">Deletar Conta</button>
     </form>
 
