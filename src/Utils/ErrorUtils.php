@@ -8,15 +8,18 @@ use App\Exceptions\ValidationException;
 use Core\DI\Container;
 use Core\Session;
 use PDOException;
+use Psr\Log\LoggerInterface;
 use Throwable;
 
 class ErrorUtils {
   private Session $session;
+  private LoggerInterface $logger;
 
   public function __construct(
     Container $container
   ) {
     $this->session = $container->get(Session::class);
+    $this->logger = $container->get(LoggerInterface::class);
   }
 
   private function setMessage(string $type, string $text): void {
@@ -52,6 +55,13 @@ class ErrorUtils {
   }
 
   public function handleException(Throwable $e): void {
+    $this->logger->error($e->getMessage(), [
+        'exception' => $e,
+        'file' => $e->getFile(),
+        'line' => $e->getLine(),
+        'trace' => $e->getTraceAsString()
+    ]);
+
     switch (true) {
       case $e instanceof ValidationException:
         $this->setMessage('error', $e->getMessage());

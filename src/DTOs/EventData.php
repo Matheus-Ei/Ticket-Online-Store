@@ -2,7 +2,7 @@
 
 namespace App\DTOs;
 
-class EventData {
+class EventData implements DataInterface {
   public function __construct(
     public readonly string $name,
     public readonly int $createdBy,

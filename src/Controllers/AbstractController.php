@@ -64,12 +64,12 @@ abstract class AbstractController {
     require GeralUtils::basePath("resources/layouts/{$layout}.php");
   }
 
-  protected function navigate(string $url) {
+  protected function navigate(string $url): void {
     header("Location: $url");
     exit;
   }
 
-  protected function checkLogin(?string $role = null) {
+  protected function checkLogin(?string $role = null): bool {
     // Check if the user is logged in
     if (!$this->isLoggedIn()) {
       $this->navigate('/users/login');

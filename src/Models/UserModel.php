@@ -6,22 +6,24 @@ use App\DTOs\UserData;
 use App\DTOs\UserDataEdit;
 use Core\Database;
 
-class UserModel {
-  public function __construct(private Database $database) {}
+class UserModel extends AbstractModel {
+  public function __construct(protected Database $database) {
+    parent::__construct($database);
+  }
 
-  public function getById($id) {
+  public function getById($id): ?array {
     return $this->database->selectOne("SELECT * FROM users WHERE id = :id", ['id' => $id]);
   }
 
-  public function getAll() {
+  public function getAll(): array {
     return $this->database->selectAll("SELECT name, email, role FROM users");
   }
 
-  public function getByEmail(string $email) {
+  public function getByEmail(string $email): ?array {
     return $this->database->selectOne("SELECT * FROM users WHERE email = :email", ['email' => $email]);
   }
 
-  public function create(UserData $data) {
+  public function create(UserData $data): int {
     $query = "INSERT INTO users (name, password_hash, email, role) 
               VALUES (:name, :password_hash, :email, :role)";
 
@@ -35,7 +37,7 @@ class UserModel {
     return $this->database->insert($query, $params);
   }
 
-  public function update($id, UserDataEdit $data) {
+  public function update($id, UserDataEdit $data): int {
     $query = "UPDATE users SET 
                 name = :name, 
                 email = :email
@@ -50,7 +52,7 @@ class UserModel {
     return $this->database->execute($query, $params);
   }
 
-  public function delete($id) {
+  public function delete($id): int {
     $query = "DELETE FROM users WHERE id = :id";
     return $this->database->execute($query, ["id" => $id]);
   }

@@ -2,7 +2,7 @@
 
 namespace App\DTOs;
 
-class TicketData {
+class TicketData implements DataInterface {
   public function __construct(
     public readonly int $clientId,
     public readonly int $eventId,

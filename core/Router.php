@@ -208,7 +208,7 @@ class Router {
     // Setup a 404 handler
     $this->router->set404(function() {
       header("HTTP/1.0 404 Not Found");
-      echo "404 Not Found";
+      require_once __DIR__ . '/../resources/views/errors/page-not-found.php';
     });
   }
 

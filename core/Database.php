@@ -29,27 +29,41 @@ class Database {
     $this->pdo = null;
   }
 
-  public function selectAll($query, $params = []) {
+  public function selectAll(string $query, ?array $params = []): array {
     $stmt = $this->pdo->prepare($query);
     $stmt->execute($params);
-    return $stmt->fetchAll();
+    $values = $stmt->fetchAll();
+    return $values ? $values : [];
   }
 
-  public function selectOne($query, $params = []) {
+  public function selectOne(string $query, ?array $params = []): ?array {
     $stmt = $this->pdo->prepare($query);
     $stmt->execute($params);
-    return $stmt->fetch();
+    $value = $stmt->fetch();
+    return $value ? $value : null;
   }
 
-  public function insert($query, $params = []) {
+  public function insert(string $query, ?array $params = []): int {
     $stmt = $this->pdo->prepare($query);
     $stmt->execute($params);
     return $this->pdo->lastInsertId();
   }
 
-  public function execute($query, $params = []) {
+  public function execute(string $query, ?array $params = []): int {
     $stmt = $this->pdo->prepare($query);
     $stmt->execute($params);
     return $stmt->rowCount();
+  }
+
+  public function beginTransaction() {
+    $this->pdo->beginTransaction();
+  }
+
+  public function commit() {
+    $this->pdo->commit();
+  }
+
+  public function rollback() {
+    $this->pdo->rollBack();
   }
 }

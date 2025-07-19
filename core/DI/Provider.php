@@ -17,6 +17,9 @@ use App\Services\UserService;
 use App\Validators\EventValidator;
 use App\Validators\TicketValidator;
 use App\Validators\UserValidator;
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 
 class Provider {
   public static function register(Container $container): void {
@@ -43,6 +46,13 @@ class Provider {
     });
 
     $container->bind(Request::class, fn () => new Request());
+
+    // Setup Monolog logger
+    $container->bind(LoggerInterface::class, function () {
+      $log = new Logger('app');
+      $log->pushHandler(new StreamHandler(__DIR__ . '/../../logs/app.log', Logger::DEBUG));
+      return $log;
+    });
 
     // Models bindings
     $container->bind(EventModel::class, function ($c) {

@@ -19,19 +19,19 @@ abstract class AbstractValidator {
     $this->addError($fieldName, "O $fieldName é inválido.");
   }
 
-  protected function validateInt($value, string $fieldName, int $min = 1): void {
+  protected function validateInt(mixed $value, string $fieldName, int $min = 1): void {
     if ($value !== null && !filter_var($value, FILTER_VALIDATE_INT, ['options' => ['min_range' => $min]])) {
       $this->addValidationError($fieldName);
     }
   }
 
-  protected function validateFloat($value, string $fieldName, float $min = 0): void {
+  protected function validateFloat(mixed $value, string $fieldName, float $min = 0): void {
     if ($value !== null && !filter_var($value, FILTER_VALIDATE_FLOAT, ['options' => ['min_range' => $min]])) {
       $this->addValidationError($fieldName);
     }
   }
 
-  protected function ensureNotEmpty($value, string $fieldName): void {
+  protected function ensureNotEmpty(mixed $value, string $fieldName): void {
     if (empty(trim($value))) {
       $this->addError($fieldName, "O $fieldName não pode estar vazio.");
     }
@@ -44,13 +44,13 @@ abstract class AbstractValidator {
     }
   }
 
-  protected function validateEmail($email, string $fieldName): void {
+  protected function validateEmail(mixed $email, string $fieldName): void {
     if ($email !== null && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
       $this->addValidationError($fieldName);
     }
   }
 
-  protected function validateUrl($url, string $fieldName): void {
+  protected function validateUrl(mixed $url, string $fieldName): void {
     if ($url !== null && !filter_var($url, FILTER_VALIDATE_URL)) {
       $this->addValidationError($fieldName);
     }
@@ -62,7 +62,7 @@ abstract class AbstractValidator {
     }
   }
 
-  public function validateCsrfToken($serverToken, $formToken): void {
+  public function validateCsrfToken(mixed $serverToken, mixed $formToken): void {
     $this->resetErrors();
 
     if (empty($serverToken) || empty($formToken) || !hash_equals($serverToken, $formToken)) {
@@ -72,7 +72,7 @@ abstract class AbstractValidator {
     $this->throwIfErrors();
   }
 
-  public function validateId($id, string $fieldName = 'ID'): void {
+  public function validateId(mixed $id, string $fieldName = 'ID'): void {
     $this->resetErrors();
     $this->validateInt($id, $fieldName);
     $this->throwIfErrors();
