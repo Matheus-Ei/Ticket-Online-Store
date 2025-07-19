@@ -3,32 +3,39 @@
 namespace App\Controllers;
 
 use App\Utils\GeralUtils;
+use Core\Request;
+use Core\Session;
 
 abstract class AbstractController {
+  public function __construct(
+    private Session $session,
+    private Request $request,
+  ) {}
+
   protected function isLoggedIn(): bool {
-    return isset($_SESSION['user_id']) && !empty($_SESSION['user_id']);
+    $userId = $this->session->get('user_id');
+    return $userId && !empty($userId);
   }
 
   protected function getUserId(): ?int {
-    return $_SESSION['user_id'] ?? null;
+    return $this->session->get('user_id');
   }
 
   protected function getUserRole(): ?string {
-    return $_SESSION['user_role'] ?? null;
+    return $this->session->get('user_role');
   }
 
   protected function setMessage(string $type, string $text): void {
-    $_SESSION['message'] = [
+    $this->session->set('message', [
       'type' => $type,
       'text' => $text
-    ];
+    ]);
   }
 
   protected function getMessage(): array {
-    // If a message is set in the session, retrieve it and clear it
-    if (isset($_SESSION['message'])) {
-      $message = $_SESSION['message'];
-      unset($_SESSION['message']); 
+    if ($this->session->has('message')) {
+      $message = $this->session->get('message');
+      $this->session->remove('message');
       return $message;
     }
 

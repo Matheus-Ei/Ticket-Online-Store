@@ -4,9 +4,9 @@ require __DIR__.'/../vendor/autoload.php';
 
 use App\Utils\ErrorUtils;
 use App\Utils\GeralUtils;
-use Core\Container;
+use Core\DI\Container;
+use Core\DI\Provider;
 use Core\Router;
-use Core\DependencyProvider;
 
 // Loads the dotenv
 $dotenv = \Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
@@ -21,12 +21,9 @@ if(GeralUtils::getEnv("ENVIROMENT") === "production") {
   ini_set('error_log', '../errors.log');
 }
 
-// Start the session
-session_start(); 
-
 // Setup the DI container
 $container = new Container();
-DependencyProvider::register($container);
+Provider::register($container);
 
 try {
   // Setup router and run the application

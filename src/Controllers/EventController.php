@@ -5,12 +5,18 @@ namespace App\Controllers;
 use App\DTOs\EventData;
 use App\Services\EventService;
 use App\Validators\EventValidator;
+use Core\Request;
+use Core\Session;
 
 class EventController extends AbstractController {
   public function __construct(
+    private Session $session,
+    private Request $request,
     private EventService $service,
     private EventValidator $validator,
-  ) {}
+  ) {
+    parent::__construct($session, $request);
+  }
 
   public function index() {
     $events = $this->service->getAll();
@@ -40,9 +46,8 @@ class EventController extends AbstractController {
     $this->validator->validateId($id);
 
     $event = $this->service->get($id);
-    $userRole = $this->getUserRole();
 
-    if ($userRole === 'seller' && $event['created_by'] === $this->getUserId()) {
+    if ($this->getUserRole() === 'seller' && $event['created_by'] === $this->getUserId()) {
       $tickets = $this->service->getTicketsSold($id, $this->getUserId());
     } 
 
@@ -71,7 +76,7 @@ class EventController extends AbstractController {
   public function saveForm() {
     $this->checkLogin('seller');
 
-    $eventId = $_GET['id'] ?? null;
+    $eventId = $this->request->get('id');
 
     // If an event ID is provided, fetch the event details for editing
     if ($eventId) {
@@ -89,7 +94,7 @@ class EventController extends AbstractController {
   public function save() {
     $this->checkLogin('seller');
 
-    $eventId = $_POST['id'] ?? null;
+    $eventId = $this->request->post('id') ?? null;
     $event = null;
 
     // If an event ID is provided, fetch the event details for editing
@@ -100,14 +105,14 @@ class EventController extends AbstractController {
 
     // Create or update the event data
     $data = new EventData(
-      name: $_POST['name'] ?? $event['name'] ?? '',
-      description: $_POST['description'] ?? $event['description'] ?? '',
-      imageUrl: $_POST['image_url'] ?? $event['image_url'] ?? '',
-      startTime: new \DateTime($_POST['start_time'] ?? $event['start_time'] ?? 'now'),
-      endTime: !empty($_POST['end_time']) ? new \DateTime($_POST['end_time']) : null,
-      location: $_POST['location'] ?? $event['location'] ?? '',
-      ticketPrice: $_POST['ticket_price'] ?? $event['ticket_price'] ?? 0.0,
-      ticketQuantity: $_POST['ticket_quantity'] ?? $event['ticket_quantity'] ?? 0,
+      name: $this->request->post('name') ?? $event['name'] ?? '',
+      description: $this->request->post('description') ?? $event['description'] ?? '',
+      imageUrl: $this->request->post('image_url') ?? $event['image_url'] ?? '',
+      startTime: new \DateTime($this->request->post('start_time') ?? $event['start_time'] ?? 'now'),
+      endTime: !empty($this->request->post('end_time')) ? new \DateTime($this->request->post('end_time')) : null,
+      location: $this->request->post('location') ?? $event['location'] ?? '',
+      ticketPrice: $this->request->post('ticket_price') ?? $event['ticket_price'] ?? 0.0,
+      ticketQuantity: $this->request->post('ticket_quantity') ?? $event['ticket_quantity'] ?? 0,
       createdBy: $this->getUserId()
     );
 

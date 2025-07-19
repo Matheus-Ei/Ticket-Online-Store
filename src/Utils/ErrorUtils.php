@@ -8,15 +8,16 @@ use App\Exceptions\ValidationException;
 use PDOException;
 use Throwable;
 
+// TODO: Use the container to inject dependencies like session, request, etc.
 class ErrorUtils {
-  public static function setMessage(string $type, string $text): void {
+  private static function setMessage(string $type, string $text): void {
     $_SESSION['message'] = [
       'type' => $type,
       'text' => $text
     ];
   }
 
-  public static function redirectPreviousPage(): void {
+  private static function redirectPreviousPage(): void {
     $referer = $_SERVER['HTTP_REFERER'] ?? '/';
     header("Location: $referer");
     exit();

@@ -2,6 +2,8 @@
 
 namespace Core;
 
+use Core\DI\Container;
+
 class Router {
   public $router = null;
   protected $container = null;
@@ -179,14 +181,14 @@ class Router {
     $this->setup();
   }
 
-  public function register($method, $endpoint, $controller, $action) {
+  private function register($method, $endpoint, $controller, $action) {
     $this->router->$method($endpoint, function(...$params) use ($controller, $action) {
       $controllerInstance = $this->container->get($controller); // Get the controller instance from the container
       call_user_func_array([$controllerInstance, $action], $params); // Call the action method on the controller instance
     });  
   }
 
-  public function setup() {
+  private function setup() {
     foreach($this->routes as $route) {
       $this->register(
         $route['method'],

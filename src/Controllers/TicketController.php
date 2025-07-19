@@ -4,14 +4,20 @@ namespace App\Controllers;
 
 use App\Services\TicketService;
 use App\Services\EventService;
-use App\Validators\EventValidator;
+use App\Validators\TicketValidator;
+use Core\Request;
+use Core\Session;
 
 class TicketController extends AbstractController {
   public function __construct(
+    private Session $session,
+    private Request $request,
     private TicketService $service,
+    private TicketValidator $validator,
     private EventService $eventService,
-    private EventValidator $validator,
-  ) {}
+  ) {
+    parent::__construct($session, $request);
+  }
 
   public function viewPurchased() {
     $this->checkLogin('client');
@@ -48,7 +54,7 @@ class TicketController extends AbstractController {
   public function buyForm() {
     $this->checkLogin('client');
 
-    $eventId = $_GET['event_id'] ?? null;
+    $eventId = $this->request->get('event_id');
     $ticketId = null;
 
     // Gets the event details
@@ -60,8 +66,8 @@ class TicketController extends AbstractController {
     $ticket = $this->service->reserve($this->getUserId(), $eventId);
 
     // Store reservation time in session
-    $_SESSION['reservation_time'] = $ticket['created_at'];
-    $reservationTime = $_SESSION['reservation_time'];
+    $reservationTime = $ticket['created_at'];
+    $this->session->set('reservation_time', $reservationTime);
 
     $data = [
       'title' => 'Comprar Ingresso',
@@ -85,8 +91,8 @@ class TicketController extends AbstractController {
   public function buy() {
     $this->checkLogin('client');
 
-    $eventId = $_POST['event_id'] ?? null;
-    $ticketId = $_POST['ticket_id'] ?? null;
+    $eventId = $this->request->post('event_id');
+    $ticketId = $this->request->post('ticket_id');
 
     $this->validator->validateId($eventId, 'Event ID');
     $this->validator->validateId($ticketId, 'Ticket ID');

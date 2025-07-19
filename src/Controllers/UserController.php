@@ -6,12 +6,18 @@ use App\DTOs\UserData;
 use App\DTOs\UserDataEdit;
 use App\Services\UserService;
 use App\Validators\UserValidator;
+use Core\Request;
+use Core\Session;
 
 class UserController extends AbstractController {
   public function __construct(
+    private Session $session,
+    private Request $request,
     private UserService $service,
     private UserValidator $validator
-  ) {}
+  ) {
+    parent::__construct($session, $request);
+  }
 
   public function registerForm() {
     $data = ['title' => 'Criar Conta'];
@@ -53,10 +59,10 @@ class UserController extends AbstractController {
 
   public function register() {
     $registrationData = new UserData(
-      name: $_POST['name'],
-      email: $_POST['email'],
-      password: $_POST['password'],
-      role: $_POST['role']
+      name: $this->request->post('name'),
+      email: $this->request->post('email'),
+      password: $this->request->post('password'),
+      role: $this->request->post('role')
     );
 
     // Validate the registration data
@@ -69,7 +75,10 @@ class UserController extends AbstractController {
   }
 
   public function login() {
-    $this->service->login($_POST['email'], $_POST['password']);
+    $this->service->login(
+      $this->request->post('email'), 
+      $this->request->post('password')
+    );
 
     $this->setMessage('success', 'Login realizado com sucesso!');
     $this->navigate('/users/profile');
@@ -86,8 +95,8 @@ class UserController extends AbstractController {
     $this->checkLogin();
 
     $profileData = new UserDataEdit(
-      name: $_POST['name'],
-      email: $_POST['email']
+      name: $this->request->post('name'),
+      email: $this->request->post('email')
     );
 
     $this->validator->validateDataEdit($profileData);
