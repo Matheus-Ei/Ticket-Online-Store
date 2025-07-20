@@ -90,18 +90,10 @@ class TicketService extends AbstractService {
       throw new ValidationException(message: 'ID do cliente e do evento são obrigatórios.');
     }
 
-    try {
-      $this->eventModel->createTransaction();
+    $ticket = $this->reserve($clientId, $eventId);
+    $this->model->updateStatus($ticket['id'], 'purchased');
 
-      $ticket = $this->reserve($clientId, $eventId);
-      $this->model->updateStatus($ticket['id'], 'purchased');
-
-      $this->eventModel->commitTransaction();
-      return $ticket['id'];
-    } catch (\Throwable $e) {
-      $this->eventModel->rollbackTransaction();
-      throw $e;
-    }
+    return $ticket['id'];
   }
 
   public function expireReservation(int $clientId, int $eventId): void {

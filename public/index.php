@@ -21,6 +21,8 @@ if(GeralUtils::getEnv("ENVIROMENT") === "production") {
   ini_set('error_log', '../errors.log');
 }
 
+date_default_timezone_set('UTC');
+
 // Setup the DI container
 $container = new Container();
 Provider::register($container);
