@@ -71,6 +71,11 @@ Na sessão a seguir, explico algumas decisões técnicas que tomei durante o des
 ### Padrão MVC
 Optei por utilizar o padrão MVC (Model-View-Controller) para organizar o código do projeto. Isso ajuda a separar as responsabilidades, tornando o código mais modular e fácil de manter.
 
+### Gestão de Projetos com Github Projects
+Utilizei o Github Projects para gerenciar as tarefas e funcionalidades do projeto. Isso me ajudou a manter o controle sobre o que estava sendo desenvolvido.
+
+Aqui está o link do projeto: [Github Projects](https://github.com/users/Matheus-Ei/projects/10/views/1)
+
 ### Injeção de Dependências
 Utilizei o padrão de injeção de dependências para gerenciar as dependências entre os componentes do sistema. 
 
@@ -86,6 +91,8 @@ Escolhi o PostgreSQL por que já tinha conhecimento prévio nesse banco de dados
 A pasta `/sql` contém os scripts de criação do banco de dados e das tabelas, além de alguns dados iniciais para facilitar o desenvolvimento e os testes.
 
 Preferi não colocar os scripts de criação do banco de dados diretamente no código PHP, pois isso poderia tornar o código mais complexo e menos legível. Em vez disso, optei por manter os scripts SQL separados, permitindo que sejam executados manualmente.
+
+Tambem optei por não usar migrations ou seeders, pois o projeto é relativamente pequeno e não há necessidade de um sistema complexo de migração de banco de dados.
 
 ### TailwindCSS
 Como não era a ideia principal do projeto focar no front-end e sim na lógica geral, escolhi a maneira mais facil e que eu já estava acostumado a ultilizar para fazer a estilização.
