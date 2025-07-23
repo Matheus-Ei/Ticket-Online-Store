@@ -77,7 +77,7 @@
     .ticket-info p strong {
       color: #333;
       font-weight: 600;
-      min-width: 180px; /* Alinha os valores */
+      min-width: 180px;
       display: inline-block;
     }
 
@@ -102,6 +102,7 @@
     <div class="container">
       <div class="header">
         <h1>Comprovante de Compra</h1>
+
         <p>Use este comprovante para acessar o evento.</p>
       </div>
 

@@ -13,7 +13,7 @@
         name="name" 
         placeholder="Digite seu nome"
         value="<?=htmlspecialchars($user['name'])?>" 
-        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 sm:text-sm"
         required
       >
     </div>
@@ -27,7 +27,7 @@
         name="email" 
         placeholder="Digite seu email"
         value="<?=htmlspecialchars($user['email'])?>" 
-        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md outline-none focus:border-blue-500 sm:text-sm"
         required
       >
     </div>

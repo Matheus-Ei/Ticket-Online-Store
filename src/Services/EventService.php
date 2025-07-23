@@ -6,7 +6,7 @@ use App\DTOs\EventData;
 use App\Exceptions\NotFoundException;
 use App\Models\EventModel;
 
-class EventService extends AbstractService {
+class EventService {
   public function __construct(
     private EventModel $model
   ) {}

@@ -2,7 +2,7 @@
 
 namespace App\DTOs;
 
-class UserData implements DataInterface {
+class UserData {
   public function __construct(
     public readonly string $name,
     public readonly string $email,

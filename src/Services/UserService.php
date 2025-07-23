@@ -9,7 +9,7 @@ use App\Exceptions\UnauthorizedException;
 use App\Exceptions\ValidationException;
 use App\Models\UserModel;
 
-class UserService extends AbstractService {
+class UserService {
   public function __construct(
     private UserModel $model
   ) {}

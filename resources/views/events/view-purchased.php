@@ -6,8 +6,6 @@
   </p>
 
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-    <?php foreach ($purchasedEvents as $event) {
-    require 'partials/event.php';
-    }?>
+    <?php foreach ($purchasedEvents as $event) {require 'partials/event.php';}?>
   </div>
 </div>

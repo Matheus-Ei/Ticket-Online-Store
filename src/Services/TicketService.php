@@ -12,7 +12,7 @@ use App\Utils\GeralUtils;
 use App\Utils\PdfUtils;
 use App\Utils\QrCodeUtils;
 
-class TicketService extends AbstractService {
+class TicketService {
   public function __construct(
     private TicketModel $model,
     private EventModel $eventModel

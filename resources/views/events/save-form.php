@@ -20,7 +20,7 @@
         name="name" 
         value="<?= isset($event) ? htmlspecialchars($event['name']) : '' ?>" 
         required 
-        class="px-2 py-1 mt-1 block w-full border-gray-200 rounded-md border focus:border-blue-500 focus:ring-blue-500 outline-none"
+        class="px-2 py-1 mt-1 block w-full border-gray-200 rounded-md border focus:border-blue-500 outline-none"
       >
     </div>
 
@@ -32,7 +32,7 @@
         name="description" 
         rows="4" 
         placeholder="Descreva o evento"
-        class="px-2 py-1 mt-1 block w-full border-gray-200 rounded-md border focus:border-blue-500 focus:ring-blue-500 outline-none"
+        class="px-2 py-1 mt-1 block w-full border-gray-200 rounded-md border focus:border-blue-500 outline-none"
       ><?= isset($event) ? htmlspecialchars($event['description']) : '' ?></textarea>
     </div>
 
@@ -45,7 +45,7 @@
         name="image_url" 
         placeholder="Insira a URL da imagem do evento"
         value="<?= isset($event) ? htmlspecialchars($event['image_url']) : '' ?>" 
-        class="px-2 py-1 mt-1 block w-full border-gray-200 rounded-md border focus:border-blue-500 focus:ring-blue-500 outline-none"
+        class="px-2 py-1 mt-1 block w-full border-gray-200 rounded-md border focus:border-blue-500 outline-none"
       >
     </div>
 
@@ -59,7 +59,7 @@
         placeholder="Selecione a data e hora de início"
         value="<?= isset($event) ? date('Y-m-d\TH:i', strtotime($event['start_time'])) : '' ?>" 
         required 
-        class="px-2 py-1 mt-1 block w-full border-gray-200 rounded-md border focus:border-blue-500 focus:ring-blue-500 outline-none"
+        class="px-2 py-1 mt-1 block w-full border-gray-200 rounded-md border focus:border-blue-500 outline-none"
       >
     </div>
 
@@ -72,7 +72,7 @@
         name="end_time" 
         placeholder="Selecione a data e hora de término"
         value="<?= isset($event) && $event['end_time'] ? date('Y-m-d\TH:i', strtotime($event['end_time'])) : null ?>"
-        class="px-2 py-1 mt-1 block w-full border-gray-200 rounded-md border focus:border-blue-500 focus:ring-blue-500 outline-none"
+        class="px-2 py-1 mt-1 block w-full border-gray-200 rounded-md border focus:border-blue-500 outline-none"
       >
     </div>
 
@@ -85,7 +85,7 @@
         name="location" 
         placeholder="Qual é o local do evento?"
         value="<?= isset($event) ? htmlspecialchars($event['location']) : '' ?>" 
-        class="px-2 py-1 mt-1 block w-full border-gray-200 rounded-md border focus:border-blue-500 focus:ring-blue-500 outline-none"
+        class="px-2 py-1 mt-1 block w-full border-gray-200 rounded-md border focus:border-blue-500 outline-none"
       >
     </div>
 
@@ -101,7 +101,7 @@
         step="0.01" 
         min="0" 
         required 
-        class="px-2 py-1 mt-1 block w-full border-gray-200 rounded-md border focus:border-blue-500 focus:ring-blue-500 outline-none"
+        class="px-2 py-1 mt-1 block w-full border-gray-200 rounded-md border focus:border-blue-500 outline-none"
       >
     </div>
 
@@ -116,7 +116,7 @@
         value="<?= isset($event) ? htmlspecialchars($event['ticket_quantity']) : '0' ?>" 
         min="0" 
         required 
-        class="px-2 py-1 mt-1 block w-full border-gray-200 rounded-md border focus:border-blue-500 focus:ring-blue-500 outline-none"
+        class="px-2 py-1 mt-1 block w-full border-gray-200 rounded-md border focus:border-blue-500 outline-none"
       >
     </div>
 

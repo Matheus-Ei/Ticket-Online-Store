@@ -50,6 +50,21 @@ Aqui descrevi as principais tecnologias utilizadas no projeto:
 - **Docker Compose**: Utilizado para orquestrar os containers do Docker.
 - **PHPUnit**: Framework de testes para PHP.
 
+## Hospedagem
+Eu hospedei esse site pois achei que seria um bom extra para mostrar que tambem conheço de linux, maquinas virtuais e tambem de redes de computadores.
+
+1. Para fazer isso eu ultilizei o sistema de hospedagem da Hetzner, que permite que você crie servidores virtuais na nuvem.
+
+2. A partir disso usei o Docker e o Docker Compose para configurar o ambiente de desenvolvimento e produção, facilitando a replicação do ambiente em diferentes máquinas.
+
+3. Os containers estavam expondo a porta 8080, então eu configurei o Nginx para fazer proxy reverso, redirecionando as requisições para a porta 80 da maquina virtual.
+
+4. Usei um Dominio na GoDaddy (matheus-eickhoff.online), e apontei o domínio para o IP da máquina virtual na Hetzner com um registro A.
+
+5. Depois disso eu usei o certbot para gerar um certificado SSL gratuito, garantindo que a comunicação entre o cliente e o servidor seja segura e com HTTPS.
+
+6. Garanti que o firewall da maquina virtual permitisse apenas o acesso a porta 22 (SSH) e a 443 (HTTPS), bloqueando outras portas para aumentar a segurança do servidor.
+
 ## Explicando Decisões Técnicas
 Na sessão a seguir, explico algumas decisões técnicas que tomei durante o desenvolvimento do projeto:
 

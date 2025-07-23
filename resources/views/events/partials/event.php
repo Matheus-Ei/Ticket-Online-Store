@@ -35,7 +35,6 @@
 
   <p class="text-gray-500 mb-4"><strong>Ingressos totais:</strong> <?=htmlspecialchars($event['ticket_quantity'])?></p>
 
-
   <div class='flex flex-col xl:flex-row gap-2 mt-4'>
     <a 
       href="/events/<?=$event['id']?>" 
