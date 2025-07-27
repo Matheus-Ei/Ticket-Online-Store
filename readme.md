@@ -34,9 +34,23 @@ Para instalar o projeto, é importante ter o Docker e o Docker Compose instalado
 ## Rodar Testes
 Para rodar os testes do projeto, você pode utilizar o PHPUnit. Certifique-se de que o PHPUnit está instalado e configurado corretamente. Em seguida, execute o seguinte comando:
 
-```bash
-./vendor/bin/phpunit
-```
+1. Instale as dependências do projeto com o Composer:
+   ```bash
+   composer install
+   ```
+
+2. Execute os testes:
+    ```bash
+    ./vendor/bin/phpunit
+    ```
+
+Ou você pode rodar os testes diretamente no container do PHP, caso esteja utilizando o Docker:
+1. Rode o projeto com o Docker, como descrito na seção de instalação.
+
+2. Execute os testes no container do PHP:
+   ```bash
+    docker-compose exec php-server ./vendor/bin/phpunit
+   ```
 
 ## Tecnologias Utilizadas
 Aqui descrevi as principais tecnologias utilizadas no projeto:
