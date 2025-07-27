@@ -49,7 +49,7 @@ class TicketController extends AbstractController {
     $eventId = $this->request->get('event_id');
 
     // Gets the event details
-    $event = $this->eventService->get($eventId, $this->getUserId());
+    $event = $this->eventService->get($eventId);
 
     $reservationTime = $this->session->get('reservation_time');
 
@@ -79,6 +79,7 @@ class TicketController extends AbstractController {
       $this->request->post('csrf_token')
     );
 
+    // Gets the event ID from the request and validates it
     $eventId = $this->request->post('event_id');
     $this->validator->validateId($eventId, 'Event ID');
 

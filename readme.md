@@ -66,6 +66,7 @@ Aqui descrevi as principais tecnologias utilizadas no projeto:
 
 ## Hospedagem
 Eu hospedei esse site pois achei que seria um bom extra para mostrar que tambem conheço de linux, maquinas virtuais e tambem de redes de computadores.
+O site está hospedado em [Php-Online-Store](https://matheus-eickhoff.online) e segue as seguintes etapas de configuração:
 
 1. Para fazer isso eu ultilizei o sistema de hospedagem da Hetzner, que permite que você crie servidores virtuais na nuvem.
 
